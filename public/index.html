@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Dr. Mohammed Al Amin — Cybersecurity Leader & Founder</title>
+<meta name="description" content="Cybersecurity leader, founder of Arabc0n & InfoLogix. Red teaming, security architecture, AI-native platforms and logistics digital transformation across the Arab world." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffcf5c"/><stop offset="100%" stop-color="#d08a12"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="38" height="38" rx="10" fill="none" stroke="url(#bg1)" stroke-width="1.5"/>
+          <path d="M9 28V13l6.5 7.5L22 13v15" fill="none" stroke="url(#bg1)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 20.5l4.5 7.5M22 20.5l4.5-7.5" fill="none" stroke="url(#bg1)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M31 28v-8" fill="none" stroke="url(#bg1)" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+        <em data-i18n="brand.role">Cybersecurity Leader · Founder</em>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="#about" data-i18n="nav.about">About</a>
+      <a href="#expertise" data-i18n="nav.expertise">Expertise</a>
+      <a href="#initiatives" data-i18n="nav.initiatives">Initiatives</a>
+      <a href="#journey" data-i18n="nav.journey">Journey</a>
+      <a href="#credentials" data-i18n="nav.credentials">Credentials</a>
+      <a href="#collaborate" data-i18n="nav.collaborate">Collaborate</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
+        <span class="lang-opt is-on" data-lang="en">EN</span>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <span class="lang-opt" data-lang="ar">ع</span>
+      </button>
+      <a href="#booking" class="btn btn-primary btn-sm" data-i18n="nav.book">Book a Call</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-grid" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="wrap hero-inner">
+
+    <div class="hero-copy">
+      <div class="badge-row">
+        <span class="badge badge-live">
+          <span class="pulse" aria-hidden="true"></span>
+          <span data-i18n="hero.badge">Available for select engagements</span>
+        </span>
+      </div>
+
+      <p class="eyebrow" data-i18n="hero.eyebrow">Founder @ Arabc0n &amp; InfoLogix · Riyadh, Saudi Arabia</p>
+
+      <h1 class="hero-title">
+        <span data-i18n="hero.title1">Secure by design.</span>
+        <span class="grad" data-i18n="hero.title2">Built for regional transformation.</span>
+      </h1>
+
+      <p class="hero-sub" data-i18n="hero.sub">
+        I build security infrastructure, logistics technology and innovation ecosystems — taking ideas from threat model to deployed platform across government, telecom and enterprise.
+      </p>
+
+      <div class="hero-cta">
+        <a href="#booking" class="btn btn-primary" data-i18n="hero.cta1">Book a session</a>
+        <a href="#expertise" class="btn btn-ghost" data-i18n="hero.cta2">Explore expertise</a>
+      </div>
+
+      <ul class="hero-meta">
+        <li><span class="dot" aria-hidden="true"></span><span data-i18n="hero.meta1">Red team · Governance · AI platforms</span></li>
+        <li><span class="dot" aria-hidden="true"></span><span data-i18n="hero.meta2">Saudi Arabia · Sudan · GCC</span></li>
+      </ul>
+    </div>
+
+    <aside class="hero-card" aria-label="Profile">
+      <div class="portrait">
+        <!-- Photo chain: drop your photo at public/assets/portrait.jpg to replace it.
+             Falls back to the GitHub avatar, then to the "MA" monogram. -->
+        <img src="assets/portrait.jpg" alt="Dr. Mohammed Al Amin" width="320" height="320"
+             onerror="if(!this.dataset.fb1){this.dataset.fb1='1';this.src='https://avatars.githubusercontent.com/u/93028621?v=4';}else{this.style.display='none';var f=document.getElementById('monoFallback');if(f)f.style.display='grid';}" />
+        <div class="portrait-fallback" id="monoFallback" aria-hidden="true">MA</div>
+        <div class="portrait-frame" aria-hidden="true"></div>
+        <div class="portrait-scan" aria-hidden="true"></div>
+      </div>
+
+      <div class="terminal" role="img" aria-label="Terminal illustration">
+        <div class="terminal-bar"><i></i><i></i><i></i><span data-i18n="hero.term">profile.sh</span></div>
+        <pre class="terminal-body"><code><span class="c-dim">$</span> <span class="c-cmd">whoami</span>
+<span class="c-out">dr.mohammed.al.amin — Riyadh, SA</span>
+<span class="c-dim">$</span> <span class="c-cmd">cat focus.json</span>
+<span class="c-out">{</span>
+<span class="c-out">  "security":  [<span class="c-str">"red team"</span>, <span class="c-str">"threat intel"</span>],</span>
+<span class="c-out">  "platforms": [<span class="c-str">"AI-native"</span>, <span class="c-str">"logistics"</span>],</span>
+<span class="c-out">  "ecosystem": [<span class="c-str">"arab world"</span>, <span class="c-str">"vision 2030"</span>]</span>
+<span class="c-out">}</span>
+<span class="c-dim">$</span> <span class="c-cursor">▍</span></code></pre>
+      </div>
+
+      <div class="hero-socials">
+        <a href="https://www.linkedin.com/in/mohalamin/" target="_blank" rel="noopener" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.02-3.06-1.9-3.06-1.9 0-2.2 1.45-2.2 2.96V21H9z"/></svg>
+        </a>
+        <a href="https://github.com/ma1amin" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2z"/></svg>
+        </a>
+        <a href="mailto:mo7dalamin@gmail.com" aria-label="Email">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>
+        </a>
+        <a href="tel:+966581773494" aria-label="Phone">
+          <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M6.6 3h2.6l1.4 4-2 1.4a11 11 0 0 0 5 5l1.4-2 4 1.4v2.6A2.6 2.6 0 0 1 16.4 18C10.2 17.4 6.6 13.8 6 7.6A2.6 2.6 0 0 1 6.6 3z"/></svg>
+        </a>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Stats -->
+  <div class="wrap">
+    <div class="stats reveal">
+      <div class="stat"><span class="stat-num" data-count="18" data-suffix="+">0</span><span class="stat-label" data-i18n="stats.years">Years in the field</span></div>
+      <div class="stat"><span class="stat-num" data-count="10" data-suffix="+">0</span><span class="stat-label" data-i18n="stats.redteam">Red-team engagements</span></div>
+      <div class="stat"><span class="stat-num" data-count="5" data-suffix="">0</span><span class="stat-label" data-i18n="stats.unit">Elite operators led</span></div>
+      <div class="stat"><span class="stat-num" data-count="6" data-suffix="">0</span><span class="stat-label" data-i18n="stats.initiatives">Flagship initiatives</span></div>
+      <div class="stat"><span class="stat-num" data-count="3" data-suffix="">0</span><span class="stat-label" data-i18n="stats.ventures">Ventures founded</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">01 — <span data-i18n="about.kicker">Who I am</span></span>
+      <h2 data-i18n="about.title">Two decades at the intersection of security, operations and national infrastructure.</h2>
+    </div>
+
+    <div class="about-grid">
+      <div class="about-copy reveal">
+        <p class="lead" data-i18n="about.p1">
+          I'm a cybersecurity leader and founder based in Riyadh. I founded <strong>Arabc0n Cyber Security</strong> as a specialist offensive security firm serving government and enterprise clients across the region — and <strong>InfoLogix</strong>, a technical consulting and logistics development company building AI-driven operations platforms for the Saudi market.
+        </p>
+        <p data-i18n="about.p2">
+          My career runs from information security advisor and CISO at Sudan's National Telecom Corporation through command-and-control operations in Saudi Arabia, to leading red-team programmes trusted by government and telecom operators. That mix of public-sector discipline and offensive mindset is what I bring to every engagement.
+        </p>
+        <p data-i18n="about.p3">
+          Today I split my time between hands-on security work, building AI-native platforms, and shaping regional initiatives — from a unified Arab cybersecurity governance framework to open-source intelligence infrastructure.
+        </p>
+
+        <div class="chips" id="skillChips"></div>
+      </div>
+
+      <div class="focus-grid reveal" id="focusGrid"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPERTISE ============ -->
+<section id="expertise" class="section section-alt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">02 — <span data-i18n="exp.kicker">What I do</span></span>
+      <h2 data-i18n="exp.title">Expertise</h2>
+      <p class="section-sub" data-i18n="exp.sub">From adversary simulation to AI-native platforms — engagement models for teams that need decisions, not slide decks.</p>
+    </div>
+    <div class="cards" id="expertiseGrid"></div>
+  </div>
+</section>
+
+<!-- ============ INITIATIVES ============ -->
+<section id="initiatives" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">03 — <span data-i18n="ini.kicker">Selected work</span></span>
+      <h2 data-i18n="ini.title">Initiatives &amp; platforms</h2>
+      <p class="section-sub" data-i18n="ini.sub">Strategic regional programmes, AI-native products and open infrastructure — built to outlive the launch.</p>
+    </div>
+    <div class="projects" id="initiativesGrid"></div>
+  </div>
+</section>
+
+<!-- ============ JOURNEY ============ -->
+<section id="journey" class="section section-alt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">04 — <span data-i18n="jr.kicker">Track record</span></span>
+      <h2 data-i18n="jr.title">Journey</h2>
+    </div>
+    <ol class="timeline" id="timeline"></ol>
+  </div>
+</section>
+
+<!-- ============ CREDENTIALS ============ -->
+<section id="credentials" class="section">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">05 — <span data-i18n="cr.kicker">Credentials</span></span>
+      <h2 data-i18n="cr.title">Certifications &amp; education</h2>
+    </div>
+    <div class="creds" id="credsGrid"></div>
+  </div>
+</section>
+
+<!-- ============ BOOKING ============ -->
+<section id="booking" class="section section-book">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">06 — <span data-i18n="bk.kicker">Booking</span></span>
+      <h2 data-i18n="bk.title">Book a session</h2>
+      <p class="section-sub" data-i18n="bk.sub">Pick a slot that works for you. All times are shown in <strong>Asia/Riyadh (GMT+3)</strong>. You'll get a confirmation reference instantly.</p>
+    </div>
+
+    <div class="booking-wrap reveal">
+      <!-- Step 1: session type -->
+      <div class="book-panel">
+        <div class="book-step">
+          <span class="step-num">1</span>
+          <h3 data-i18n="bk.step1">Choose a session type</h3>
+        </div>
+        <div class="session-types" id="sessionTypes" role="radiogroup" aria-label="Session type"></div>
+
+        <div class="book-step">
+          <span class="step-num">2</span>
+          <h3 data-i18n="bk.step2">Pick a date &amp; time</h3>
+        </div>
+
+        <div class="cal-head">
+          <button class="cal-nav" id="calPrev" type="button" aria-label="Previous month">‹</button>
+          <div class="cal-title" id="calTitle">—</div>
+          <button class="cal-nav" id="calNext" type="button" aria-label="Next month">›</button>
+        </div>
+
+        <div class="cal-dow" id="calDow"></div>
+        <div class="cal-grid" id="calGrid" role="grid" aria-label="Calendar"></div>
+
+        <div class="cal-legend">
+          <span><i class="lg lg-open"></i><span data-i18n="bk.lgOpen">Available</span></span>
+          <span><i class="lg lg-sel"></i><span data-i18n="bk.lgSel">Selected</span></span>
+          <span><i class="lg lg-full"></i><span data-i18n="bk.lgFull">Unavailable</span></span>
+        </div>
+
+        <div class="slots" id="slots" hidden>
+          <div class="slots-head" id="slotsHead"></div>
+          <div class="slot-chips" id="slotChips"></div>
+        </div>
+        <div class="cal-status" id="calStatus" hidden></div>
+      </div>
+
+      <!-- Step 3: details -->
+      <div class="book-panel">
+        <div class="book-step">
+          <span class="step-num">3</span>
+          <h3 data-i18n="bk.step3">Your details</h3>
+        </div>
+
+        <div class="summary" id="bookSummary">
+          <span class="summary-empty" data-i18n="bk.noSlot">No slot selected yet.</span>
+        </div>
+
+        <form class="form" id="bookingForm" novalidate>
+          <div class="field">
+            <label for="bkName" data-i18n="f.name">Full name</label>
+            <input id="bkName" name="name" type="text" autocomplete="name" required data-i18n-ph="f.namePh" placeholder="Your name" />
+            <span class="err" data-err="bkName"></span>
+          </div>
+          <div class="field">
+            <label for="bkEmail" data-i18n="f.email">Email</label>
+            <input id="bkEmail" name="email" type="email" autocomplete="email" required data-i18n-ph="f.emailPh" placeholder="you@company.com" dir="ltr" />
+            <span class="err" data-err="bkEmail"></span>
+          </div>
+          <div class="field">
+            <label for="bkOrg" data-i18n="f.org">Organisation <span class="opt" data-i18n="f.opt">(optional)</span></label>
+            <input id="bkOrg" name="org" type="text" autocomplete="organization" data-i18n-ph="f.orgPh" placeholder="Company / agency" />
+          </div>
+          <div class="field">
+            <label for="bkNotes" data-i18n="f.notes">What would you like to cover? <span class="opt" data-i18n="f.opt2">(optional)</span></label>
+            <textarea id="bkNotes" name="notes" rows="4" data-i18n-ph="f.notesPh" placeholder="Context, scope, or questions…"></textarea>
+          </div>
+          <button class="btn btn-primary btn-block" type="submit" id="bkSubmit" data-i18n="bk.confirm" disabled>Confirm booking</button>
+          <p class="form-note" data-i18n="bk.note">You'll receive a confirmation reference on screen — and I'll follow up by email.</p>
+        </form>
+
+        <div class="done" id="bookDone" hidden>
+          <div class="done-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h3 data-i18n="bk.doneTitle">You're booked</h3>
+          <p class="done-sub" id="doneSub"></p>
+          <div class="ref" id="doneRef"></div>
+          <button class="btn btn-ghost btn-sm" type="button" id="bkReset" data-i18n="bk.again">Book another session</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COLLABORATE ============ -->
+<section id="collaborate" class="section section-alt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="kicker">07 — <span data-i18n="cl.kicker">Open to collaboration</span></span>
+      <h2 data-i18n="cl.title">Let's build something that matters</h2>
+      <p class="section-sub" data-i18n="cl.sub">I'm actively looking for partners, researchers and operators on the problems below. Tell me what you're working on.</p>
+    </div>
+
+    <div class="collab-wrap">
+      <div class="collab-side reveal">
+        <h3 data-i18n="cl.interests">Areas of interest</h3>
+        <ul class="interest-list" id="interestList"></ul>
+        <div class="collab-contact">
+          <p data-i18n="cl.direct">Or reach me directly:</p>
+          <a href="mailto:mo7dalamin@gmail.com">mo7dalamin@gmail.com</a>
+          <a href="tel:+966581773494" dir="ltr">+966 58 177 3494</a>
+        </div>
+      </div>
+
+      <form class="form form-card reveal" id="collabForm" novalidate>
+        <div class="row">
+          <div class="field">
+            <label for="clName" data-i18n="f.name">Full name</label>
+            <input id="clName" name="name" type="text" autocomplete="name" required data-i18n-ph="f.namePh" placeholder="Your name" />
+            <span class="err" data-err="clName"></span>
+          </div>
+          <div class="field">
+            <label for="clEmail" data-i18n="f.email">Email</label>
+            <input id="clEmail" name="email" type="email" autocomplete="email" required data-i18n-ph="f.emailPh" placeholder="you@company.com" dir="ltr" />
+            <span class="err" data-err="clEmail"></span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="field">
+            <label for="clOrg" data-i18n="f.org">Organisation <span class="opt" data-i18n="f.opt">(optional)</span></label>
+            <input id="clOrg" name="org" type="text" autocomplete="organization" data-i18n-ph="f.orgPh" placeholder="Company / agency" />
+          </div>
+          <div class="field">
+            <label for="clKind" data-i18n="f.kind">Collaboration type</label>
+            <select id="clKind" name="kind"></select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="clLink" data-i18n="f.link">Link <span class="opt" data-i18n="f.opt">(optional)</span></label>
+          <input id="clLink" name="link" type="url" data-i18n-ph="f.linkPh" placeholder="https://…" dir="ltr" />
+        </div>
+        <div class="field">
+          <label for="clMsg" data-i18n="f.message">Message</label>
+          <textarea id="clMsg" name="message" rows="5" required data-i18n-ph="f.msgPh" placeholder="What are you building, and where do I fit in?"></textarea>
+          <span class="err" data-err="clMsg"></span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" id="clSubmit" data-i18n="cl.send">Send request</button>
+        <p class="form-note" data-i18n="cl.note">Typical response time: within 24 hours.</p>
+
+        <div class="done" id="clDone" hidden>
+          <div class="done-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h3 data-i18n="cl.doneTitle">Request received</h3>
+          <p class="done-sub" id="clDoneSub"></p>
+          <div class="ref" id="clDoneRef"></div>
+          <button class="btn btn-ghost btn-sm" type="button" id="clReset" data-i18n="cl.again">Send another</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT CTA ============ -->
+<section class="cta">
+  <div class="wrap cta-inner">
+    <h2 data-i18n="cta.title">Ready to harden what you're building?</h2>
+    <p data-i18n="cta.sub">Whether it's an adversary simulation, a security architecture review, or an AI platform from zero — I'm one message away.</p>
+    <div class="cta-btns">
+      <a href="#booking" class="btn btn-primary" data-i18n="cta.book">Book a session</a>
+      <a href="#collaborate" class="btn btn-ghost" data-i18n="cta.collab">Collaborate</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+      <p data-i18n="foot.tag">Security infrastructure · Logistics technology · Innovation ecosystems</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4 data-i18n="foot.contact">Contact</h4>
+        <a href="mailto:mo7dalamin@gmail.com" dir="ltr">mo7dalamin@gmail.com</a>
+        <a href="tel:+966581773494" dir="ltr">+966 58 177 3494</a>
+        <span data-i18n="foot.loc">Riyadh, Saudi Arabia</span>
+      </div>
+      <div>
+        <h4 data-i18n="foot.social">Elsewhere</h4>
+        <a href="https://www.linkedin.com/in/mohalamin/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/ma1amin" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.instagram.com/i.secur1ty" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/m.a1amin" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <div>
+        <h4 data-i18n="foot.markets">Markets</h4>
+        <span data-i18n="foot.marketsList">Saudi Arabia · Sudan · GCC</span>
+        <span data-i18n="foot.langs">Arabic · English</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© <span id="year">2026</span> <span data-i18n="brand.name">Dr. Mohammed Al Amin</span>. <span data-i18n="foot.rights">All rights reserved.</span></span>
+    <span class="mono" data-i18n="foot.built">Built secure by default.</span>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
