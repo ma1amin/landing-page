@@ -1,5 +1,5 @@
 /* ============================================================
-   Dr. Mohammed Al Amin — site behaviour
+   Dr. Mohammed Al Amin · site behaviour
    - bilingual EN/AR (with RTL)
    - content rendering
    - booking calendar (real availability from /api/slots)
@@ -23,7 +23,7 @@ const T = {
     'hero.eyebrow': 'Founder @ Arabc0n & InfoLogix · Riyadh, Saudi Arabia',
     'hero.title1': 'Secure by design.',
     'hero.title2': 'Built for regional transformation.',
-    'hero.sub': 'I build security infrastructure, logistics technology and innovation ecosystems — taking ideas from threat model to deployed platform across government, telecom and enterprise.',
+    'hero.sub': 'I build security infrastructure, logistics technology and innovation ecosystems, taking ideas from threat model to deployed platform across government, telecom and enterprise.',
     'hero.cta1': 'Book a session', 'hero.cta2': 'Explore expertise',
     'hero.meta1': 'Red team · Governance · AI platforms',
     'hero.meta2': 'Saudi Arabia · Sudan · GCC',
@@ -35,15 +35,15 @@ const T = {
 
     'about.kicker': 'Who I am',
     'about.title': 'Two decades at the intersection of security, operations and national infrastructure.',
-    'about.p1': 'I\'m a cybersecurity leader and founder based in Riyadh. I founded <strong>Arabc0n Cyber Security</strong> as a specialist offensive security firm serving government and enterprise clients across the region — and <strong>InfoLogix</strong>, a technical consulting and logistics development company building AI-driven operations platforms for the Saudi market.',
+    'about.p1': 'I\'m a cybersecurity leader and founder based in Riyadh. I founded <strong>Arabc0n Cyber Security</strong> as a specialist offensive security firm serving government and enterprise clients across the region, and <strong>InfoLogix</strong>, a technical consulting and logistics development company building AI-driven operations platforms for the Saudi market.',
     'about.p2': 'My career runs from information security advisor and CISO at Sudan\'s National Telecom Corporation through command-and-control operations in Saudi Arabia, to leading red-team programmes trusted by government and telecom operators. That mix of public-sector discipline and offensive mindset is what I bring to every engagement.',
-    'about.p3': 'Today I split my time between hands-on security work, building AI-native platforms, and shaping regional initiatives — from a unified Arab cybersecurity governance framework to open-source intelligence infrastructure.',
+    'about.p3': 'Today I split my time between hands-on security work, building AI-native platforms, and shaping regional initiatives, from a unified Arab cybersecurity governance framework to open-source intelligence infrastructure.',
 
     'exp.kicker': 'What I do', 'exp.title': 'Expertise',
-    'exp.sub': 'From adversary simulation to AI-native platforms — engagement models for teams that need decisions, not slide decks.',
+    'exp.sub': 'From adversary simulation to AI-native platforms: engagement models for teams that need decisions, not slide decks.',
 
     'ini.kicker': 'Selected work', 'ini.title': 'Initiatives & platforms',
-    'ini.sub': 'Strategic regional programmes, AI-native products and open infrastructure — built to outlive the launch.',
+    'ini.sub': 'Strategic regional programmes, AI-native products and open infrastructure, built to outlive the launch.',
 
     'jr.kicker': 'Track record', 'jr.title': 'Journey',
     'cr.kicker': 'Credentials', 'cr.title': 'Certifications & education',
@@ -53,7 +53,7 @@ const T = {
     'bk.step1': 'Choose a session type', 'bk.step2': 'Pick a date & time', 'bk.step3': 'Your details',
     'bk.lgOpen': 'Available', 'bk.lgSel': 'Selected', 'bk.lgFull': 'Unavailable',
     'bk.noSlot': 'No slot selected yet.', 'bk.confirm': 'Confirm booking',
-    'bk.note': 'You\'ll receive a confirmation reference on screen — and I\'ll follow up by email.',
+    'bk.note': 'You\'ll receive a confirmation reference on screen, and I\'ll follow up by email.',
     'bk.doneTitle': 'You\'re booked', 'bk.again': 'Book another session',
 
     'f.name': 'Full name', 'f.email': 'Email',
@@ -73,7 +73,7 @@ const T = {
     'cl.doneTitle': 'Request received', 'cl.again': 'Send another',
 
     'cta.title': 'Ready to harden what you\'re building?',
-    'cta.sub': 'Whether it\'s an adversary simulation, a security architecture review, or an AI platform from zero — I\'m one message away.',
+    'cta.sub': 'Whether it\'s an adversary simulation, a security architecture review, or an AI platform from zero, I\'m one message away.',
     'cta.book': 'Book a session', 'cta.collab': 'Collaborate',
 
     'foot.tag': 'Security infrastructure · Logistics technology · Innovation ecosystems',
@@ -88,7 +88,7 @@ const T = {
     'rt.noDays': 'No availability in this month.',
     'rt.pickDay': 'Select a highlighted day to see available times.',
     'rt.slotsFor': 'Available times on',
-    'rt.slotsNone': 'No times left on this day — please pick another date.',
+    'rt.slotsNone': 'No times left on this day. Please pick another date.',
     'rt.errTaken': 'That slot was just taken. Please choose another time.',
     'rt.errGeneric': 'Something went wrong. Please try again.',
     'rt.errName': 'Please enter your name.',
@@ -98,7 +98,7 @@ const T = {
     'rt.lblSession': 'Session', 'rt.lblDate': 'Date', 'rt.lblTime': 'Time', 'rt.lblDuration': 'Duration',
     'rt.minutes': '{n} min',
     'rt.doneSub': 'Your {session} is confirmed for {date} at {time}.',
-    'rt.clDoneSub': 'Thanks {name} — I\'ll reply to {email} within 24 hours.',
+    'rt.clDoneSub': 'Thanks {name}. I\'ll reply to {email} within 24 hours.',
     'rt.sending': 'Sending…',
     'rt.present': 'Present',
   },
@@ -114,7 +114,7 @@ const T = {
     'hero.eyebrow': 'مؤسس Arabc0n و InfoLogix · الرياض، المملكة العربية السعودية',
     'hero.title1': 'آمن بالتصميم.',
     'hero.title2': 'مبني للتحول الإقليمي.',
-    'hero.sub': 'أبني البنية الأمنية وتقنيات اللوجستيات ومنظومات الابتكار — من نموذج التهديد وحتى منصة تعمل فعلياً لدى الجهات الحكومية وشركات الاتصالات والمؤسسات.',
+    'hero.sub': 'أبني البنية الأمنية وتقنيات اللوجستيات ومنظومات الابتكار، من نموذج التهديد وحتى منصة تعمل فعلياً لدى الجهات الحكومية وشركات الاتصالات والمؤسسات.',
     'hero.cta1': 'احجز جلسة', 'hero.cta2': 'استعرض الخبرات',
     'hero.meta1': 'الفريق الأحمر · الحوكمة · منصات الذكاء الاصطناعي',
     'hero.meta2': 'السعودية · السودان · الخليج',
@@ -126,15 +126,15 @@ const T = {
 
     'about.kicker': 'من أنا',
     'about.title': 'عقدان من الخبرة في ملتقى الأمن والعمليات والبنية التحتية الوطنية.',
-    'about.p1': 'أنا قائد أمن سيبراني ومؤسس، أعمل من الرياض. أسّست <strong>Arabc0n للأمن السيبراني</strong> كشركة متخصصة في الأمن الهجومي تخدم الجهات الحكومية والشركات في المنطقة — وأسّست <strong>InfoLogix</strong>، شركة استشارات تقنية وتطوير لوجستي تبني منصات عمليات مدعومة بالذكاء الاصطناعي للسوق السعودي.',
+    'about.p1': 'أنا قائد أمن سيبراني ومؤسس، أعمل من الرياض. أسّست <strong>Arabc0n للأمن السيبراني</strong> كشركة متخصصة في الأمن الهجومي تخدم الجهات الحكومية والشركات في المنطقة، وأسّست <strong>InfoLogix</strong>، شركة استشارات تقنية وتطوير لوجستي تبني منصات عمليات مدعومة بالذكاء الاصطناعي للسوق السعودي.',
     'about.p2': 'تمتد مسيرتي من العمل مستشاراً لأمن المعلومات ثم رئيساً لأمن المعلومات (CISO) في الهيئة القومية للاتصالات بالسودان، مروراً بعمليات مراكز القيادة والتحكم في السعودية، وصولاً إلى قيادة برامج الفريق الأحمر الموثوقة لدى الجهات الحكومية ومشغّلي الاتصالات. هذا المزيج من الانضباط الحكومي والعقلية الهجومية هو ما أحمله إلى كل مشروع.',
-    'about.p3': 'اليوم أقسم وقتي بين العمل الأمني الميداني، وبناء منصات الذكاء الاصطناعي، وصياغة مبادرات إقليمية — من إطار حوكمة سيبرانية عربي موحّد إلى بنية استخبارات مفتوحة المصدر.',
+    'about.p3': 'اليوم أقسم وقتي بين العمل الأمني الميداني، وبناء منصات الذكاء الاصطناعي، وصياغة مبادرات إقليمية، من إطار حوكمة سيبرانية عربي موحّد إلى بنية استخبارات مفتوحة المصدر.',
 
     'exp.kicker': 'ما أقدمه', 'exp.title': 'الخبرات',
-    'exp.sub': 'من محاكاة الخصوم إلى منصات الذكاء الاصطناعي — نماذج عمل لفرق تحتاج إلى قرارات، لا إلى عروض تقديمية.',
+    'exp.sub': 'من محاكاة الخصوم إلى منصات الذكاء الاصطناعي: نماذج عمل لفرق تحتاج إلى قرارات، لا إلى عروض تقديمية.',
 
     'ini.kicker': 'أعمال مختارة', 'ini.title': 'المبادرات والمنصات',
-    'ini.sub': 'برامج إقليمية استراتيجية ومنتجات مبنية على الذكاء الاصطناعي وبنية مفتوحة — صُممت لتستمر بعد الإطلاق.',
+    'ini.sub': 'برامج إقليمية استراتيجية ومنتجات مبنية على الذكاء الاصطناعي وبنية مفتوحة، صُممت لتستمر بعد الإطلاق.',
 
     'jr.kicker': 'السجل المهني', 'jr.title': 'المسار المهني',
     'cr.kicker': 'المؤهلات', 'cr.title': 'الشهادات والتعليم',
@@ -144,7 +144,7 @@ const T = {
     'bk.step1': 'اختر نوع الجلسة', 'bk.step2': 'اختر التاريخ والوقت', 'bk.step3': 'بياناتك',
     'bk.lgOpen': 'متاح', 'bk.lgSel': 'محدد', 'bk.lgFull': 'غير متاح',
     'bk.noSlot': 'لم يتم اختيار وقت بعد.', 'bk.confirm': 'تأكيد الحجز',
-    'bk.note': 'سيظهر لك رقم تأكيد على الشاشة — وسأتابع معك عبر البريد الإلكتروني.',
+    'bk.note': 'سيظهر لك رقم تأكيد على الشاشة، وسأتابع معك عبر البريد الإلكتروني.',
     'bk.doneTitle': 'تم حجز جلستك', 'bk.again': 'احجز جلسة أخرى',
 
     'f.name': 'الاسم الكامل', 'f.email': 'البريد الإلكتروني',
@@ -164,7 +164,7 @@ const T = {
     'cl.doneTitle': 'تم استلام طلبك', 'cl.again': 'إرسال طلب آخر',
 
     'cta.title': 'جاهز لتحصين ما تبنيه؟',
-    'cta.sub': 'سواء كانت محاكاة خصم، أو مراجعة معمارية أمنية، أو منصة ذكاء اصطناعي من الصفر — أنا على بُعد رسالة واحدة.',
+    'cta.sub': 'سواء كانت محاكاة خصم، أو مراجعة معمارية أمنية، أو منصة ذكاء اصطناعي من الصفر، أنا على بُعد رسالة واحدة.',
     'cta.book': 'احجز جلسة', 'cta.collab': 'تعاون معي',
 
     'foot.tag': 'البنية الأمنية · تقنيات اللوجستيات · منظومات الابتكار',
@@ -179,7 +179,7 @@ const T = {
     'rt.noDays': 'لا مواعيد متاحة في هذا الشهر.',
     'rt.pickDay': 'اختر أحد الأيام المُظللة لعرض الأوقات المتاحة.',
     'rt.slotsFor': 'الأوقات المتاحة ليوم',
-    'rt.slotsNone': 'لا أوقات متبقية في هذا اليوم — يرجى اختيار تاريخ آخر.',
+    'rt.slotsNone': 'لا أوقات متبقية في هذا اليوم. يرجى اختيار تاريخ آخر.',
     'rt.errTaken': 'لقد حُجز هذا الوقت للتو. يرجى اختيار وقت آخر.',
     'rt.errGeneric': 'حدث خطأ ما. يرجى المحاولة مرة أخرى.',
     'rt.errName': 'يرجى إدخال الاسم.',
@@ -189,7 +189,7 @@ const T = {
     'rt.lblSession': 'الجلسة', 'rt.lblDate': 'التاريخ', 'rt.lblTime': 'الوقت', 'rt.lblDuration': 'المدة',
     'rt.minutes': '{n} دقيقة',
     'rt.doneSub': 'تم تأكيد جلستك ({session}) يوم {date} الساعة {time}.',
-    'rt.clDoneSub': 'شكراً {name} — سأرد على {email} خلال 24 ساعة.',
+    'rt.clDoneSub': 'شكراً {name}. سأرد على {email} خلال 24 ساعة.',
     'rt.sending': 'جارٍ الإرسال…',
     'rt.present': 'حتى الآن',
   },
@@ -223,8 +223,8 @@ const FOCUS = [
 
 const SERVICES = [
   { icon:'🎯', t:{en:'Red Team & Offensive Security', ar:'الفريق الأحمر والأمن الهجومي'},
-    d:{en:'Full-scope adversary simulation, ethical hacking and threat emulation — showing you how an attacker actually gets in, and exactly how to stop them.',
-       ar:'محاكاة خصم شاملة واختبار اختراق أخلاقي — لنُريك كيف يدخل المهاجم فعلياً، وبالتحديد كيف توقفه.'},
+    d:{en:'Full-scope adversary simulation, ethical hacking and threat emulation, showing you how an attacker actually gets in, and exactly how to stop them.',
+       ar:'محاكاة خصم شاملة واختبار اختراق أخلاقي، لنُريك كيف يدخل المهاجم فعلياً، وبالتحديد كيف توقفه.'},
     g:{en:['Red Team','Pentest','Social Engineering'], ar:['فريق أحمر','اختبار اختراق','هندسة اجتماعية']} },
   { icon:'🏗️', t:{en:'Security Architecture', ar:'المعمارية الأمنية'},
     d:{en:'Design and review of secure enterprise architecture across cloud, network and OT/ICS environments.',
@@ -235,12 +235,12 @@ const SERVICES = [
        ar:'تحقّق من التهديدات مبني على الأدلة، وبرامج استخبارات، واستراتيجية كشف متوافقة مع MITRE ATT&CK.'},
     g:{en:['CTI','MITRE ATT&CK','Detection'], ar:['استخبارات','MITRE ATT&CK','كشف']} },
   { icon:'📋', t:{en:'GRC & Compliance', ar:'الحوكمة والامتثال'},
-    d:{en:'NCA (ECC/CCC/DCC), SAMA Cybersecurity Framework and ISO 27001 readiness — governance that survives an audit.',
-       ar:'الجاهزية لمتطلبات الهيئة الوطنية للأمن السيبراني وإطار الأمن السيبراني للبنك المركزي السعودي وأيزو 27001 — حوكمة تصمد أمام التدقيق.'},
+    d:{en:'NCA (ECC/CCC/DCC), SAMA Cybersecurity Framework and ISO 27001 readiness: governance that survives an audit.',
+       ar:'الجاهزية لمتطلبات الهيئة الوطنية للأمن السيبراني وإطار الأمن السيبراني للبنك المركزي السعودي وأيزو 27001: حوكمة تصمد أمام التدقيق.'},
     g:{en:['NCA','SAMA','ISO 27001'], ar:['الهيئة الوطنية','البنك المركزي السعودي','أيزو 27001']} },
   { icon:'🤖', t:{en:'AI-Native Security Platforms', ar:'منصات أمنية بالذكاء الاصطناعي'},
-    d:{en:'Design and build of AI-powered security products — decision support, automation and analyst augmentation.',
-       ar:'تصميم وبناء منتجات أمنية مدعومة بالذكاء الاصطناعي — دعم القرار، الأتمتة، تعزيز قدرات المحللين.'},
+    d:{en:'Design and build of AI-powered security products: decision support, automation and analyst augmentation.',
+       ar:'تصميم وبناء منتجات أمنية مدعومة بالذكاء الاصطناعي: دعم القرار، الأتمتة، تعزيز قدرات المحللين.'},
     g:{en:['AI','Automation','Product'], ar:['ذكاء اصطناعي','أتمتة','منتج']} },
   { icon:'🚚', t:{en:'Logistics Digital Transformation', ar:'التحول الرقمي اللوجستي'},
     d:{en:'Fleet management, supply chain optimization and operational intelligence for logistics operators.',
@@ -259,29 +259,29 @@ const SERVICES = [
 const INITIATIVES = [
   { icon:'🔐', kind:{en:'Strategic Regional Initiative', ar:'مبادرة إقليمية استراتيجية'},
     t:{en:'Arab Cybersecurity & Digital Intelligence Union', ar:'الاتحاد العربي للأمن السيبراني والاستخبارات الرقمية'},
-    d:{en:'A strategic regional initiative to establish a unified cybersecurity governance framework across the Arab world — harmonising policies, standards, operational procedures and digital intelligence practices.',
-       ar:'مبادرة إقليمية استراتيجية لإرساء إطار حوكمة سيبرانية موحّد في العالم العربي — ينسّق السياسات والمعايير والإجراءات التشغيلية وممارسات الاستخبارات الرقمية.'},
+    d:{en:'A strategic regional initiative to establish a unified cybersecurity governance framework across the Arab world, harmonising policies, standards, operational procedures and digital intelligence practices.',
+       ar:'مبادرة إقليمية استراتيجية لإرساء إطار حوكمة سيبرانية موحّد في العالم العربي، ينسّق السياسات والمعايير والإجراءات التشغيلية وممارسات الاستخبارات الرقمية.'},
     g:{en:['Governance','Policy','Arab Region'], ar:['حوكمة','سياسات','المنطقة العربية']},
-    o:{en:'Comprehensive roadmap, governance models, training programmes and international cooperation strategies — strengthening collective cyber resilience.',
-       ar:'خارطة تنفيذ شاملة ونماذج حوكمة وبرامج تدريب واستراتيجيات تعاون دولي — لتعزيز الصمود السيبراني الجماعي.'} },
+    o:{en:'Comprehensive roadmap, governance models, training programmes and international cooperation strategies, strengthening collective cyber resilience.',
+       ar:'خارطة تنفيذ شاملة ونماذج حوكمة وبرامج تدريب واستراتيجيات تعاون دولي، لتعزيز الصمود السيبراني الجماعي.'} },
   { icon:'🌍', kind:{en:'Ecosystem Platform', ar:'منصة منظومة'},
     t:{en:'Sudan Innovation & Investment Ecosystem', ar:'منظومة الابتكار والاستثمار في السودان'},
     d:{en:'A secure, AI-powered digital platform connecting Sudanese entrepreneurs, investors, mentors, experts and the global diaspora within one trusted innovation ecosystem.',
        ar:'منصة رقمية آمنة مدعومة بالذكاء الاصطناعي تربط رواد الأعمال والمستثمرين والموجّهين والخبراء والمغتربين السودانيين في منظومة ابتكار موثوقة واحدة.'},
     g:{en:['Cloud-Native','Zero Trust','AI Governance'], ar:['سحابية أصلية','انعدام الثقة','حوكمة الذكاء الاصطناعي']},
-    o:{en:'Cloud-native modular design, zero-trust access control and built-in encryption — accelerating venture creation and cross-border investment.',
-       ar:'تصميم سحابي وحدوي، وتحكّم وصول انعدام الثقة، وتشفير مدمج — لتسريع تأسيس المشاريع والاستثمار العابر للحدود.'} },
+    o:{en:'Cloud-native modular design, zero-trust access control and built-in encryption, accelerating venture creation and cross-border investment.',
+       ar:'تصميم سحابي وحدوي، وتحكّم وصول انعدام الثقة، وتشفير مدمج، لتسريع تأسيس المشاريع والاستثمار العابر للحدود.'} },
   { icon:'⚡', kind:{en:'AI-Native Platform', ar:'منصة ذكاء اصطناعي'},
     t:{en:'Rapid Force Cyber Fusion', ar:'Rapid Force لدمج العمليات السيبرانية'},
-    d:{en:'An AI-native cybersecurity platform that improves how organisations detect, validate and respond to threats — combining threat intelligence, automated analysis and decision support.',
-       ar:'منصة أمن سيبراني مبنية على الذكاء الاصطناعي تُحسّن كيفية كشف المؤسسات للتهديدات والتحقق منها والاستجابة لها — تجمع الاستخبارات والتحليل الآلي ودعم القرار.'},
+    d:{en:'An AI-native cybersecurity platform that improves how organisations detect, validate and respond to threats, combining threat intelligence, automated analysis and decision support.',
+       ar:'منصة أمن سيبراني مبنية على الذكاء الاصطناعي تُحسّن كيفية كشف المؤسسات للتهديدات والتحقق منها والاستجابة لها، تجمع الاستخبارات والتحليل الآلي ودعم القرار.'},
     g:{en:['Threat Validation','Automation','Enterprise'], ar:['التحقق من التهديدات','أتمتة','مؤسسات']},
     o:{en:'Evidence-based validation, modular integration and analyst oversight that improves response efficiency without replacing human expertise.',
        ar:'تحقّق مبني على الأدلة، وتكامل وحدوي، وإشراف بشري يرفع كفاءة الاستجابة دون استبدال الخبرة الإنسانية.'} },
   { icon:'🛡️', kind:{en:'AI Platform', ar:'منصة ذكاء اصطناعي'},
     t:{en:'Securify', ar:'Securify'},
-    d:{en:'An AI-powered platform for security professionals and leaders to create, manage and enhance cybersecurity knowledge, content and operational assets — from threat intelligence to compliance.',
-       ar:'منصة مدعومة بالذكاء الاصطناعي تمكّن المختصين والقادة من إنشاء وإدارة وتطوير المعرفة والمحتوى والأصول التشغيلية الأمنية — من الاستخبارات إلى الامتثال.'},
+    d:{en:'An AI-powered platform for security professionals and leaders to create, manage and enhance cybersecurity knowledge, content and operational assets, from threat intelligence to compliance.',
+       ar:'منصة مدعومة بالذكاء الاصطناعي تمكّن المختصين والقادة من إنشاء وإدارة وتطوير المعرفة والمحتوى والأصول التشغيلية الأمنية، من الاستخبارات إلى الامتثال.'},
     g:{en:['Content','Compliance','Research'], ar:['محتوى','امتثال','بحث']},
     o:{en:'Intelligent generation of policies and content, AI-driven threat-intel guidance, and specialised tools for education, research and branding.',
        ar:'توليد ذكي للسياسات والمحتوى، وتوجيه استخباري بالذكاء الاصطناعي، وأدوات متخصصة للتعليم والبحث والعلامة المهنية.'} },
@@ -290,10 +290,10 @@ const INITIATIVES = [
     d:{en:'An AI-powered logistics operating system for food delivery fleets, restaurants, cloud kitchens and third-party logistics providers in Saudi Arabia.',
        ar:'نظام تشغيل لوجستي مدعوم بالذكاء الاصطناعي لأساطيل التوصيل والمطاعم والمطابخ السحابية ومزوّدي خدمات اللوجستيات في السعودية.'},
     g:{en:['Vision 2030','Fleet Ops','Analytics'], ar:['رؤية 2030','عمليات الأساطيل','تحليلات']},
-    o:{en:'Unified fleet and financial operations, driver performance analytics and real-time business intelligence — aligned with Saudi Vision 2030.',
-       ar:'عمليات أساطيل ومالية موحّدة، وتحليلات أداء السائقين، وذكاء أعمال لحظي — متوافق مع رؤية السعودية 2030.'} },
+    o:{en:'Unified fleet and financial operations, driver performance analytics and real-time business intelligence, aligned with Saudi Vision 2030.',
+       ar:'عمليات أساطيل ومالية موحّدة، وتحليلات أداء السائقين، وذكاء أعمال لحظي، متوافق مع رؤية السعودية 2030.'} },
   { icon:'🌐', kind:{en:'Open Source', ar:'مفتوح المصدر'},
-    t:{en:'NorthStar (ORIG)', ar:'NorthStar — الرسم المعرفي المفتوح للموارد'},
+    t:{en:'NorthStar (ORIG)', ar:'NorthStar: الرسم المعرفي المفتوح للموارد'},
     d:{en:'An open-source, community-driven Resource Intelligence Platform that turns fragmented information into a structured, searchable knowledge graph of tools, platforms and communities.',
        ar:'منصة استخبارات موارد مفتوحة المصدر يقودها المجتمع، تحوّل المعلومات المشتّتة إلى رسم معرفي منظّم وقابل للبحث للأدوات والمنصات والمجتمعات.'},
     g:{en:['Knowledge Graph','Community','Open Data'], ar:['رسم معرفي','مجتمع','بيانات مفتوحة']},
@@ -302,42 +302,42 @@ const INITIATIVES = [
 ];
 
 const TIMELINE = [
-  { date:{en:'2023 — Present', ar:'2023 — حتى الآن'}, role:{en:'Founder / CEO', ar:'المؤسس والرئيس التنفيذي'},
+  { date:{en:'2023 - Present', ar:'2023 - حتى الآن'}, role:{en:'Founder / CEO', ar:'المؤسس والرئيس التنفيذي'},
     org:{en:'Arabc0n Cyber Security · Riyadh, Saudi Arabia', ar:'Arabc0n للأمن السيبراني · الرياض، السعودية'},
     d:{en:'Founded a specialist offensive security firm delivering ethical hacking, red teaming and threat simulation. 10+ red-team assessments across government and enterprise, built and led a five-person elite ethical hacking unit, and scaled the brand through keynotes and cyber forums.',
        ar:'أسّست شركة متخصصة في الأمن الهجومي تقدّم الاختراق الأخلاقي والفريق الأحمر ومحاكاة التهديدات. أكثر من 10 عمليات تقييم أمني للجهات الحكومية والشركات، وبناء وقيادة وحدة نخبة تضم خمسة خبراء، وتوسيع حضور العلامة عبر المؤتمرات والمنتديات السيبرانية.'},
     current:true },
   { date:'2019', role:{en:'Command & Control Center', ar:'مركز القيادة والتحكم'},
-    org:{en:'General Directorate of Water — Najran, Saudi Arabia', ar:'الإدارة العامة للمياه — نجران، السعودية'},
+    org:{en:'General Directorate of Water · Najran, Saudi Arabia', ar:'الإدارة العامة للمياه · نجران، السعودية'},
     d:{en:'Monitored CCTV and PLC units across water stations and the network links into the C&C center, repaired and replaced cameras and hardware, and operated the NOC helpdesk system.',
        ar:'متابعة كاميرات المراقبة ووحدات PLC في محطات المياه وشبكات الربط بمركز القيادة والتحكم، وصيانة واستبدال الكاميرات والأجهزة، وتشغيل نظام الدعم الفني في مركز العمليات.'} },
   { date:'2019', role:{en:'Network & CCTV Technician', ar:'فني شبكات وكاميرات'},
-    org:{en:'Computer Village — Najran, Saudi Arabia', ar:'Computer Village — نجران، السعودية'},
+    org:{en:'Computer Village · Najran, Saudi Arabia', ar:'Computer Village · نجران، السعودية'},
     d:{en:'Network and CCTV installation and maintenance, backup and recovery operations, and consultations for shops, companies and individuals.',
        ar:'تركيب وصيانة شبكات وكاميرات المراقبة، وإدارة النسخ الاحتياطي والاستعادة، وتقديم الاستشارات والحلول للمحلات والشركات والأفراد.'} },
-  { date:{en:'2009 — 2018', ar:'2009 — 2018'}, role:{en:'Chief Information Security Officer (CISO)', ar:'رئيس أمن المعلومات (CISO)'},
-    org:{en:'National Telecom Corporation (NCTR) — Khartoum, Sudan', ar:'الهيئة القومية للاتصالات (NCTR) — الخرطوم، السودان'},
+  { date:{en:'2009 - 2018', ar:'2009 - 2018'}, role:{en:'Chief Information Security Officer (CISO)', ar:'رئيس أمن المعلومات (CISO)'},
+    org:{en:'National Telecom Corporation (NCTR) · Khartoum, Sudan', ar:'الهيئة القومية للاتصالات (NCTR) · الخرطوم، السودان'},
     d:{en:'Monitored networks for breaches and investigated violations, ran penetration testing and vulnerability discovery, kept business-critical application systems available, and protected the organisation against IT risk for close to a decade.',
        ar:'مراقبة شبكات المؤسسة للكشف عن الاختراقات والتحقيق في المخالفات، وتنفيذ اختبارات الاختراق واكتشاف الثغرات، وضمان جاهزية الأنظمة التشغيلية، وحماية الشركة من المخاطر التقنية لقرابة عشر سنوات.'} },
-  { date:{en:'2006 — 2008', ar:'2006 — 2008'}, role:{en:'Information Security Advisor', ar:'مستشار أمن معلومات'},
-    org:{en:'Shortcut Technology — Khartoum, Sudan', ar:'Shortcut Technology — الخرطوم، السودان'},
+  { date:{en:'2006 - 2008', ar:'2006 - 2008'}, role:{en:'Information Security Advisor', ar:'مستشار أمن معلومات'},
+    org:{en:'Shortcut Technology · Khartoum, Sudan', ar:'Shortcut Technology · الخرطوم، السودان'},
     d:{en:'Secured government websites, hardened business firewalls alongside the development team, and provided security consultation to governmental companies and institutions.',
        ar:'تأمين مواقع حكومية وتحصين الجدار الناري للأعمال مع فريق التطوير، وتقديم الاستشارات والحلول الأمنية لشركات ومؤسسات حكومية.'} },
-  { date:{en:'2003 — 2005', ar:'2003 — 2005'}, role:{en:'Network & Technical Support', ar:'شبكات ودعم فني'},
-    org:{en:'Babkier Net — Khartoum, Sudan', ar:'Babkier Net — الخرطوم، السودان'},
-    d:{en:'Early career in networking and technical support — the foundation of a career spent understanding how systems actually break.',
-       ar:'بداية المسيرة في الشبكات والدعم الفني — الأساس الذي بُنيت عليه سنوات من فهم كيف تتعطّل الأنظمة فعلياً.'} },
+  { date:{en:'2003 - 2005', ar:'2003 - 2005'}, role:{en:'Network & Technical Support', ar:'شبكات ودعم فني'},
+    org:{en:'Babkier Net · Khartoum, Sudan', ar:'Babkier Net · الخرطوم، السودان'},
+    d:{en:'Early career in networking and technical support, the foundation of a career spent understanding how systems actually break.',
+       ar:'بداية المسيرة في الشبكات والدعم الفني، الأساس الذي بُنيت عليه سنوات من فهم كيف تتعطّل الأنظمة فعلياً.'} },
 ];
 
 const CREDS = [
   { icon:'🎓', t:{en:'Professional Doctorate in Information Security', ar:'دكتوراه مهنية في أمن المعلومات'}, s:{en:'Nevada University', ar:'جامعة نيفادا'}, y:'2023' },
   { icon:'🎓', t:{en:'Professional Doctorate in Information Security', ar:'دكتوراه مهنية في أمن المعلومات'}, s:{en:'American Association of Innovation (AAI)', ar:'الرابطة الأمريكية للابتكار (AAI)'}, y:'2023' },
-  { icon:'🛡️', t:{en:'Certified Ethical Hacker (CEH v9)', ar:'مخترق أخلاقي معتمد (CEH v9)'}, s:{en:'EC-Council', ar:'EC-Council'}, y:'—' },
-  { icon:'👤', t:{en:'Certified Information Security Officer (CISO)', ar:'رئيس أمن معلومات معتمد (CISO)'}, s:{en:'Professional Certification', ar:'شهادة مهنية'}, y:'—' },
-  { icon:'🧬', t:{en:'Advanced Malware Reverse Engineering', ar:'هندسة عكسية متقدمة للبرمجيات الخبيثة'}, s:{en:'Marshal Institute — Malaysia', ar:'معهد مارشال — ماليزيا'}, y:'2017' },
-  { icon:'📱', t:{en:'Android Development, Exploitation & Reverse Engineering', ar:'تطوير أندرويد واستغلال ثغراته وهندسته العكسية'}, s:{en:'Marshal Institute — Malaysia', ar:'معهد مارشال — ماليزيا'}, y:'2017' },
-  { icon:'🌐', t:{en:'IPv6 Forum Verified', ar:'معتمد من منتدى IPv6'}, s:{en:'IPv6 Forum', ar:'منتدى IPv6'}, y:'—' },
-  { icon:'🦜', t:{en:'Parrot Ambassador', ar:'سفير Parrot'}, s:{en:'Parrot Security — Community Award', ar:'Parrot Security — جائزة مجتمعية'}, y:'—' },
+  { icon:'🛡️', t:{en:'Certified Ethical Hacker (CEH v9)', ar:'مخترق أخلاقي معتمد (CEH v9)'}, s:{en:'EC-Council', ar:'EC-Council'}, y:'' },
+  { icon:'👤', t:{en:'Certified Information Security Officer (CISO)', ar:'رئيس أمن معلومات معتمد (CISO)'}, s:{en:'Professional Certification', ar:'شهادة مهنية'}, y:'' },
+  { icon:'🧬', t:{en:'Advanced Malware Reverse Engineering', ar:'هندسة عكسية متقدمة للبرمجيات الخبيثة'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
+  { icon:'📱', t:{en:'Android Development, Exploitation & Reverse Engineering', ar:'تطوير أندرويد واستغلال ثغراته وهندسته العكسية'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
+  { icon:'🌐', t:{en:'IPv6 Forum Verified', ar:'معتمد من منتدى IPv6'}, s:{en:'IPv6 Forum', ar:'منتدى IPv6'}, y:'' },
+  { icon:'🦜', t:{en:'Parrot Ambassador', ar:'سفير Parrot'}, s:{en:'Parrot Security · Community Award', ar:'Parrot Security · جائزة مجتمعية'}, y:'' },
 ];
 
 const INTERESTS = [
@@ -426,8 +426,8 @@ function applyI18n() {
   $$('.lang-opt').forEach((el) => el.classList.toggle('is-on', el.getAttribute('data-lang') === LANG));
 
   document.title = LANG === 'ar'
-    ? 'د. محمد الأمين — قائد أمن سيبراني ومؤسس'
-    : 'Dr. Mohammed Al Amin — Cybersecurity Leader & Founder';
+    ? 'د. محمد الأمين · قائد أمن سيبراني ومؤسس'
+    : 'Dr. Mohammed Al Amin · Cybersecurity Leader & Founder';
 
   renderSkills(); renderFocus(); renderServices(); renderInitiatives();
   renderTimeline(); renderCreds(); renderInterests(); renderKinds();
@@ -496,7 +496,7 @@ function renderCreds() {
   box.innerHTML = CREDS.map((c) =>
     '<article class="cred"><div class="cred-badge" aria-hidden="true">' + c.icon + '</div>' +
       '<div><h4>' + esc(pick(c.t)) + '</h4><span>' + esc(pick(c.s)) + '</span>' +
-      (c.y && c.y !== '—' ? '<em>' + esc(c.y) + '</em>' : '') + '</div></article>'
+      (c.y ? '<em>' + esc(c.y) + '</em>' : '') + '</div></article>'
   ).join('');
 }
 

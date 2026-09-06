@@ -1,6 +1,6 @@
 'use strict';
 /**
- * Personal branding site — zero-dependency Node server.
+ * Personal branding site · zero-dependency Node server.
  *  - static hosting for /public
  *  - /api/slots          -> available booking slots for a month
  *  - /api/bookings       -> create a booking
@@ -26,7 +26,7 @@ const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'letmein';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'mo7dalamin@gmail.com';
 
 /* ------------------------------------------------------------------ *
- * Timezone helpers — Asia/Riyadh is a fixed UTC+3 (no DST)
+ * Timezone helpers · Asia/Riyadh is a fixed UTC+3 (no DST)
  * ------------------------------------------------------------------ */
 const TZ_OFFSET_MIN = 180;
 const TZ_LABEL = 'Asia/Riyadh (GMT+3)';
@@ -151,8 +151,8 @@ const SMTP = {
 };
 
 const mailEnabled = Boolean(SMTP.host && SMTP.user && SMTP.pass && SMTP.from);
-if (mailEnabled) console.log('[mail] SMTP configured — notifications will be sent to', NOTIFY_EMAIL);
-else console.log('[mail] SMTP not configured — submissions will be stored locally only.');
+if (mailEnabled) console.log('[mail] SMTP configured · notifications will be sent to', NOTIFY_EMAIL);
+else console.log('[mail] SMTP not configured · submissions will be stored locally only.');
 
 async function notify(subject, body) {
   if (!mailEnabled) {
@@ -305,15 +305,15 @@ const server = http.createServer(async (req, res) => {
       await writeJson('bookings.json', all);
 
       const mail = await notify(
-        `[Booking] ${booking.ref} — ${booking.name} — ${booking.date} ${booking.time} (${TZ_LABEL})`,
+        `[Booking] ${booking.ref} · ${booking.name} · ${booking.date} ${booking.time} (${TZ_LABEL})`,
         `New session booking received from your personal site.\n\n` +
         `Reference:  ${booking.ref}\n` +
         `Session:    ${booking.sessionName} (${booking.duration} min)\n` +
-        `When:       ${booking.date} at ${booking.time} — ${TZ_LABEL}\n\n` +
+        `When:       ${booking.date} at ${booking.time} · ${TZ_LABEL}\n\n` +
         `Name:       ${booking.name}\n` +
         `Email:      ${booking.email}\n` +
-        `Org:        ${booking.org || '—'}\n\n` +
-        `Notes:\n${booking.notes || '—'}\n\n` +
+        `Org:        ${booking.org || 'N/A'}\n\n` +
+        `Notes:\n${booking.notes || 'N/A'}\n\n` +
         `Booked at:  ${booking.createdAt}\n`
       );
 
@@ -345,14 +345,14 @@ const server = http.createServer(async (req, res) => {
       await writeJson('collaborations.json', all);
 
       const mail = await notify(
-        `[Collaboration] ${entry.ref} — ${entry.name} (${entry.kind})`,
+        `[Collaboration] ${entry.ref} · ${entry.name} (${entry.kind})`,
         `New collaboration request from your personal site.\n\n` +
         `Reference:  ${entry.ref}\n` +
         `Type:       ${entry.kind}\n\n` +
         `Name:       ${entry.name}\n` +
         `Email:      ${entry.email}\n` +
-        `Org:        ${entry.org || '—'}\n` +
-        `Link:       ${entry.link || '—'}\n\n` +
+        `Org:        ${entry.org || 'N/A'}\n` +
+        `Link:       ${entry.link || 'N/A'}\n\n` +
         `Message:\n${entry.message}\n\n` +
         `Received:   ${entry.createdAt}\n`
       );

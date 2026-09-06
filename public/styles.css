@@ -1,5 +1,5 @@
 /* ============================================================
-   Dr. Mohammed Al Amin — personal branding page
+   Dr. Mohammed Al Amin · personal branding page
    Amber-on-near-black "command center" theme. RTL-ready.
    ============================================================ */
 
@@ -184,7 +184,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   position:relative;border-radius:var(--radius);overflow:hidden;
   border:1px solid var(--line-2);background:var(--panel);aspect-ratio:1/1;
 }
-/* The photo is 2:3, the frame is 1:1 — object-position controls which part shows.
+/* The photo is 2:3, the frame is 1:1 · object-position controls which part shows.
    50% 20% favours the head/upper body. Lower the 2nd value to show more of the
    top (e.g. 10%), raise it toward 50% for a centred crop. */
 .portrait img{

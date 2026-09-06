@@ -1,7 +1,7 @@
 'use strict';
 /**
- * Builds a single self-contained preview.html — CSS, JS, photo and favicon
- * inlined — plus an in-browser stand-in for the booking API so the calendar
+ * Builds a single self-contained preview.html · CSS, JS, photo and favicon
+ * inlined · plus an in-browser stand-in for the booking API so the calendar
  * and forms work with no server (bookings persist in localStorage).
  *
  *   node build-preview.js [outfile]

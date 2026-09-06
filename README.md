@@ -1,9 +1,9 @@
-# Personal branding site — Dr. Mohammed Al Amin
+# Personal branding site · Dr. Mohammed Al Amin
 
 Bilingual (EN/AR) personal branding page modelled on the malabed.com structure, with a
 working booking calendar and an "open to collaboration" form.
 
-Zero dependencies — plain Node + static HTML/CSS/JS. No build step, no `node_modules`.
+Zero dependencies · plain Node + static HTML/CSS/JS. No build step, no `node_modules`.
 
 ## Run
 
@@ -40,7 +40,7 @@ Stored to `data/collaborations.json` and emailed if SMTP is configured.
 
 ## Email notifications (optional)
 
-Without SMTP everything still works — submissions are stored to `data/` and printed to
+Without SMTP everything still works · submissions are stored to `data/` and printed to
 the console. To enable email, copy `config.example.env` to `.env` and export the values:
 
 ```bash
