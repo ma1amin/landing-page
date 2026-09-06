@@ -445,11 +445,21 @@ ul,ol{margin:0;padding:0;list-style:none}
 .stype-body{flex:1;min-width:0}
 .stype-body strong{display:block;font-size:14.5px;font-weight:600}
 .stype-body span{font-size:12.5px;color:var(--muted)}
-.stype-dur{
-  font-family:var(--mono);font-size:11.5px;color:var(--amber);
-  padding:4px 10px;border-radius:999px;background:rgba(245,194,86,.1);
-  border:1px solid rgba(245,194,86,.22);flex-shrink:0;
+.stype-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.stype-price{
+  font-family:var(--mono);font-size:14px;font-weight:700;color:var(--amber);
+  padding:4px 12px;border-radius:999px;background:rgba(245,194,86,.12);
+  border:1px solid rgba(245,194,86,.3);white-space:nowrap;
 }
+.stype-price.is-free{color:var(--ok);background:rgba(61,220,151,.12);border-color:rgba(61,220,151,.32)}
+.stype-dur{
+  font-family:var(--mono);font-size:10.5px;color:var(--muted);
+  letter-spacing:.04em;white-space:nowrap;
+}
+.done-fee{
+  font-size:13.5px;color:var(--text-2);margin:0 0 18px;
+}
+.done-fee strong{color:var(--amber)}
 
 /* calendar */
 .cal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}

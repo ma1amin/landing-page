@@ -96,6 +96,7 @@ const T = {
     'rt.errMessage': 'Please write at least 10 characters.',
     'rt.errSlot': 'Please select a date and time first.',
     'rt.lblSession': 'Session', 'rt.lblDate': 'Date', 'rt.lblTime': 'Time', 'rt.lblDuration': 'Duration',
+    'rt.lblFee': 'Fee', 'rt.free': 'Free', 'rt.feeLine': 'Fee: {price}',
     'rt.minutes': '{n} min',
     'rt.doneSub': 'Your {session} is confirmed for {date} at {time}.',
     'rt.clDoneSub': 'Thanks {name}. I\'ll reply to {email} within 24 hours.',
@@ -187,6 +188,7 @@ const T = {
     'rt.errMessage': 'يرجى كتابة 10 أحرف على الأقل.',
     'rt.errSlot': 'يرجى اختيار التاريخ والوقت أولاً.',
     'rt.lblSession': 'الجلسة', 'rt.lblDate': 'التاريخ', 'rt.lblTime': 'الوقت', 'rt.lblDuration': 'المدة',
+    'rt.lblFee': 'الرسوم', 'rt.free': 'مجاناً', 'rt.feeLine': 'الرسوم: {price}',
     'rt.minutes': '{n} دقيقة',
     'rt.doneSub': 'تم تأكيد جلستك ({session}) يوم {date} الساعة {time}.',
     'rt.clDoneSub': 'شكراً {name}. سأرد على {email} خلال 24 ساعة.',
@@ -352,13 +354,19 @@ const INTERESTS = [
 ];
 
 const SESSIONS = [
-  { id:'discovery', dur:30, t:{en:'Discovery Call', ar:'مكالمة تعارف'},
+  { id:'discovery', dur:30, price:0, t:{en:'Discovery Call', ar:'مكالمة تعارف'},
     d:{en:'A short intro call to scope your security or platform challenge.', ar:'مكالمة تعريفية قصيرة لتحديد نطاق التحدي الأمني أو التقني.'} },
-  { id:'technical', dur:60, t:{en:'Technical Deep Dive', ar:'جلسة تقنية معمقة'},
+  { id:'technical', dur:60, price:20, t:{en:'Technical Deep Dive', ar:'جلسة تقنية معمقة'},
     d:{en:'Architecture review, threat modelling or platform deep dive with your team.', ar:'مراجعة معمارية أو نمذجة تهديدات أو تحليل معمق للمنصة مع فريقك.'} },
-  { id:'advisory', dur:45, t:{en:'Advisory Retainer Intro', ar:'جلسة استشارية تمهيدية'},
+  { id:'advisory', dur:45, price:50, t:{en:'Advisory Retainer Intro', ar:'جلسة استشارية تمهيدية'},
     d:{en:'Scoping ongoing executive advisory and governance support.', ar:'تحديد نطاق الاستشارات التنفيذية ودعم الحوكمة المستمر.'} },
 ];
+
+/* Localised price label: 0 renders as "Free" / "مجاناً" */
+function priceLabel(s) {
+  if (!s || s.price === 0) return t('rt.free');
+  return LANG === 'ar' ? s.price + ' دولاراً' : '$' + s.price;
+}
 
 const KINDS = [
   { id:'joint_research', en:'Joint research', ar:'بحث مشترك' },
@@ -531,7 +539,10 @@ function renderSessions() {
     '<button type="button" class="stype' + (s.id === selType ? ' is-on' : '') + '" data-type="' + s.id + '" role="radio" aria-checked="' + (s.id === selType) + '">' +
       '<span class="stype-radio" aria-hidden="true"></span>' +
       '<span class="stype-body"><strong>' + esc(pick(s.t)) + '</strong><span>' + esc(pick(s.d)) + '</span></span>' +
-      '<span class="stype-dur">' + s.dur + (LANG === 'ar' ? ' د' : 'm') + '</span>' +
+      '<span class="stype-meta">' +
+        '<span class="stype-price' + (s.price === 0 ? ' is-free' : '') + '">' + esc(priceLabel(s)) + '</span>' +
+        '<span class="stype-dur">' + s.dur + (LANG === 'ar' ? ' دقيقة' : ' min') + '</span>' +
+      '</span>' +
     '</button>'
   ).join('');
 }
@@ -663,7 +674,8 @@ function renderSummary() {
     '<div class="summary-row hl"><span>' + esc(t('rt.lblSession')) + '</span><span>' + esc(pick(s.t)) + '</span></div>' +
     '<div class="summary-row"><span>' + esc(t('rt.lblDate')) + '</span><span>' + esc(formatDate(selDate)) + '</span></div>' +
     '<div class="summary-row"><span>' + esc(t('rt.lblTime')) + '</span><span>' + esc(selTime) + ' ' + esc(t('rt.tz')) + '</span></div>' +
-    '<div class="summary-row"><span>' + esc(t('rt.lblDuration')) + '</span><span>' + esc(t('rt.minutes', { n: s.dur })) + '</span></div>';
+    '<div class="summary-row"><span>' + esc(t('rt.lblDuration')) + '</span><span>' + esc(t('rt.minutes', { n: s.dur })) + '</span></div>' +
+    '<div class="summary-row fee"><span>' + esc(t('rt.lblFee')) + '</span><span>' + esc(priceLabel(s)) + '</span></div>';
   if (btn) btn.disabled = false;
 }
 
@@ -745,6 +757,8 @@ async function submitBooking(e) {
     done.hidden = false;
     $('#doneSub').textContent = t('rt.doneSub', { session: pick(s.t), date: formatDate(selDate), time: selTime });
     $('#doneRef').textContent = data.booking.ref;
+    const feeEl = $('#doneFee');
+    if (feeEl) feeEl.textContent = t('rt.feeLine', { price: priceLabel(s) });
   } catch (err) {
     const st = $('#calStatus');
     if (st) { st.hidden = false; st.className = 'cal-status is-err'; st.textContent = t('rt.errGeneric'); }

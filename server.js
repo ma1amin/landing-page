@@ -57,11 +57,14 @@ const DAY_END = 16 * 60;                    // last slot starts 15:30, ends 16:0
 const LEAD_MINUTES = 4 * 60;                // must book at least 4h ahead
 const HORIZON_DAYS = 60;
 
+/* price is in USD; 0 means free. The client never sends a price — it is
+   always derived from the session type here, so it cannot be spoofed. */
 const SESSION_TYPES = {
-  discovery: { duration: 30, en: 'Discovery Call', ar: 'مكالمة تعارف' },
-  technical: { duration: 60, en: 'Technical Deep Dive', ar: 'جلسة تقنية معمقة' },
-  advisory: { duration: 45, en: 'Advisory Retainer Intro', ar: 'جلسة استشارية تمهيدية' },
+  discovery: { duration: 30, price: 0,  en: 'Discovery Call',         ar: 'مكالمة تعارف' },
+  technical: { duration: 60, price: 20, en: 'Technical Deep Dive',    ar: 'جلسة تقنية معمقة' },
+  advisory:  { duration: 45, price: 50, en: 'Advisory Retainer Intro', ar: 'جلسة استشارية تمهيدية' },
 };
+function priceText(usd) { return usd === 0 ? 'Free (no charge)' : '$' + usd + ' USD'; }
 
 function slotStarts() {
   const out = [];
@@ -290,6 +293,7 @@ const server = http.createServer(async (req, res) => {
         date: b.date,
         time: b.time,
         duration: session.duration,
+        price: session.price,
         type,
         sessionName: session.en,
         name: clean(b.name, 120),
@@ -309,6 +313,7 @@ const server = http.createServer(async (req, res) => {
         `New session booking received from your personal site.\n\n` +
         `Reference:  ${booking.ref}\n` +
         `Session:    ${booking.sessionName} (${booking.duration} min)\n` +
+        `Fee:        ${priceText(booking.price)}\n` +
         `When:       ${booking.date} at ${booking.time} · ${TZ_LABEL}\n\n` +
         `Name:       ${booking.name}\n` +
         `Email:      ${booking.email}\n` +
