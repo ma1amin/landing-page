@@ -286,7 +286,7 @@ const INITIATIVES = [
     o:{en:'Intelligent generation of policies and content, AI-driven threat-intel guidance, and specialised tools for education, research and branding.',
        ar:'توليد ذكي للسياسات والمحتوى، وتوجيه استخباري بالذكاء الاصطناعي، وأدوات متخصصة للتعليم والبحث والعلامة المهنية.'} },
   { icon:'📦', kind:{en:'Logistics OS', ar:'نظام تشغيل لوجستي'},
-    t:{en:'Faris — InfoLogix', ar:'فارس — InfoLogix'},
+    t:{en:'Faris', ar:'فارس'},
     d:{en:'An AI-powered logistics operating system for food delivery fleets, restaurants, cloud kitchens and third-party logistics providers in Saudi Arabia.',
        ar:'نظام تشغيل لوجستي مدعوم بالذكاء الاصطناعي لأساطيل التوصيل والمطاعم والمطابخ السحابية ومزوّدي خدمات اللوجستيات في السعودية.'},
     g:{en:['Vision 2030','Fleet Ops','Analytics'], ar:['رؤية 2030','عمليات الأساطيل','تحليلات']},
