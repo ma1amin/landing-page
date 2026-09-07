@@ -60,9 +60,9 @@ const HORIZON_DAYS = 60;
 /* price is in USD; 0 means free. The client never sends a price — it is
    always derived from the session type here, so it cannot be spoofed. */
 const SESSION_TYPES = {
-  discovery: { duration: 30, price: 0,  en: 'Discovery Call',         ar: 'مكالمة تعارف' },
-  technical: { duration: 60, price: 20, en: 'Technical Deep Dive',    ar: 'جلسة تقنية معمقة' },
-  advisory:  { duration: 45, price: 50, en: 'Advisory Retainer Intro', ar: 'جلسة استشارية تمهيدية' },
+  discovery: { duration: 20, price: 0,  en: 'Discovery Call',         ar: 'مكالمة تعارف' },
+  technical: { duration: 45, price: 20, en: 'Technical Deep Dive',    ar: 'جلسة تقنية معمقة' },
+  advisory:  { duration: 60, price: 50, en: 'Advisory Retainer Intro', ar: 'جلسة استشارية تمهيدية' },
 };
 function priceText(usd) { return usd === 0 ? 'Free (no charge)' : '$' + usd + ' USD'; }
 
