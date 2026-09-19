@@ -683,10 +683,310 @@ ul,ol{margin:0;padding:0;list-style:none}
   .hero-cta .btn{flex:1;min-width:160px}
 }
 
+/* ============================================================
+   Questionnaire page
+   ============================================================ */
+.q-title{font-size:clamp(32px,4.4vw,50px);margin-bottom:16px}
+
+.q-assure{list-style:none;display:flex;flex-wrap:wrap;gap:12px 28px;padding:0;margin:26px 0 0}
+.q-assure li{position:relative;padding-inline-start:22px;color:var(--text-2);font-size:14px}
+.q-assure li::before{
+  content:"";position:absolute;inset-inline-start:0;inset-block-start:8px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 4px rgba(245,194,86,.12);
+}
+
+/* progress */
+.q-progress{height:3px;border-radius:999px;background:var(--line-2);overflow:hidden;margin-bottom:9px}
+.q-progress-bar{
+  display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--amber-2),var(--amber));
+  transition:width .34s var(--ease);
+}
+.q-progress-label{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 36px;
+}
+
+/* question block */
+.q-block{border:0;padding:0;margin:0 0 34px}
+.q-legend{display:block;padding:0;margin-bottom:15px}
+.q-legend .q-num{display:block;font-size:11px;letter-spacing:.16em;color:var(--amber);margin-bottom:7px}
+.q-legend .q-q{display:block;font-size:19px;font-weight:650;line-height:1.32;color:var(--text)}
+.q-legend .q-hint{
+  display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;
+}
+
+/* options */
+.q-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:9px}
+.q-opt{
+  position:relative;display:flex;align-items:flex-start;gap:11px;
+  padding:13px 15px;
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:rgba(255,255,255,.02);
+  cursor:pointer;font-size:14px;line-height:1.45;color:var(--text-2);
+  transition:border-color .2s,background .2s,color .2s;
+}
+.q-opt:hover{border-color:rgba(245,194,86,.4);color:var(--text)}
+.q-opt input{position:absolute;width:1px;height:1px;opacity:0;margin:0}
+.q-opt::before{
+  content:"";flex:0 0 auto;width:17px;height:17px;margin-top:2px;
+  border:1px solid var(--line-2);background:rgba(0,0,0,.32);
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.q-block[data-type="multi"] .q-opt::before{border-radius:5px}
+.q-block[data-type="single"] .q-opt::before{border-radius:50%}
+.q-opt.is-picked{border-color:var(--amber);background:rgba(245,194,86,.07);color:var(--text)}
+.q-opt.is-picked::before{
+  border-color:var(--amber);background:var(--amber);
+  box-shadow:inset 0 0 0 3px var(--panel);
+}
+.q-opt:focus-within{outline:2px solid var(--amber);outline-offset:2px}
+
+/* contact details */
+.q-contact{margin-top:46px;padding-top:38px;border-top:1px solid var(--line)}
+.q-contact-title{font-size:22px;margin-bottom:22px}
+.q-consent{margin-top:11px;opacity:.75}
+
+/* shown on the booking form when arriving from the questionnaire */
+.q-linked{
+  margin:0 0 20px;padding:12px 15px;
+  border:1px solid rgba(61,220,151,.32);border-radius:var(--radius-sm);
+  background:rgba(61,220,151,.07);color:#a9e9cd;font-size:13px;
+}
+
+/* what happens next */
+.q-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:22px}
+.q-step{
+  padding:26px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);
+}
+.q-step-num{
+  display:grid;place-items:center;width:38px;height:38px;margin-bottom:17px;
+  border-radius:50%;border:1px solid rgba(245,194,86,.4);
+  color:var(--amber);font-size:14px;font-weight:700;
+}
+.q-step h3{font-size:17px;margin-bottom:9px}
+.q-step p{font-size:14px;color:var(--text-2);margin:0}
+
+@media (max-width:640px){
+  .q-legend .q-q{font-size:17px}
+  .q-options{grid-template-columns:1fr}
+  .q-step{padding:22px}
+}
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
   html{scroll-behavior:auto}
   .reveal{opacity:1;transform:none}
+}
+
+</style>
+<style>
+/* ============================================================
+   Questionnaire widget · timed prompt for the main page
+
+   Inherits the site palette from :root in styles.css, so changing
+   the theme there changes the widget too.
+
+   RTL: logical properties only (inset-inline-*, margin-inline-*),
+   so the card mirrors with the page when dir="rtl" is set.
+   ============================================================ */
+
+.questionnaire-widget,
+.questionnaire-widget * { box-sizing: border-box; }
+
+.questionnaire-widget {
+  position: fixed;
+  inset-block-end: 24px;
+  inset-inline-end: 24px;
+  z-index: 90;                        /* sits below the sticky header (100) */
+  width: min(360px, calc(100vw - 32px));
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px) scale(.98);
+  transition: opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
+  touch-action: none;
+}
+.questionnaire-widget.q-is-visible { opacity: 1; visibility: visible; transform: none; }
+.questionnaire-widget.q-is-dragging { transition: none; cursor: grabbing; user-select: none; }
+
+.questionnaire-widget-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: linear-gradient(155deg, var(--panel-2), var(--panel));
+  box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  padding: 22px;
+}
+.questionnaire-widget-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .28;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 80% 0%, #000, transparent 62%);
+}
+/* Mirror the grid highlight when the page flips to Arabic. */
+[dir="rtl"] .questionnaire-widget-card::before {
+  mask-image: radial-gradient(circle at 20% 0%, #000, transparent 62%);
+}
+
+.questionnaire-widget-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: grab;
+}
+.questionnaire-widget-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-inline-end: auto;
+  font: 700 11px/1 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #a9e9cd;
+}
+.questionnaire-widget-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 4px rgba(61,220,151,.1);
+}
+.questionnaire-widget-close {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 9px;
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.questionnaire-widget-close:hover {
+  color: var(--text);
+  border-color: rgba(245,194,86,.5);
+  background: rgba(245,194,86,.06);
+}
+.questionnaire-widget-close:focus-visible,
+.questionnaire-widget-cta:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.questionnaire-widget-kicker {
+  position: relative;
+  margin: 20px 0 8px;
+  color: var(--amber);
+  font: 700 11px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.questionnaire-widget-title {
+  position: relative;
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.12;
+  letter-spacing: -.03em;
+  font-weight: 700;
+}
+/* Arabic must never be letter-spaced: it breaks the joined script. */
+[dir="rtl"] .questionnaire-widget-title { letter-spacing: 0; }
+.questionnaire-widget-title span { color: var(--amber-2); }
+
+.questionnaire-widget-copy {
+  position: relative;
+  margin: 12px 0 17px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.questionnaire-widget-points {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 19px;
+  padding: 0;
+  list-style: none;
+}
+.questionnaire-widget-points li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #d5d7dc;
+  font-size: 12px;
+}
+.questionnaire-widget-points svg {
+  flex: 0 0 auto;
+  color: var(--amber);
+}
+
+.questionnaire-widget-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 17px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--amber-2), var(--amber) 58%, var(--amber-deep));
+  color: #1a1205;
+  font: 700 14px/1 var(--sans);
+  text-decoration: none;
+  box-shadow: 0 8px 26px -10px rgba(245,194,86,.7);
+  transition: transform .2s, box-shadow .2s;
+}
+.questionnaire-widget-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 32px -10px rgba(245,194,86,.8);
+}
+/* Point the arrow back the other way in Arabic. */
+[dir="rtl"] .questionnaire-widget-arrow { transform: scaleX(-1); }
+
+.questionnaire-widget-foot {
+  position: relative;
+  margin-top: 12px;
+  color: var(--muted);
+  font: 10px/1.4 var(--mono);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .questionnaire-widget {
+    inset-block-end: 12px;
+    inset-inline-end: 12px;
+    width: calc(100vw - 24px);
+    touch-action: auto;
+  }
+  .questionnaire-widget-card { padding: 17px; }
+  .questionnaire-widget-head { cursor: default; }
+  .questionnaire-widget-kicker { margin-top: 14px; }
+  .questionnaire-widget-title { font-size: 21px; padding-inline-end: 35px; }
+  .questionnaire-widget-copy { margin: 8px 0 13px; font-size: 13px; }
+  .questionnaire-widget-points { display: none; }
+  .questionnaire-widget-foot { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questionnaire-widget,
+  .questionnaire-widget-cta { transition: none; }
 }
 
 </style>
@@ -725,6 +1025,7 @@ ul,ol{margin:0;padding:0;list-style:none}
       <a href="#journey" data-i18n="nav.journey">Journey</a>
       <a href="#credentials" data-i18n="nav.credentials">Credentials</a>
       <a href="#collaborate" data-i18n="nav.collaborate">Collaborate</a>
+      <a href="/questionnaire" data-i18n="nav.questionnaire">Questionnaire</a>
     </nav>
 
     <div class="nav-actions">
@@ -961,6 +1262,8 @@ ul,ol{margin:0;padding:0;list-style:none}
         <div class="summary" id="bookSummary">
           <span class="summary-empty" data-i18n="bk.noSlot">No slot selected yet.</span>
         </div>
+
+        <p class="q-linked" id="qLinked" hidden></p>
 
         <form class="form" id="bookingForm" novalidate>
           <div class="field">
@@ -1242,7 +1545,9 @@ const T = {
     'brand.role': 'Cybersecurity Leader · Founder',
     'nav.about': 'About', 'nav.expertise': 'Expertise', 'nav.initiatives': 'Initiatives',
     'nav.journey': 'Journey', 'nav.credentials': 'Credentials', 'nav.collaborate': 'Collaborate',
+    'nav.questionnaire': 'Questionnaire',
     'nav.book': 'Book a Call',
+    'booking.linked': 'Questionnaire received. Choose a time and your answers come with the booking.',
 
     'hero.badge': 'Available for select engagements',
     'hero.eyebrow': 'Founder @ Arabc0n & InfoLogix · Riyadh, Saudi Arabia',
@@ -1334,7 +1639,9 @@ const T = {
     'brand.role': 'قائد أمن سيبراني · مؤسس',
     'nav.about': 'نبذة عني', 'nav.expertise': 'الخبرات', 'nav.initiatives': 'المبادرات',
     'nav.journey': 'المسار المهني', 'nav.credentials': 'المؤهلات', 'nav.collaborate': 'التعاون',
+    'nav.questionnaire': 'الاستبيان',
     'nav.book': 'احجز جلسة',
+    'booking.linked': 'تم استلام الاستبيان. اختر الوقت وستصلني إجاباتك مع الحجز.',
 
     'hero.badge': 'متاح لعدد محدود من المشاريع',
     'hero.eyebrow': 'مؤسس Arabc0n و InfoLogix · الرياض، المملكة العربية السعودية',
@@ -1619,6 +1926,17 @@ const DOW_FULL = {
  * State + helpers
  * ------------------------------------------------------------------ */
 let LANG = 'en';
+
+/*
+ * Present when the visitor arrives from the questionnaire page, as
+ * /?qref=QNR-XXXX#booking. Sent along with the booking so the two
+ * records can be read together.
+ */
+const Q_REF = (function () {
+  try {
+    return new URLSearchParams(window.location.search).get('qref') || '';
+  } catch (_) { return ''; }
+})();
 try {
   const saved = localStorage.getItem('ma-lang');
   if (saved === 'en' || saved === 'ar') LANG = saved;
@@ -1961,6 +2279,7 @@ async function submitBooking(e) {
         type: selType, date: selDate, time: selTime,
         name: name, email: email,
         org: $('#bkOrg').value.trim(), notes: $('#bkNotes').value.trim(),
+        questionnaireRef: Q_REF,
       }),
     });
     const data = await res.json();
@@ -2118,6 +2437,13 @@ function initBooking() {
   const base = riyadhYMD();
   curYear = base.y; curMonth = base.m;
 
+  /* Arrived from the questionnaire: tell them the answers are attached. */
+  const linked = $('#qLinked');
+  if (linked && Q_REF) {
+    linked.hidden = false;
+    linked.textContent = t('booking.linked') + ' (' + Q_REF + ')';
+  }
+
   $('#sessionTypes').addEventListener('click', (e) => {
     const btn = e.target.closest('.stype'); if (!btn) return;
     selType = btn.getAttribute('data-type');
@@ -2174,9 +2500,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = $('#langToggle');
   if (toggle) {
     toggle.addEventListener('click', () => {
-      LANG = LANG === 'en' ? 'ar' : 'en';
-      try { localStorage.setItem('ma-lang', LANG); } catch (_) {}
-      applyI18n();
+        LANG = LANG === 'en' ? 'ar' : 'en';
+        try { localStorage.setItem('ma-lang', LANG); } catch (_) {}
+        applyI18n();
+        try {
+          document.dispatchEvent(new CustomEvent('ma:langchange', { detail: { lang: LANG } }));
+        } catch (_) {}
     });
   }
 
@@ -2186,6 +2515,327 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 })();
+
+</script>
+
+<!-- Questionnaire prompt. Appears once per visitor, dismissible for 14 days. -->
+<script>
+window.QUESTIONNAIRE_CONFIG = {
+  delay: 3500,
+  dismissDays: 14,
+  analytics: true
+};
+</script>
+<script>
+/* ============================================================
+   Questionnaire widget · zero dependency
+
+   A timed prompt for the main page. Bilingual copy, RTL aware,
+   theme inherited from styles.css, and the call to action opens
+   the questionnaire page.
+
+   Public surface:
+     window.QUESTIONNAIRE_CONFIG      optional configuration
+     window.QUESTIONNAIRE_MANUAL_INIT set true to skip auto start
+     window.QuestionnaireWidget.init(config)
+     window.questionnaireWidget       live instance once started
+   ============================================================ */
+
+(function (window, document) {
+  "use strict";
+
+  var LANG_KEY = "ma-lang";                 // shared with the rest of the site
+  var MOBILE_MAX = 700;
+
+  /* ---------- Copy ---------- */
+
+  var TEXT = {
+    status:      { en: "Open now",                  ar: "مفتوح الآن" },
+    label:       { en: "Questionnaire invitation",  ar: "دعوة إلى الاستبيان" },
+    close:       { en: "Dismiss questionnaire invitation", ar: "إخفاء دعوة الاستبيان" },
+    eyebrow:     { en: "QUESTIONNAIRE / 60 SECONDS", ar: "استبيان · 60 ثانية" },
+    title:       { en: "Tell me what you're <span>building.</span>",
+                   ar: "أخبرني بما <span>تبنيه.</span>" },
+    description: { en: "Eight short questions, about a minute. I read every answer myself, so our first call opens with real context instead of introductions.",
+                   ar: "ثمانية أسئلة قصيرة تستغرق نحو دقيقة. أقرأ كل إجابة بنفسي، لتبدأ أول مكالمة بيننا بسياق واضح بدلاً من التعارف المعتاد." },
+    points:      { en: ["Eight questions", "About 60 seconds", "No obligation", "Book a call next"],
+                   ar: ["ثمانية أسئلة", "نحو 60 ثانية", "دون أي التزام", "ثم احجز جلسة"] },
+    ctaLabel:    { en: "Start the questionnaire",   ar: "ابدأ الاستبيان" },
+    footnote:    { en: "No sales pitch · Answers reach me directly",
+                   ar: "بلا عروض بيعية · تصلني إجاباتك مباشرة" },
+    arrow:       { en: "\u2192",                    ar: "\u2190" }
+  };
+
+  var DEFAULTS = {
+    delay: 3500,
+    dismissDays: 14,
+    storageKey: "questionnaireWidgetDismissedAt",
+    ctaUrl: "/questionnaire",
+    draggable: true,
+    showOnMobile: true,
+    analytics: true,
+    debug: false
+  };
+
+  /* ---------- Small helpers ---------- */
+
+  function merge(base, extra) {
+    var result = {}, key;
+    for (key in base) if (Object.prototype.hasOwnProperty.call(base, key)) result[key] = base[key];
+    for (key in extra) if (Object.prototype.hasOwnProperty.call(extra, key)) result[key] = extra[key];
+    return result;
+  }
+
+  function currentLang() {
+    try {
+      var saved = window.localStorage.getItem(LANG_KEY);
+      if (saved === "en" || saved === "ar") return saved;
+    } catch (_) {}
+    return document.documentElement.lang === "ar" ? "ar" : "en";
+  }
+
+  /* Resolves a { en, ar } pair, or passes plain values straight through. */
+  function pick(value, lang) {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      return value[lang] !== undefined ? value[lang] : value.en;
+    }
+    return value;
+  }
+
+  /* For text nodes: neutralises markup. */
+  function escapeHtml(value) {
+    return String(value)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
+  /*
+   * For attribute values: also neutralises quotes so a value can
+   * never break out of its attribute. The original escaped only
+   * & < >, which left href="" open to a stray double quote.
+   */
+  function escapeAttr(value) {
+    return escapeHtml(value)
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function icon() {
+    return '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" aria-hidden="true"><path d="m3 8 3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  }
+
+  function track(config, action, detail) {
+    if (!config.analytics) return;
+    var payload = { event: "questionnaire_widget", action: action, detail: detail || null };
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(payload);
+    try {
+      document.dispatchEvent(new CustomEvent("questionnaire:" + action, { detail: payload }));
+    } catch (_) {}
+    if (config.debug && window.console) console.info("[QuestionnaireWidget]", payload);
+  }
+
+  function isDismissed(config) {
+    try {
+      var saved = Number(window.localStorage.getItem(config.storageKey));
+      return saved && (Date.now() - saved) < config.dismissDays * 86400000;
+    } catch (_) { return false; }
+  }
+
+  function saveDismissal(config) {
+    try { window.localStorage.setItem(config.storageKey, String(Date.now())); } catch (_) {}
+  }
+
+  function isMobile() {
+    return window.innerWidth <= MOBILE_MAX;
+  }
+
+  /* ---------- Markup ---------- */
+
+  function createMarkup(config, lang) {
+    var points = pick(TEXT.points, lang).map(function (point) {
+      return "<li>" + icon() + escapeHtml(point) + "</li>";
+    }).join("");
+
+    var element = document.createElement("aside");
+    element.className = "questionnaire-widget";
+    element.setAttribute("aria-label", pick(TEXT.label, lang));
+    element.innerHTML =
+      '<div class="questionnaire-widget-card">' +
+        '<div class="questionnaire-widget-head" data-q-drag-handle>' +
+          '<span class="questionnaire-widget-status">' +
+            '<i class="questionnaire-widget-dot"></i>' +
+            '<span data-q-text="status">' + escapeHtml(pick(TEXT.status, lang)) + '</span>' +
+          '</span>' +
+          '<button class="questionnaire-widget-close" type="button" data-q-attr="close">' +
+            '<svg viewBox="0 0 20 20" width="15" height="15" fill="none" aria-hidden="true"><path d="m5 5 10 10M15 5 5 15" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<p class="questionnaire-widget-kicker" data-q-text="eyebrow">' +
+          escapeHtml(pick(TEXT.eyebrow, lang)) +
+        '</p>' +
+        /* title is trusted author copy so the amber <span> works */
+        '<h2 class="questionnaire-widget-title" data-q-html="title">' +
+          pick(TEXT.title, lang) +
+        '</h2>' +
+        '<p class="questionnaire-widget-copy" data-q-text="description">' +
+          escapeHtml(pick(TEXT.description, lang)) +
+        '</p>' +
+        '<ul class="questionnaire-widget-points" data-q-html="points">' + points + '</ul>' +
+        '<a class="questionnaire-widget-cta" data-q-href href="' + escapeAttr(config.ctaUrl) + '">' +
+          '<span data-q-text="ctaLabel">' + escapeHtml(pick(TEXT.ctaLabel, lang)) + '</span>' +
+          '<span class="questionnaire-widget-arrow" aria-hidden="true" data-q-text="arrow">' +
+            pick(TEXT.arrow, lang) +
+          '</span>' +
+        '</a>' +
+        '<p class="questionnaire-widget-foot" data-q-text="footnote">' +
+          escapeHtml(pick(TEXT.footnote, lang)) +
+        '</p>' +
+      '</div>';
+    return element;
+  }
+
+  /* Rewrites every translated string without rebuilding the widget. */
+  function applyLang(element, config, lang) {
+    element.setAttribute("aria-label", pick(TEXT.label, lang));
+    element.querySelectorAll("[data-q-text]").forEach(function (node) {
+      node.textContent = pick(TEXT[node.getAttribute("data-q-text")], lang);
+    });
+    element.querySelectorAll("[data-q-html]").forEach(function (node) {
+      var key = node.getAttribute("data-q-html");
+      node.innerHTML = key === "points"
+        ? pick(TEXT.points, lang).map(function (p) {
+            return "<li>" + icon() + escapeHtml(p) + "</li>";
+          }).join("")
+        : pick(TEXT[key], lang);
+    });
+    var close = element.querySelector("[data-q-attr='close']");
+    if (close) close.setAttribute("aria-label", pick(TEXT.close, lang));
+    var cta = element.querySelector("[data-q-href]");
+    if (cta) cta.setAttribute("href", escapeAttr(config.ctaUrl));
+  }
+
+  /* ---------- Dragging ---------- */
+
+  function enableDrag(element, handle, config) {
+    if (!config.draggable || !window.PointerEvent) return;
+    var active = false, startX = 0, startY = 0, startLeft = 0, startTop = 0;
+
+    function clamp(left, top) {
+      var maxX = window.innerWidth - element.offsetWidth - 8;
+      var maxY = window.innerHeight - element.offsetHeight - 8;
+      return {
+        left: Math.max(8, Math.min(maxX, left)),
+        top: Math.max(8, Math.min(maxY, top))
+      };
+    }
+
+    handle.addEventListener("pointerdown", function (event) {
+      if (event.target.closest("button, a") || isMobile()) return;
+      var rect = element.getBoundingClientRect();
+      active = true;
+      startX = event.clientX; startY = event.clientY;
+      startLeft = rect.left; startTop = rect.top;
+      element.style.insetInlineEnd = "auto";
+      element.style.insetBlockEnd = "auto";
+      element.style.left = rect.left + "px";
+      element.style.top = rect.top + "px";
+      element.classList.add("q-is-dragging");
+      handle.setPointerCapture(event.pointerId);
+      track(config, "drag_start");
+    });
+
+    handle.addEventListener("pointermove", function (event) {
+      if (!active) return;
+      var next = clamp(startLeft + event.clientX - startX, startTop + event.clientY - startY);
+      element.style.left = next.left + "px";
+      element.style.top = next.top + "px";
+    });
+
+    function stop() {
+      if (!active) return;
+      active = false;
+      element.classList.remove("q-is-dragging");
+      track(config, "drag_end");
+    }
+
+    handle.addEventListener("pointerup", stop);
+    handle.addEventListener("pointercancel", stop);
+
+    /*
+     * Keep a dragged card on screen if the window is resized.
+     * Without this the card keeps its old pixel offset and can end
+     * up outside the viewport.
+     */
+    window.addEventListener("resize", function () {
+      if (!element.style.left) return;
+      var next = clamp(parseFloat(element.style.left) || 0, parseFloat(element.style.top) || 0);
+      element.style.left = next.left + "px";
+      element.style.top = next.top + "px";
+    });
+  }
+
+  /* ---------- Start ---------- */
+
+  function init(userConfig) {
+    var config = merge(DEFAULTS, userConfig || window.QUESTIONNAIRE_CONFIG || {});
+    if (document.querySelector(".questionnaire-widget") || isDismissed(config)) return null;
+    if (!config.showOnMobile && window.matchMedia("(max-width: " + MOBILE_MAX + "px)").matches) return null;
+
+    var lang = currentLang();
+    var element = createMarkup(config, lang);
+    document.body.appendChild(element);
+
+    var closeButton = element.querySelector(".questionnaire-widget-close");
+    var cta = element.querySelector(".questionnaire-widget-cta");
+
+    closeButton.addEventListener("click", function () {
+      saveDismissal(config);
+      element.classList.remove("q-is-visible");
+      track(config, "dismiss");
+      window.setTimeout(function () { element.remove(); }, 300);
+    });
+
+    cta.addEventListener("click", function () {
+      track(config, "cta_click", config.ctaUrl);
+    });
+
+    enableDrag(element, element.querySelector("[data-q-drag-handle]"), config);
+
+    /* Follow the site language switch instead of staying in English. */
+    document.addEventListener("ma:langchange", function (event) {
+      applyLang(element, config, event.detail && event.detail.lang === "ar" ? "ar" : "en");
+    });
+
+    window.setTimeout(function () {
+      element.classList.add("q-is-visible");
+      track(config, "impression");
+    }, Math.max(0, Number(config.delay) || 0));
+
+    return {
+      element: element,
+      dismiss: function () { closeButton.click(); },
+      show: function () { element.classList.add("q-is-visible"); },
+      hide: function () { element.classList.remove("q-is-visible"); },
+      reset: function () {
+        try { window.localStorage.removeItem(config.storageKey); } catch (_) {}
+      }
+    };
+  }
+
+  window.QuestionnaireWidget = { init: init, defaults: DEFAULTS, text: TEXT };
+
+  if (!window.QUESTIONNAIRE_MANUAL_INIT) {
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", function () {
+        window.questionnaireWidget = init();
+      });
+    } else {
+      window.questionnaireWidget = init();
+    }
+  }
+})(window, document);
 
 </script>
 </body>

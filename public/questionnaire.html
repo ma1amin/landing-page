@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Questionnaire · Dr. Mohammed Al Amin</title>
+<meta name="description" content="Answer eight short questions in about a minute so our first call starts with real context." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="wrap nav-inner">
+    <a href="/#top" class="brand" aria-label="Home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 40 40" width="34" height="34" role="img" aria-hidden="true">
+          <defs>
+            <linearGradient id="bgq" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#ffcf5c"/><stop offset="100%" stop-color="#d08a12"/>
+            </linearGradient>
+          </defs>
+          <rect x="1" y="1" width="38" height="38" rx="10" fill="none" stroke="url(#bgq)" stroke-width="1.5"/>
+          <path d="M9 28V13l6.5 7.5L22 13v15" fill="none" stroke="url(#bgq)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 20.5l4.5 7.5M22 20.5l4.5-7.5" fill="none" stroke="url(#bgq)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M31 28v-8" fill="none" stroke="url(#bgq)" stroke-width="2.4" stroke-linecap="round" opacity=".55"/>
+        </svg>
+      </span>
+      <span class="brand-text">
+        <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+        <em data-i18n="brand.role">Cybersecurity Leader · Founder</em>
+      </span>
+    </a>
+
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="/#about" data-i18n="nav.about">About</a>
+      <a href="/#expertise" data-i18n="nav.expertise">Expertise</a>
+      <a href="/#initiatives" data-i18n="nav.initiatives">Initiatives</a>
+      <a href="/#journey" data-i18n="nav.journey">Journey</a>
+      <a href="/#credentials" data-i18n="nav.credentials">Credentials</a>
+      <a href="/#collaborate" data-i18n="nav.collaborate">Collaborate</a>
+      <a href="/questionnaire" class="is-active" data-i18n="nav.questionnaire">Questionnaire</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
+        <span class="lang-opt is-on" data-lang="en">EN</span>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <span class="lang-opt" data-lang="ar">ع</span>
+      </button>
+      <a href="/#booking" class="btn btn-primary btn-sm" data-i18n="nav.book">Book a Call</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ INTRO ============ -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="q.eyebrow">Questionnaire</p>
+      <h1 class="q-title" data-i18n="q.title">Request a Consultation</h1>
+      <p class="lead" data-i18n="q.lead">Eight short questions, about a minute. Your answers reach me directly, so our first call opens with real context instead of introductions.</p>
+      <ul class="q-assure">
+        <li data-i18n="q.a1">No sales pitch at the end</li>
+        <li data-i18n="q.a2">You can book a call right after</li>
+        <li data-i18n="q.a3">Your answers stay with me</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ FORM ============ -->
+  <section class="section section-alt">
+    <div class="wrap">
+      <form class="form form-card" id="qForm" novalidate>
+
+        <div class="q-progress">
+          <span class="q-progress-bar" id="qProgressBar"></span>
+        </div>
+        <p class="q-progress-label mono"><span id="qCount">0</span> / <span id="qTotal">8</span> <span data-i18n="q.answered">answered</span></p>
+
+        <div id="qQuestions"></div>
+
+        <div class="q-contact">
+          <h2 class="q-contact-title" data-i18n="q.contactTitle">Your details</h2>
+
+          <div class="row">
+            <div class="field">
+              <label for="qFirst" data-i18n="q.first">First name</label>
+              <input id="qFirst" name="firstName" type="text" autocomplete="given-name" required />
+              <span class="err" data-err="qFirst"></span>
+            </div>
+            <div class="field">
+              <label for="qLast" data-i18n="q.last">Last name</label>
+              <input id="qLast" name="lastName" type="text" autocomplete="family-name" required />
+              <span class="err" data-err="qLast"></span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="qEmail" data-i18n="q.email">Email</label>
+              <input id="qEmail" name="email" type="email" autocomplete="email" required dir="ltr" />
+              <span class="err" data-err="qEmail"></span>
+            </div>
+            <div class="field">
+              <label for="qPhone" data-i18n="q.phone">Phone number</label>
+              <input id="qPhone" name="phone" type="tel" autocomplete="tel" required dir="ltr" placeholder="+966 5" />
+              <span class="err" data-err="qPhone"></span>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="field">
+              <label for="qCompany" data-i18n="q.company">Company name</label>
+              <input id="qCompany" name="company" type="text" autocomplete="organization" required />
+              <span class="err" data-err="qCompany"></span>
+            </div>
+            <div class="field">
+              <label for="qRole" data-i18n="q.role">Your role</label>
+              <select id="qRole" name="role" required></select>
+              <span class="err" data-err="qRole"></span>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="qAbout" data-i18n="q.about">Briefly describe what you are building <span class="opt" data-i18n="q.opt">(optional)</span></label>
+            <textarea id="qAbout" name="about" rows="4"></textarea>
+          </div>
+        </div>
+
+        <button class="btn btn-primary btn-block" type="submit" id="qSubmit" data-i18n="q.submit">Request Consultation</button>
+        <p class="form-note" data-i18n="q.submitNote">No sales pitch. Just a straightforward conversation.</p>
+        <p class="form-note q-consent" data-i18n="q.consent">By submitting, you agree that I may keep these answers and contact you about your enquiry.</p>
+
+        <div class="done" id="qDone" hidden>
+          <div class="done-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          </div>
+          <h3 data-i18n="q.doneTitle">Answers received</h3>
+          <p class="done-sub" id="qDoneSub"></p>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- ============ WHAT HAPPENS NEXT ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow" data-i18n="q.nextEyebrow">After you send</p>
+        <h2 data-i18n="q.nextTitle">What Happens Next</h2>
+      </div>
+      <div class="q-steps">
+        <div class="q-step">
+          <span class="q-step-num mono">1</span>
+          <h3 data-i18n="q.step1Title">Free Consultation</h3>
+          <p data-i18n="q.step1Body">A clear plan covering the architecture and tooling to use, the technical approach, the schedule and the budget.</p>
+        </div>
+        <div class="q-step">
+          <span class="q-step-num mono">2</span>
+          <h3 data-i18n="q.step2Title">Technical Discussion</h3>
+          <p data-i18n="q.step2Body">A short series of conversations about the frameworks and technologies that will turn the idea into something real.</p>
+        </div>
+        <div class="q-step">
+          <span class="q-step-num mono">3</span>
+          <h3 data-i18n="q.step3Title">Start Work</h3>
+          <p data-i18n="q.step3Body">Once you give the nod, work begins on the agreed scope, with the schedule we settled on.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="wrap footer-inner">
+    <div class="footer-brand">
+      <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+      <p data-i18n="foot.tag">Security infrastructure · Logistics technology · Innovation ecosystems</p>
+    </div>
+    <div class="footer-cols">
+      <div>
+        <h4 data-i18n="foot.contact">Contact</h4>
+        <a href="mailto:mo7dalamin@gmail.com" dir="ltr">mo7dalamin@gmail.com</a>
+        <a href="tel:+966581773494" dir="ltr">+966 58 177 3494</a>
+        <span data-i18n="foot.loc">Riyadh, Saudi Arabia</span>
+      </div>
+      <div>
+        <h4 data-i18n="foot.social">Elsewhere</h4>
+        <a href="https://www.linkedin.com/in/mohalamin/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/ma1amin" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.instagram.com/i.secur1ty" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/m.a1amin" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <div>
+        <h4 data-i18n="foot.markets">Markets</h4>
+        <span data-i18n="foot.marketsList">Saudi Arabia · Sudan · GCC</span>
+        <span data-i18n="foot.langs">Arabic · English</span>
+      </div>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span>© <span id="year">2026</span> <span data-i18n="brand.name">Dr. Mohammed Al Amin</span>. <span data-i18n="foot.rights">All rights reserved.</span></span>
+    <span class="mono" data-i18n="foot.built">Built secure by default.</span>
+  </div>
+</footer>
+
+<script src="questionnaire.js"></script>
+</body>
+</html>

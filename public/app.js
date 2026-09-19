@@ -17,7 +17,9 @@ const T = {
     'brand.role': 'Cybersecurity Leader · Founder',
     'nav.about': 'About', 'nav.expertise': 'Expertise', 'nav.initiatives': 'Initiatives',
     'nav.journey': 'Journey', 'nav.credentials': 'Credentials', 'nav.collaborate': 'Collaborate',
+    'nav.questionnaire': 'Questionnaire',
     'nav.book': 'Book a Call',
+    'booking.linked': 'Questionnaire received. Choose a time and your answers come with the booking.',
 
     'hero.badge': 'Available for select engagements',
     'hero.eyebrow': 'Founder @ Arabc0n & InfoLogix · Riyadh, Saudi Arabia',
@@ -109,7 +111,9 @@ const T = {
     'brand.role': 'قائد أمن سيبراني · مؤسس',
     'nav.about': 'نبذة عني', 'nav.expertise': 'الخبرات', 'nav.initiatives': 'المبادرات',
     'nav.journey': 'المسار المهني', 'nav.credentials': 'المؤهلات', 'nav.collaborate': 'التعاون',
+    'nav.questionnaire': 'الاستبيان',
     'nav.book': 'احجز جلسة',
+    'booking.linked': 'تم استلام الاستبيان. اختر الوقت وستصلني إجاباتك مع الحجز.',
 
     'hero.badge': 'متاح لعدد محدود من المشاريع',
     'hero.eyebrow': 'مؤسس Arabc0n و InfoLogix · الرياض، المملكة العربية السعودية',
@@ -394,6 +398,17 @@ const DOW_FULL = {
  * State + helpers
  * ------------------------------------------------------------------ */
 let LANG = 'en';
+
+/*
+ * Present when the visitor arrives from the questionnaire page, as
+ * /?qref=QNR-XXXX#booking. Sent along with the booking so the two
+ * records can be read together.
+ */
+const Q_REF = (function () {
+  try {
+    return new URLSearchParams(window.location.search).get('qref') || '';
+  } catch (_) { return ''; }
+})();
 try {
   const saved = localStorage.getItem('ma-lang');
   if (saved === 'en' || saved === 'ar') LANG = saved;
@@ -736,6 +751,7 @@ async function submitBooking(e) {
         type: selType, date: selDate, time: selTime,
         name: name, email: email,
         org: $('#bkOrg').value.trim(), notes: $('#bkNotes').value.trim(),
+        questionnaireRef: Q_REF,
       }),
     });
     const data = await res.json();
@@ -893,6 +909,13 @@ function initBooking() {
   const base = riyadhYMD();
   curYear = base.y; curMonth = base.m;
 
+  /* Arrived from the questionnaire: tell them the answers are attached. */
+  const linked = $('#qLinked');
+  if (linked && Q_REF) {
+    linked.hidden = false;
+    linked.textContent = t('booking.linked') + ' (' + Q_REF + ')';
+  }
+
   $('#sessionTypes').addEventListener('click', (e) => {
     const btn = e.target.closest('.stype'); if (!btn) return;
     selType = btn.getAttribute('data-type');
@@ -949,9 +972,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggle = $('#langToggle');
   if (toggle) {
     toggle.addEventListener('click', () => {
-      LANG = LANG === 'en' ? 'ar' : 'en';
-      try { localStorage.setItem('ma-lang', LANG); } catch (_) {}
-      applyI18n();
+        LANG = LANG === 'en' ? 'ar' : 'en';
+        try { localStorage.setItem('ma-lang', LANG); } catch (_) {}
+        applyI18n();
+        try {
+          document.dispatchEvent(new CustomEvent('ma:langchange', { detail: { lang: LANG } }));
+        } catch (_) {}
     });
   }
 

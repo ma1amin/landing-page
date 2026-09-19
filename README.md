@@ -63,10 +63,20 @@ Gmail needs a 16-character App Password (not your account password).
 | GET | `/api/slots?month=YYYY-MM&type=discovery` | available slots for a month |
 | POST | `/api/bookings` | create a booking (returns a `MA-XXXXXX` reference) |
 | POST | `/api/collaborations` | submit the collaboration form (`COL-XXXXXX`) |
+| POST | `/api/questionnaire` | submit the questionnaire (`QNR-XXXXXX`) |
 | GET | `/api/admin/bookings?token=…` | list bookings |
 | GET | `/api/admin/collaborations?token=…` | list collaboration requests |
 
-Bookings live in `data/bookings.json`, requests in `data/collaborations.json`.
+Bookings live in `data/bookings.json`, requests in `data/collaborations.json`,
+questionnaire answers in `data/questionnaire.json`.
+
+### How the questionnaire links to a booking
+
+Submitting the questionnaire saves and emails the answers immediately and returns a
+`QNR-XXXXXX` reference. The visitor is then sent to `/?qref=QNR-XXXXXX#booking`. If
+they book, the reference is stored on the booking record and the questionnaire is
+marked `booked`, so the two can be read together. If they leave without booking, the
+answers are already saved.
 
 ## Files
 
@@ -76,8 +86,18 @@ smtp.js             minimal SMTP client (SMTPS + STARTTLS)
 public/index.html   page structure (English text is the no-JS fallback)
 public/styles.css   amber-on-near-black theme, RTL-aware
 public/app.js       i18n dictionary, content data, calendar, forms
+public/questionnaire.html       eight-question intake page
+public/questionnaire.js         its questions, copy and submit logic
+public/questionnaire-widget.css prompt card styling, inherits site tokens
+public/questionnaire-widget.js  prompt card: timing, drag, dismissal, i18n
 config.example.env  email settings template
 ```
+
+The prompt card loads on the main page only. Its appearance delay, dismissal
+lifetime and analytics are set in `window.QUESTIONNAIRE_CONFIG` in `index.html`.
+Dismissal is remembered for 14 days in `localStorage`. Copy lives in the `TEXT`
+object at the top of `questionnaire-widget.js`; the eight questions and their
+answer options live in `QUESTIONS` at the top of `questionnaire.js`.
 
 ## Editing content
 

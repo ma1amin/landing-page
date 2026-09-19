@@ -1,0 +1,204 @@
+/* ============================================================
+   Questionnaire widget · timed prompt for the main page
+
+   Inherits the site palette from :root in styles.css, so changing
+   the theme there changes the widget too.
+
+   RTL: logical properties only (inset-inline-*, margin-inline-*),
+   so the card mirrors with the page when dir="rtl" is set.
+   ============================================================ */
+
+.questionnaire-widget,
+.questionnaire-widget * { box-sizing: border-box; }
+
+.questionnaire-widget {
+  position: fixed;
+  inset-block-end: 24px;
+  inset-inline-end: 24px;
+  z-index: 90;                        /* sits below the sticky header (100) */
+  width: min(360px, calc(100vw - 32px));
+  color: var(--text);
+  font-family: var(--sans);
+  line-height: 1.45;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px) scale(.98);
+  transition: opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
+  touch-action: none;
+}
+.questionnaire-widget.q-is-visible { opacity: 1; visibility: visible; transform: none; }
+.questionnaire-widget.q-is-dragging { transition: none; cursor: grabbing; user-select: none; }
+
+.questionnaire-widget-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: linear-gradient(155deg, var(--panel-2), var(--panel));
+  box-shadow: 0 24px 70px rgba(0,0,0,.55);
+  padding: 22px;
+}
+.questionnaire-widget-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .28;
+  background-image:
+    linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 80% 0%, #000, transparent 62%);
+}
+/* Mirror the grid highlight when the page flips to Arabic. */
+[dir="rtl"] .questionnaire-widget-card::before {
+  mask-image: radial-gradient(circle at 20% 0%, #000, transparent 62%);
+}
+
+.questionnaire-widget-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: grab;
+}
+.questionnaire-widget-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-inline-end: auto;
+  font: 700 11px/1 var(--mono);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: #a9e9cd;
+}
+.questionnaire-widget-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  box-shadow: 0 0 0 4px rgba(61,220,151,.1);
+}
+.questionnaire-widget-close {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 9px;
+  background: rgba(255,255,255,.025);
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.questionnaire-widget-close:hover {
+  color: var(--text);
+  border-color: rgba(245,194,86,.5);
+  background: rgba(245,194,86,.06);
+}
+.questionnaire-widget-close:focus-visible,
+.questionnaire-widget-cta:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+.questionnaire-widget-kicker {
+  position: relative;
+  margin: 20px 0 8px;
+  color: var(--amber);
+  font: 700 11px/1 var(--mono);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.questionnaire-widget-title {
+  position: relative;
+  margin: 0;
+  font-size: 27px;
+  line-height: 1.12;
+  letter-spacing: -.03em;
+  font-weight: 700;
+}
+/* Arabic must never be letter-spaced: it breaks the joined script. */
+[dir="rtl"] .questionnaire-widget-title { letter-spacing: 0; }
+.questionnaire-widget-title span { color: var(--amber-2); }
+
+.questionnaire-widget-copy {
+  position: relative;
+  margin: 12px 0 17px;
+  color: var(--text-2);
+  font-size: 14px;
+}
+.questionnaire-widget-points {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 0 0 19px;
+  padding: 0;
+  list-style: none;
+}
+.questionnaire-widget-points li {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: #d5d7dc;
+  font-size: 12px;
+}
+.questionnaire-widget-points svg {
+  flex: 0 0 auto;
+  color: var(--amber);
+}
+
+.questionnaire-widget-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 13px 17px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--amber-2), var(--amber) 58%, var(--amber-deep));
+  color: #1a1205;
+  font: 700 14px/1 var(--sans);
+  text-decoration: none;
+  box-shadow: 0 8px 26px -10px rgba(245,194,86,.7);
+  transition: transform .2s, box-shadow .2s;
+}
+.questionnaire-widget-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 13px 32px -10px rgba(245,194,86,.8);
+}
+/* Point the arrow back the other way in Arabic. */
+[dir="rtl"] .questionnaire-widget-arrow { transform: scaleX(-1); }
+
+.questionnaire-widget-foot {
+  position: relative;
+  margin-top: 12px;
+  color: var(--muted);
+  font: 10px/1.4 var(--mono);
+  text-align: center;
+}
+
+@media (max-width: 700px) {
+  .questionnaire-widget {
+    inset-block-end: 12px;
+    inset-inline-end: 12px;
+    width: calc(100vw - 24px);
+    touch-action: auto;
+  }
+  .questionnaire-widget-card { padding: 17px; }
+  .questionnaire-widget-head { cursor: default; }
+  .questionnaire-widget-kicker { margin-top: 14px; }
+  .questionnaire-widget-title { font-size: 21px; padding-inline-end: 35px; }
+  .questionnaire-widget-copy { margin: 8px 0 13px; font-size: 13px; }
+  .questionnaire-widget-points { display: none; }
+  .questionnaire-widget-foot { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .questionnaire-widget,
+  .questionnaire-widget-cta { transition: none; }
+}

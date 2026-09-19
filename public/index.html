@@ -7,6 +7,7 @@
 <meta name="description" content="Cybersecurity leader, founder of Arabc0n & InfoLogix. Red teaming, security architecture, AI-native platforms and logistics digital transformation across the Arab world." />
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 <link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="questionnaire-widget.css" />
 </head>
 <body>
 
@@ -42,6 +43,7 @@
       <a href="#journey" data-i18n="nav.journey">Journey</a>
       <a href="#credentials" data-i18n="nav.credentials">Credentials</a>
       <a href="#collaborate" data-i18n="nav.collaborate">Collaborate</a>
+      <a href="/questionnaire" data-i18n="nav.questionnaire">Questionnaire</a>
     </nav>
 
     <div class="nav-actions">
@@ -279,6 +281,8 @@
           <span class="summary-empty" data-i18n="bk.noSlot">No slot selected yet.</span>
         </div>
 
+        <p class="q-linked" id="qLinked" hidden></p>
+
         <form class="form" id="bookingForm" novalidate>
           <div class="field">
             <label for="bkName" data-i18n="f.name">Full name</label>
@@ -435,5 +439,15 @@
 </footer>
 
 <script src="app.js"></script>
+
+<!-- Questionnaire prompt. Appears once per visitor, dismissible for 14 days. -->
+<script>
+window.QUESTIONNAIRE_CONFIG = {
+  delay: 3500,
+  dismissDays: 14,
+  analytics: true
+};
+</script>
+<script src="questionnaire-widget.js" defer></script>
 </body>
 </html>

@@ -57,7 +57,7 @@ const DAY_END = 16 * 60;                    // last slot starts 15:30, ends 16:0
 const LEAD_MINUTES = 4 * 60;                // must book at least 4h ahead
 const HORIZON_DAYS = 60;
 
-/* price is in USD; 0 means free. The client never sends a price — it is
+/* price is in USD; 0 means free. The client never sends a price, it is
    always derived from the session type here, so it cannot be spoofed. */
 const SESSION_TYPES = {
   discovery: { duration: 20, price: 0,  en: 'Discovery Call',         ar: 'مكالمة تعارف' },
@@ -102,6 +102,7 @@ async function writeJson(file, value) {
 }
 const loadBookings = () => readJson('bookings.json', []);
 const loadCollabs = () => readJson('collaborations.json', []);
+const loadQuestionnaires = () => readJson('questionnaire.json', []);
 
 function overlap(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && bStart < aEnd;
@@ -217,6 +218,7 @@ const MIME = {
 async function serveStatic(req, res, urlPath) {
   let rel = decodeURIComponent(urlPath.split('?')[0]);
   if (rel === '/' || rel === '') rel = '/index.html';
+  if (rel === '/questionnaire') rel = '/questionnaire.html';
   const filePath = path.join(PUBLIC_DIR, path.normalize(rel));
   if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403).end('Forbidden'); return; }
   try {
@@ -300,6 +302,7 @@ const server = http.createServer(async (req, res) => {
         email: clean(b.email, 160).toLowerCase(),
         org: clean(b.org, 160),
         notes: clean(b.notes, 1500),
+        questionnaireRef: clean(b.questionnaireRef, 40),
         status: 'confirmed',
         timezone: TZ_LABEL,
         createdAt: new Date().toISOString(),
@@ -307,6 +310,16 @@ const server = http.createServer(async (req, res) => {
       const all = await loadBookings();
       all.push(booking);
       await writeJson('bookings.json', all);
+
+      if (booking.questionnaireRef) {
+        const qs = await loadQuestionnaires();
+        const match = qs.find((q) => q.ref === booking.questionnaireRef);
+        if (match && !match.booked) {
+          match.booked = true;
+          match.bookingRef = booking.ref;
+          await writeJson('questionnaire.json', qs);
+        }
+      }
 
       const mail = await notify(
         `[Booking] ${booking.ref} · ${booking.name} · ${booking.date} ${booking.time} (${TZ_LABEL})`,
@@ -318,6 +331,7 @@ const server = http.createServer(async (req, res) => {
         `Name:       ${booking.name}\n` +
         `Email:      ${booking.email}\n` +
         `Org:        ${booking.org || 'N/A'}\n\n` +
+        `Questionnaire: ${booking.questionnaireRef || 'N/A'}\n\n` +
         `Notes:\n${booking.notes || 'N/A'}\n\n` +
         `Booked at:  ${booking.createdAt}\n`
       );
@@ -359,6 +373,69 @@ const server = http.createServer(async (req, res) => {
         `Org:        ${entry.org || 'N/A'}\n` +
         `Link:       ${entry.link || 'N/A'}\n\n` +
         `Message:\n${entry.message}\n\n` +
+        `Received:   ${entry.createdAt}\n`
+      );
+
+      return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent });
+    }
+
+    /* ---------- Questionnaire ---------- */
+    if (p === '/api/questionnaire' && req.method === 'POST') {
+      const b = await readBody(req);
+      const errors = {};
+      if (!clean(b.firstName, 80)) errors.firstName = 'required';
+      if (!clean(b.lastName, 80)) errors.lastName = 'required';
+      if (!isEmail(b.email)) errors.email = 'invalid';
+      if (!clean(b.phone, 40)) errors.phone = 'required';
+      if (!clean(b.company, 160)) errors.company = 'required';
+      if (!clean(b.role, 80)) errors.role = 'required';
+      if (Object.keys(errors).length) return json(res, 400, { error: 'validation', fields: errors });
+
+      const answers = (Array.isArray(b.answers) ? b.answers : []).slice(0, 20).map((a) => ({
+        id: clean(a && a.id, 40),
+        question: clean(a && a.question, 300),
+        type: clean(a && a.type, 10) === 'multi' ? 'multi' : 'single',
+        values: (Array.isArray(a && a.values) ? a.values : [])
+          .slice(0, 20).map((v) => clean(v, 200)).filter(Boolean),
+      }));
+
+      const entry = {
+        id: crypto.randomUUID(),
+        ref: 'QNR-' + crypto.randomBytes(3).toString('hex').toUpperCase(),
+        firstName: clean(b.firstName, 80),
+        lastName: clean(b.lastName, 80),
+        email: clean(b.email, 160).toLowerCase(),
+        phone: clean(b.phone, 40),
+        company: clean(b.company, 160),
+        role: clean(b.role, 80),
+        about: clean(b.about, 2000),
+        locale: clean(b.locale, 5) || 'en',
+        answers: answers,
+        booked: false,
+        bookingRef: '',
+        createdAt: new Date().toISOString(),
+      };
+      const all = await loadQuestionnaires();
+      all.push(entry);
+      await writeJson('questionnaire.json', all);
+
+      const lines = answers.map((a, i) => {
+        const label = String(i + 1).padStart(2, '0') + '. ' + a.question;
+        return label + '\n     ' + (a.values.length ? a.values.join(' | ') : 'N/A');
+      }).join('\n');
+
+      const mail = await notify(
+        `[Questionnaire] ${entry.ref} · ${entry.firstName} ${entry.lastName} (${entry.company})`,
+        `New questionnaire submission from your personal site.\n\n` +
+        `Reference:  ${entry.ref}\n` +
+        `Language:   ${entry.locale}\n\n` +
+        `Name:       ${entry.firstName} ${entry.lastName}\n` +
+        `Email:      ${entry.email}\n` +
+        `Phone:      ${entry.phone}\n` +
+        `Company:    ${entry.company}\n` +
+        `Role:       ${entry.role}\n\n` +
+        `Answers:\n${lines || 'N/A'}\n\n` +
+        `About:\n${entry.about || 'N/A'}\n\n` +
         `Received:   ${entry.createdAt}\n`
       );
 

@@ -674,6 +674,99 @@ ul,ol{margin:0;padding:0;list-style:none}
   .hero-cta .btn{flex:1;min-width:160px}
 }
 
+/* ============================================================
+   Questionnaire page
+   ============================================================ */
+.q-title{font-size:clamp(32px,4.4vw,50px);margin-bottom:16px}
+
+.q-assure{list-style:none;display:flex;flex-wrap:wrap;gap:12px 28px;padding:0;margin:26px 0 0}
+.q-assure li{position:relative;padding-inline-start:22px;color:var(--text-2);font-size:14px}
+.q-assure li::before{
+  content:"";position:absolute;inset-inline-start:0;inset-block-start:8px;
+  width:8px;height:8px;border-radius:50%;
+  background:var(--amber);box-shadow:0 0 0 4px rgba(245,194,86,.12);
+}
+
+/* progress */
+.q-progress{height:3px;border-radius:999px;background:var(--line-2);overflow:hidden;margin-bottom:9px}
+.q-progress-bar{
+  display:block;height:100%;width:0;border-radius:999px;
+  background:linear-gradient(90deg,var(--amber-2),var(--amber));
+  transition:width .34s var(--ease);
+}
+.q-progress-label{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin:0 0 36px;
+}
+
+/* question block */
+.q-block{border:0;padding:0;margin:0 0 34px}
+.q-legend{display:block;padding:0;margin-bottom:15px}
+.q-legend .q-num{display:block;font-size:11px;letter-spacing:.16em;color:var(--amber);margin-bottom:7px}
+.q-legend .q-q{display:block;font-size:19px;font-weight:650;line-height:1.32;color:var(--text)}
+.q-legend .q-hint{
+  display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);margin-top:8px;
+}
+
+/* options */
+.q-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:9px}
+.q-opt{
+  position:relative;display:flex;align-items:flex-start;gap:11px;
+  padding:13px 15px;
+  border:1px solid var(--line);border-radius:var(--radius-sm);
+  background:rgba(255,255,255,.02);
+  cursor:pointer;font-size:14px;line-height:1.45;color:var(--text-2);
+  transition:border-color .2s,background .2s,color .2s;
+}
+.q-opt:hover{border-color:rgba(245,194,86,.4);color:var(--text)}
+.q-opt input{position:absolute;width:1px;height:1px;opacity:0;margin:0}
+.q-opt::before{
+  content:"";flex:0 0 auto;width:17px;height:17px;margin-top:2px;
+  border:1px solid var(--line-2);background:rgba(0,0,0,.32);
+  transition:border-color .2s,background .2s,box-shadow .2s;
+}
+.q-block[data-type="multi"] .q-opt::before{border-radius:5px}
+.q-block[data-type="single"] .q-opt::before{border-radius:50%}
+.q-opt.is-picked{border-color:var(--amber);background:rgba(245,194,86,.07);color:var(--text)}
+.q-opt.is-picked::before{
+  border-color:var(--amber);background:var(--amber);
+  box-shadow:inset 0 0 0 3px var(--panel);
+}
+.q-opt:focus-within{outline:2px solid var(--amber);outline-offset:2px}
+
+/* contact details */
+.q-contact{margin-top:46px;padding-top:38px;border-top:1px solid var(--line)}
+.q-contact-title{font-size:22px;margin-bottom:22px}
+.q-consent{margin-top:11px;opacity:.75}
+
+/* shown on the booking form when arriving from the questionnaire */
+.q-linked{
+  margin:0 0 20px;padding:12px 15px;
+  border:1px solid rgba(61,220,151,.32);border-radius:var(--radius-sm);
+  background:rgba(61,220,151,.07);color:#a9e9cd;font-size:13px;
+}
+
+/* what happens next */
+.q-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:22px}
+.q-step{
+  padding:26px;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--panel);
+}
+.q-step-num{
+  display:grid;place-items:center;width:38px;height:38px;margin-bottom:17px;
+  border-radius:50%;border:1px solid rgba(245,194,86,.4);
+  color:var(--amber);font-size:14px;font-weight:700;
+}
+.q-step h3{font-size:17px;margin-bottom:9px}
+.q-step p{font-size:14px;color:var(--text-2);margin:0}
+
+@media (max-width:640px){
+  .q-legend .q-q{font-size:17px}
+  .q-options{grid-template-columns:1fr}
+  .q-step{padding:22px}
+}
+
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important}
   html{scroll-behavior:auto}

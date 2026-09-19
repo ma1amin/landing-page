@@ -16,6 +16,8 @@ const b64 = (f) => fs.readFileSync(path.join(PUB, f)).toString('base64');
 const html = read('index.html');
 const css = read('styles.css');
 const appjs = read('app.js');
+const widgetCss = read('questionnaire-widget.css');
+const widgetJs = read('questionnaire-widget.js');
 
 /* ---- offline stand-in for the backend ------------------------------- */
 const SHIM = `
@@ -137,12 +139,18 @@ let out = html
            () => '<style>\n' + css + '\n</style>')
   .replace('src="assets/portrait.jpg"',
            () => 'src="' + portrait + '"')
+  .replace('<link rel="stylesheet" href="questionnaire-widget.css" />',
+           () => '<style>\n' + widgetCss + '\n</style>')
   .replace('<script src="app.js"></script>',
-           () => '<script>' + SHIM + '</script>\n<script>\n' + appjs + '\n</script>');
+           () => '<script>' + SHIM + '</script>\n<script>\n' + appjs + '\n</script>')
+  .replace('<script src="questionnaire-widget.js" defer></script>',
+           () => '<script>\n' + widgetJs + '\n</script>');
 
 if (out.indexOf('data:image/jpeg;base64,') === -1) throw new Error('portrait not inlined');
 if (out.indexOf('<style>') === -1) throw new Error('css not inlined');
 if (out.indexOf('window.fetch=function') === -1) throw new Error('shim not injected');
+if (out.indexOf('QuestionnaireWidget') === -1) throw new Error('widget js not inlined');
+if (out.indexOf('.questionnaire-widget') === -1) throw new Error('widget css not inlined');
 
 const outPath = process.argv[2] || path.join(__dirname, 'preview.html');
 fs.writeFileSync(outPath, out);
