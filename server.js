@@ -46,13 +46,115 @@ const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
 const DATA_DIR = path.join(ROOT, 'data');
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'letmein';
+/* No default. An empty value disables every admin route, so a forgotten
+   env var closes the door instead of opening it. */
+const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'mo7dalamin@gmail.com';
 
 /* Bot protection for the questionnaire. Empty means the check is skipped,
    which is what keeps the offline preview working. */
 const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET || '';
 const TURNSTILE_SITE_KEY = process.env.TURNSTILE_SITE_KEY || '';
+
+/* Trust X-Forwarded-For only when a proxy you control sets it. Left off, the
+   socket address is used, which an attacker cannot spoof. */
+const TRUST_PROXY = process.env.TRUST_PROXY === '1';
+const ENABLE_HSTS = process.env.ENABLE_HSTS === '1';
+
+/* Object lookups walk the prototype chain, so SESSION_TYPES['constructor']
+   is truthy and would slip past a plain `SESSION_TYPES[t] ? t : fallback`
+   check. Own-property checks close that. */
+const hasOwn = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+
+const isHttps = (req) =>
+  Boolean(req.socket && req.socket.encrypted) ||
+  String(req.headers['x-forwarded-proto'] || '').split(',')[0].trim() === 'https';
+
+function clientIp(req) {
+  if (TRUST_PROXY) {
+    const xff = req.headers['x-forwarded-for'];
+    if (typeof xff === 'string' && xff.length) {
+      const first = xff.split(',')[0].trim();
+      if (first) return first;
+    }
+  }
+  return (req.socket && req.socket.remoteAddress) || 'unknown';
+}
+
+/* Constant-time compare so the admin token cannot be recovered byte by byte
+   from response timing. */
+function safeEqual(a, b) {
+  const ba = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  if (ba.length !== bb.length) return false;
+  return crypto.timingSafeEqual(ba, bb);
+}
+
+/* ------------------------------------------------------------------ *
+ * Rate limiting · in-memory, per IP, fixed window
+ * ------------------------------------------------------------------ */
+const RATE_BUCKETS = new Map();
+function rateLimit(key, limit, windowMs) {
+  const now = Date.now();
+  let b = RATE_BUCKETS.get(key);
+  if (!b || now >= b.resetAt) {
+    b = { count: 0, resetAt: now + windowMs };
+    RATE_BUCKETS.set(key, b);
+  }
+  b.count += 1;
+  if (b.count > limit) return { ok: false, retryAfter: Math.max(1, Math.ceil((b.resetAt - now) / 1000)) };
+  return { ok: true };
+}
+/* Bound the map so a rotating source cannot grow it without limit. unref so
+   the timer never keeps the process alive. */
+setInterval(() => {
+  const now = Date.now();
+  for (const [k, v] of RATE_BUCKETS) if (now >= v.resetAt) RATE_BUCKETS.delete(k);
+}, 60000).unref();
+
+const LIMITS = {
+  'POST /api/bookings':       { limit: 10, windowMs: 10 * 60 * 1000 },
+  'POST /api/collaborations': { limit: 5,  windowMs: 10 * 60 * 1000 },
+  'POST /api/questionnaire':  { limit: 5,  windowMs: 10 * 60 * 1000 },
+  'GET /api/slots':           { limit: 60, windowMs: 60 * 1000 },
+  'admin':                    { limit: 20, windowMs: 10 * 60 * 1000 },
+};
+
+/* ------------------------------------------------------------------ *
+ * Security headers
+ * ------------------------------------------------------------------ */
+function csp(nonce) {
+  return [
+    "default-src 'self'",
+    "script-src 'self' https://challenges.cloudflare.com" + (nonce ? " 'nonce-" + nonce + "'" : ''),
+    "style-src 'self'",
+    "img-src 'self' data: https://avatars.githubusercontent.com",
+    "font-src 'self'",
+    "connect-src 'self' https://challenges.cloudflare.com",
+    "frame-src https://challenges.cloudflare.com",
+    "frame-ancestors 'none'",
+    "base-uri 'none'",
+    "form-action 'self'",
+    "object-src 'none'",
+  ].join('; ');
+}
+
+function securityHeaders(req, nonce) {
+  const h = {
+    'Content-Security-Policy': csp(nonce),
+    'X-Content-Type-Options': 'nosniff',
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
+    'X-Frame-Options': 'DENY',
+    'Permissions-Policy': 'geolocation=(), microphone=(), camera=(), payment=(), usb=()',
+    'Cross-Origin-Opener-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
+    'X-Permitted-Cross-Domain-Policies': 'none',
+  };
+  if (ENABLE_HSTS && isHttps(req)) {
+    h['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
+  }
+  return h;
+}
 
 /* ------------------------------------------------------------------ *
  * Timezone helpers · Asia/Riyadh is a fixed UTC+3 (no DST)
@@ -250,11 +352,11 @@ async function notify(subject, body) {
  * ------------------------------------------------------------------ */
 function json(res, code, payload) {
   const body = JSON.stringify(payload);
-  res.writeHead(code, {
+  res.writeHead(code, Object.assign({
     'Content-Type': 'application/json; charset=utf-8',
     'Content-Length': Buffer.byteLength(body),
     'Cache-Control': 'no-store',
-  });
+  }, securityHeaders(res.req, null)));
   res.end(body);
 }
 function readBody(req, limit = 64000) {
@@ -294,18 +396,42 @@ async function serveStatic(req, res, urlPath) {
   if (rel === '/questionnaire') rel = '/questionnaire.html';
   const filePath = path.join(PUBLIC_DIR, path.normalize(rel));
   if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403).end('Forbidden'); return; }
+  const notFound = () => {
+    const b = Buffer.from('<h1>404</h1><p>Not found</p><a href="/">Back to site</a>', 'utf8');
+    res.writeHead(404, Object.assign({
+      'Content-Type': 'text/html; charset=utf-8',
+      'Content-Length': b.length,
+    }, securityHeaders(req, null)));
+    res.end(b);
+  };
   try {
     const stat = await fsp.stat(filePath);
     if (stat.isDirectory()) throw new Error('dir');
-    res.writeHead(200, {
-      'Content-Type': MIME[path.extname(filePath).toLowerCase()] || 'application/octet-stream',
+    const ext = path.extname(filePath).toLowerCase();
+    const type = MIME[ext] || 'application/octet-stream';
+    /* HTML carries one inline script, so it gets a fresh per-response nonce.
+       Everything else is served as-is. */
+    if (ext === '.html') {
+      const nonce = crypto.randomBytes(16).toString('base64');
+      const raw = await fsp.readFile(filePath, 'utf8');
+      const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+      const buf = Buffer.from(patched, 'utf8');
+      res.writeHead(200, Object.assign({
+        'Content-Type': type,
+        'Content-Length': buf.length,
+        'Cache-Control': 'no-cache',
+      }, securityHeaders(req, nonce)));
+      res.end(buf);
+      return;
+    }
+    res.writeHead(200, Object.assign({
+      'Content-Type': type,
       'Content-Length': stat.size,
       'Cache-Control': 'no-cache',
-    });
+    }, securityHeaders(req, null)));
     fs.createReadStream(filePath).pipe(res);
   } catch (_) {
-    res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end('<h1>404</h1><p>Not found</p><a href="/">Back to site</a>');
+    notFound();
   }
 }
 
@@ -313,19 +439,33 @@ async function serveStatic(req, res, urlPath) {
  * Routes
  * ------------------------------------------------------------------ */
 const server = http.createServer(async (req, res) => {
+  /* Nothing in this project is a cross-origin client, so preflight is
+     answered without any Access-Control-Allow-Origin. Browsers then block
+     cross-origin reads, which is what we want. */
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'Content-Type', 'Access-Control-Allow-Methods': 'GET,POST,OPTIONS' });
+    res.writeHead(204, Object.assign({ 'Content-Length': 0 }, securityHeaders(req, null)));
     return res.end();
   }
   const url = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
   const p = url.pathname;
+  const ip = clientIp(req);
+
+  /* Rate limit before any work is done. */
+  const gate = LIMITS[req.method + ' ' + p];
+  if (gate) {
+    const r = rateLimit(ip + '|' + req.method + ' ' + p, gate.limit, gate.windowMs);
+    if (!r.ok) {
+      res.setHeader('Retry-After', String(r.retryAfter));
+      return json(res, 429, { error: 'rate_limited', message: 'Too many requests. Please try again in a few minutes.' });
+    }
+  }
 
   try {
     /* ---------- Slots ---------- */
     if (p === '/api/slots' && req.method === 'GET') {
       const month = (url.searchParams.get('month') || '').slice(0, 7); // YYYY-MM
       const type = url.searchParams.get('type') || 'discovery';
-      const session = SESSION_TYPES[type] || SESSION_TYPES.discovery;
+      const session = hasOwn(SESSION_TYPES, type) ? SESSION_TYPES[type] : SESSION_TYPES.discovery;
       if (!/^\d{4}-\d{2}$/.test(month)) return json(res, 400, { error: 'month must be YYYY-MM' });
 
       const [y, m] = month.split('-').map(Number);
@@ -347,7 +487,7 @@ const server = http.createServer(async (req, res) => {
     /* ---------- Create booking ---------- */
     if (p === '/api/bookings' && req.method === 'POST') {
       const b = await readBody(req);
-      const type = SESSION_TYPES[b.type] ? b.type : 'discovery';
+      const type = hasOwn(SESSION_TYPES, b.type) ? b.type : 'discovery';
       const session = SESSION_TYPES[type];
       const errors = {};
       if (!clean(b.name, 120)) errors.name = 'required';
@@ -530,7 +670,18 @@ const server = http.createServer(async (req, res) => {
 
     /* ---------- Admin reads ---------- */
     if (p.startsWith('/api/admin/') && req.method === 'GET') {
-      if (url.searchParams.get('token') !== ADMIN_TOKEN) return json(res, 401, { error: 'unauthorized' });
+      /* Fail closed: with no token configured the route does not exist. */
+      if (!ADMIN_TOKEN) return json(res, 503, { error: 'admin_disabled', message: 'Set ADMIN_TOKEN to enable admin reads.' });
+      const adminGate = rateLimit(ip + '|admin', LIMITS.admin.limit, LIMITS.admin.windowMs);
+      if (!adminGate.ok) {
+        res.setHeader('Retry-After', String(adminGate.retryAfter));
+        return json(res, 429, { error: 'rate_limited', message: 'Too many requests. Please try again in a few minutes.' });
+      }
+      /* Token travels in a header, not the query string, so it stays out of
+         access logs, proxy logs and browser history. */
+      const authHeader = String(req.headers.authorization || '');
+      const provided = String(req.headers['x-admin-token'] || authHeader.replace(/^Bearer\s+/i, '')).trim();
+      if (!provided || !safeEqual(provided, ADMIN_TOKEN)) return json(res, 401, { error: 'unauthorized' });
       if (p === '/api/admin/bookings') return json(res, 200, { bookings: await loadBookings() });
       if (p === '/api/admin/collaborations') return json(res, 200, { collaborations: await loadCollabs() });
       return json(res, 404, { error: 'not_found' });
@@ -556,5 +707,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, HOST, () => {
   console.log(`\n  ▸ Site running: http://${HOST}:${PORT}`);
   console.log(`  ▸ Riyadh date: ${todayRiyadh()}  (${TZ_LABEL})`);
+  console.log(`  ▸ Admin reads: ${ADMIN_TOKEN ? 'enabled (header token)' : 'DISABLED · set ADMIN_TOKEN to enable'}`);
+  console.log(`  ▸ Rate limits: on    HSTS: ${ENABLE_HSTS ? 'on' : 'off (set ENABLE_HSTS=1 behind HTTPS)'}`);
   console.log(`  ▸ Data dir:    ${DATA_DIR}\n`);
 });

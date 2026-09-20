@@ -102,8 +102,7 @@
       <div class="portrait">
         <!-- Photo chain: drop your photo at public/assets/portrait.jpg to replace it.
              Falls back to the GitHub avatar, then to the "MA" monogram. -->
-        <img src="assets/portrait.jpg" alt="Dr. Mohammed Al Amin" width="320" height="320"
-             onerror="if(!this.dataset.fb1){this.dataset.fb1='1';this.src='https://avatars.githubusercontent.com/u/93028621?v=4';}else{this.style.display='none';var f=document.getElementById('monoFallback');if(f)f.style.display='grid';}" />
+        <img id="portraitImg" src="assets/portrait.jpg" alt="Dr. Mohammed Al Amin" width="320" height="320" />
         <div class="portrait-fallback" id="monoFallback" aria-hidden="true">MA</div>
         <div class="portrait-frame" aria-hidden="true"></div>
         <div class="portrait-scan" aria-hidden="true"></div>

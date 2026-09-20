@@ -5,6 +5,55 @@ working booking calendar and an "open to collaboration" form.
 
 Zero dependencies · plain Node + static HTML/CSS/JS. No build step, no `node_modules`.
 
+## Security
+
+Hardening lives in `server.js`, so it applies whatever you put in front of the
+app. The full assessment lives in `SECURITY-AUDIT.md`, deliberately outside this
+repository: the repo is public and that document enumerates the holes.
+
+**Reading submissions.** Send the admin token in a header, never in the URL:
+
+```bash
+curl -H "X-Admin-Token: $ADMIN_TOKEN" https://your-host/api/admin/bookings
+```
+
+There is no default token. If `ADMIN_TOKEN` is unset every admin route returns
+`503`, so a forgotten environment variable closes the door rather than opening
+it. The token used to travel as `?token=...`, which leaks into access logs,
+proxy logs and browser history, so the query parameter is no longer accepted.
+
+**Rate limiting** is per IP, in memory, fixed window:
+
+| Endpoint | Limit |
+|---|---|
+| `POST /api/bookings` | 10 per 10 min |
+| `POST /api/collaborations` | 5 per 10 min |
+| `POST /api/questionnaire` | 5 per 10 min |
+| `GET /api/slots` | 60 per min |
+| `/api/admin/*` | 20 per 10 min |
+
+Blocked requests get `429` with a `Retry-After` header. Buckets are pruned
+every minute. Set `TRUST_PROXY=1` only if the app sits behind a proxy you
+control, otherwise a client can spoof `X-Forwarded-For` to dodge the limits.
+
+**Headers** are sent on every response: a nonce-based `Content-Security-Policy`,
+`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`,
+`Permissions-Policy`, `Cross-Origin-Opener-Policy` and
+`Cross-Origin-Resource-Policy`. The CSP allows `challenges.cloudflare.com` for
+scripts, connections and frames so Turnstile keeps working, and it permits no
+inline scripts, styles or event handlers.
+
+Two consequences worth knowing when editing the front end:
+
+- Inline `<script>` blocks need the per-response nonce the server injects.
+- Inline `onclick`, `onerror` and `style=` attributes are blocked. Attach
+  listeners from a script file instead. The portrait fallback in `app.js` is
+  the example to copy.
+
+**HSTS** is off by default. Set `ENABLE_HSTS=1` once you have confirmed the
+site is served over HTTPS, since sending it over plain HTTP can lock visitors
+out for the `max-age` period.
+
 ## Run
 
 ```bash
@@ -50,7 +99,7 @@ export SMTP_PORT=587
 export SMTP_USER=mo7dalamin@gmail.com
 export SMTP_PASS=your-app-password
 export NOTIFY_EMAIL=mo7dalamin@gmail.com
-export ADMIN_TOKEN=some-long-random-string
+export ADMIN_TOKEN=some-long-random-string   # no default: unset disables admin reads
 node server.js
 ```
 
@@ -66,8 +115,8 @@ Gmail needs a 16-character App Password (not your account password).
 | POST | `/api/bookings` | create a booking (returns a `MA-XXXXXX` reference) |
 | POST | `/api/collaborations` | submit the collaboration form (`COL-XXXXXX`) |
 | POST | `/api/questionnaire` | submit the questionnaire (`QNR-XXXXXX`) |
-| GET | `/api/admin/bookings?token=…` | list bookings |
-| GET | `/api/admin/collaborations?token=…` | list collaboration requests |
+| GET | `/api/admin/bookings` | list bookings (needs `X-Admin-Token` header) |
+| GET | `/api/admin/collaborations` | list collaboration requests (needs `X-Admin-Token` header) |
 
 ### Bot protection
 

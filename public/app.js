@@ -425,10 +425,16 @@ function t(key, vars) {
 }
 const pick = (o) => (o && (o[LANG] !== undefined ? o[LANG] : o.en)) || '';
 
-function setContent(el, str) {
-  if (!el) return;
-  if (/<[a-z][^>]*>/i.test(str)) el.innerHTML = str;
-  else el.textContent = str;
+/* Renders a trusted, developer-authored string. Translation values carry
+   real markup such as <strong> and <span>, which is why HTML is written
+   here at all. Never pass visitor input to this: use setText. */
+function setRich(el, str) {
+  if (el) el.innerHTML = str == null ? '' : String(str);
+}
+/* The safe companion: assigns text, so nothing is ever parsed as markup.
+   Use this for anything that came from a visitor or from the server. */
+function setText(el, str) {
+  if (el) el.textContent = str == null ? '' : String(str);
 }
 
 /* Riyadh = UTC+3, no DST */
@@ -443,7 +449,7 @@ function applyI18n() {
   html.lang = LANG;
   html.dir = LANG === 'ar' ? 'rtl' : 'ltr';
 
-  $$('[data-i18n]').forEach((el) => setContent(el, t(el.getAttribute('data-i18n'))));
+  $$('[data-i18n]').forEach((el) => setRich(el, t(el.getAttribute('data-i18n'))));
   $$('[data-i18n-ph]').forEach((el) => { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
 
   $$('.lang-opt').forEach((el) => el.classList.toggle('is-on', el.getAttribute('data-lang') === LANG));
@@ -772,7 +778,7 @@ async function submitBooking(e) {
     const done = $('#bookDone');
     done.hidden = false;
     $('#doneSub').textContent = t('rt.doneSub', { session: pick(s.t), date: formatDate(selDate), time: selTime });
-    $('#doneRef').textContent = data.booking.ref;
+    setText($('#doneRef'), data.booking.ref);
     const feeEl = $('#doneFee');
     if (feeEl) feeEl.textContent = t('rt.feeLine', { price: priceLabel(s) });
   } catch (err) {
@@ -815,7 +821,7 @@ async function submitCollab(e) {
     const done = $('#clDone');
     done.hidden = false;
     $('#clDoneSub').textContent = t('rt.clDoneSub', { name: name, email: email });
-    $('#clDoneRef').textContent = data.ref;
+    setText($('#clDoneRef'), data.ref);
   } catch (err) {
     showFieldError('clMsg', t('rt.errGeneric'));
     btn.disabled = false; btn.textContent = t('cl.send');
@@ -968,6 +974,27 @@ function initBooking() {
   loadMonth();
 }
 
+/* Portrait fallback: local photo, then the GitHub avatar, then the "MA"
+   monogram. This used to be an inline onerror attribute, which the
+   Content-Security-Policy blocks, so it lives here instead. */
+function initPortraitFallback() {
+  const img = $('#portraitImg');
+  if (!img) return;
+  const mono = $('#monoFallback');
+  const step = () => {
+    if (!img.dataset.fb1) {
+      img.dataset.fb1 = '1';
+      img.src = 'https://avatars.githubusercontent.com/u/93028621?v=4';
+      return;
+    }
+    img.style.display = 'none';
+    if (mono) mono.style.display = 'grid';
+  };
+  img.addEventListener('error', step);
+  /* The image may already have failed before this listener was attached. */
+  if (img.complete && img.naturalWidth === 0) step();
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   const toggle = $('#langToggle');
   if (toggle) {
@@ -981,6 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  initPortraitFallback();
   applyI18n();
   initChrome();
   initBooking();
