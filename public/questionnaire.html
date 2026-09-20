@@ -64,14 +64,22 @@
   <!-- ============ INTRO ============ -->
   <section class="section">
     <div class="wrap">
-      <p class="eyebrow" data-i18n="q.eyebrow">Questionnaire</p>
-      <h1 class="q-title" data-i18n="q.title">Request a Consultation</h1>
-      <p class="lead" data-i18n="q.lead">Eight short questions, about a minute. Your answers reach me directly, so our first call opens with real context instead of introductions.</p>
+      <p class="eyebrow" data-i18n="q.eyebrow">Partner Matching</p>
+      <h1 class="q-title" data-i18n="q.title">Find the Right Partner</h1>
+      <p class="lead" data-i18n="q.lead">Ten short questions, about ninety seconds. I use your answers to work out what you actually need, then introduce you to people in my network who fit.</p>
       <ul class="q-assure">
-        <li data-i18n="q.a1">No sales pitch at the end</li>
-        <li data-i18n="q.a2">You can book a call right after</li>
-        <li data-i18n="q.a3">Your answers stay with me</li>
+        <li data-i18n="q.a1">Introductions only, with no obligation</li>
+        <li data-i18n="q.a2">Nothing is shared before the agreements are in place</li>
+        <li data-i18n="q.a3">You choose the partner, or none at all</li>
       </ul>
+
+      <div class="q-disclaimer">
+        <span class="q-disclaimer-ico" aria-hidden="true">!</span>
+        <div>
+          <h3 data-i18n="q.discTitle">Introductions only</h3>
+          <p data-i18n="q.disc">I connect people in my network and help shape a plan. I am not a party to any agreement you sign with a provider, do not employ or subcontract them, and accept no responsibility for their work, pricing or conduct. Please run your own due diligence before committing.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -136,7 +144,12 @@
         </div>
 
         <button class="btn btn-primary btn-block" type="submit" id="qSubmit" data-i18n="q.submit">Request Consultation</button>
-        <p class="form-note" data-i18n="q.submitNote">No sales pitch. Just a straightforward conversation.</p>
+        <div class="q-badge-row">
+          <span class="badge badge-live">
+            <span class="pulse" aria-hidden="true"></span>
+            <span data-i18n="q.submitNote">No sales pitch. Just a straightforward conversation.</span>
+          </span>
+        </div>
         <p class="form-note q-consent" data-i18n="q.consent">By submitting, you agree that I may keep these answers and contact you about your enquiry.</p>
 
         <div class="done" id="qDone" hidden>
@@ -159,21 +172,58 @@
         <h2 data-i18n="q.nextTitle">What Happens Next</h2>
       </div>
       <div class="q-steps">
+
         <div class="q-step">
-          <span class="q-step-num mono">1</span>
-          <h3 data-i18n="q.step1Title">Free Consultation</h3>
-          <p data-i18n="q.step1Body">A clear plan covering the architecture and tooling to use, the technical approach, the schedule and the budget.</p>
+          <span class="q-shield" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="38" height="38">
+              <path class="sh-face" d="M12 2.4 4 5.7v6.3c0 4.6 3.4 8.7 8 9.9 4.6-1.2 8-5.3 8-9.9V5.7L12 2.4z"/>
+              <text class="sh-num" x="12" y="15.6" text-anchor="middle">1</text>
+            </svg>
+          </span>
+          <h3 data-i18n="q.step1Title">Agreements First</h3>
+          <p data-i18n="q.step1Body">Before your answers go anywhere, four documents are put in place.</p>
+          <ul class="q-docs">
+            <li data-i18n="q.doc1">Mutual NDA</li>
+            <li data-i18n="q.doc2">Referral Agreement</li>
+            <li data-i18n="q.doc3">Conflict of Interest Declaration</li>
+            <li data-i18n="q.doc4">Privacy Notice and Data Handling</li>
+          </ul>
+          <p class="q-step-foot" data-i18n="q.stepFoot">Your answers are covered by the privacy notice from the moment you submit. Engagement contracts are signed directly between you and the provider. I am not a party to them.</p>
         </div>
+
         <div class="q-step">
-          <span class="q-step-num mono">2</span>
-          <h3 data-i18n="q.step2Title">Technical Discussion</h3>
-          <p data-i18n="q.step2Body">A short series of conversations about the frameworks and technologies that will turn the idea into something real.</p>
+          <span class="q-shield" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="38" height="38">
+              <path class="sh-face" d="M12 2.4 4 5.7v6.3c0 4.6 3.4 8.7 8 9.9 4.6-1.2 8-5.3 8-9.9V5.7L12 2.4z"/>
+              <text class="sh-num" x="12" y="15.6" text-anchor="middle">2</text>
+            </svg>
+          </span>
+          <h3 data-i18n="q.step2Title">Plan Crafting</h3>
+          <p data-i18n="q.step2Body">I read your answers and put together a short plan: what you actually need, the shape of the work, and the kind of partner that fits.</p>
         </div>
+
         <div class="q-step">
-          <span class="q-step-num mono">3</span>
-          <h3 data-i18n="q.step3Title">Start Work</h3>
-          <p data-i18n="q.step3Body">Once you give the nod, work begins on the agreed scope, with the schedule we settled on.</p>
+          <span class="q-shield" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="38" height="38">
+              <path class="sh-face" d="M12 2.4 4 5.7v6.3c0 4.6 3.4 8.7 8 9.9 4.6-1.2 8-5.3 8-9.9V5.7L12 2.4z"/>
+              <text class="sh-num" x="12" y="15.6" text-anchor="middle">3</text>
+            </svg>
+          </span>
+          <h3 data-i18n="q.step3Title">Partner Match</h3>
+          <p data-i18n="q.step3Body">You receive three matched options drawn from my network: an individual specialist, a small team, or a company. Each is chosen for your scope and budget.</p>
         </div>
+
+        <div class="q-step">
+          <span class="q-shield" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="38" height="38">
+              <path class="sh-face" d="M12 2.4 4 5.7v6.3c0 4.6 3.4 8.7 8 9.9 4.6-1.2 8-5.3 8-9.9V5.7L12 2.4z"/>
+              <text class="sh-num" x="12" y="15.6" text-anchor="middle">4</text>
+            </svg>
+          </span>
+          <h3 data-i18n="q.step4Title">Start Work</h3>
+          <p data-i18n="q.step4Body">Once you choose and the terms are agreed, work begins on the scope you settled.</p>
+        </div>
+
       </div>
     </div>
   </section>

@@ -176,7 +176,8 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 .badge-row{margin-bottom:18px}
 .badge{
-  display:inline-flex;align-items:center;gap:9px;padding:6px 15px 6px 12px;
+  display:inline-flex;align-items:center;gap:9px;
+  padding-block:6px;padding-inline:12px 15px;
   border:1px solid rgba(61,220,151,.28);border-radius:999px;
   background:rgba(61,220,151,.07);font-size:12.5px;color:#a9e9cd;
 }
@@ -624,7 +625,10 @@ ul,ol{margin:0;padding:0;list-style:none}
   font-size:11.5px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
   color:var(--amber);margin-bottom:14px;font-weight:600;
 }
-.footer-cols a,.footer-cols span{display:block;font-size:13.5px;color:var(--text-2);margin-bottom:8px}
+.footer-cols a,.footer-cols span{display:block;font-size:13.5px;color:var(--text-2);margin-bottom:8px;text-align:start}
+/* Anchors marked dir="ltr" would otherwise hug the left edge of an RTL
+   column. Align their box back to the column while the text still reads LTR. */
+[dir="rtl"] .footer-cols a[dir="ltr"]{text-align:right}
 .footer-cols a:hover{color:var(--amber)}
 .footer-bottom{
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
@@ -762,13 +766,43 @@ ul,ol{margin:0;padding:0;list-style:none}
   padding:26px;border:1px solid var(--line);border-radius:var(--radius);
   background:var(--panel);
 }
-.q-step-num{
-  display:grid;place-items:center;width:38px;height:38px;margin-bottom:17px;
-  border-radius:50%;border:1px solid rgba(245,194,86,.4);
-  color:var(--amber);font-size:14px;font-weight:700;
-}
+/* shield badge on each stage */
+.q-shield{display:block;line-height:0;margin-bottom:16px}
+.q-shield .sh-face{fill:rgba(245,194,86,.07);stroke:rgba(245,194,86,.45);stroke-width:1.15}
+.q-shield .sh-num{fill:var(--amber);font-family:var(--mono);font-size:9.5px;font-weight:700}
 .q-step h3{font-size:17px;margin-bottom:9px}
 .q-step p{font-size:14px;color:var(--text-2);margin:0}
+
+/* the four agreements, kept to one line */
+.q-docs{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 0;padding:0;list-style:none}
+.q-docs li{
+  font-size:12px;line-height:1.35;padding:6px 12px;border-radius:999px;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.025);
+  color:var(--text-2);white-space:nowrap;
+}
+.q-step .q-step-foot{
+  margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);line-height:1.55;
+}
+
+/* disclaimer at the top of the page */
+.q-disclaimer{
+  display:flex;gap:14px;align-items:flex-start;margin-top:30px;
+  border:1px solid rgba(245,194,86,.26);border-radius:var(--radius);
+  background:rgba(245,194,86,.045);padding:18px 20px;
+}
+.q-disclaimer-ico{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(245,194,86,.13);color:var(--amber);font-size:15px;font-weight:700;
+}
+.q-disclaimer h3{
+  margin:0 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--amber);font-family:var(--mono);
+}
+.q-disclaimer p{margin:0;font-size:14px;color:var(--text-2);line-height:1.6}
+
+/* the no-sales-pitch line, styled as the hero badge */
+.q-badge-row{display:flex;justify-content:center;margin-top:18px}
 
 @media (max-width:640px){
   .q-legend .q-q{font-size:17px}
@@ -1098,8 +1132,8 @@ ul,ol{margin:0;padding:0;list-style:none}
 <span class="c-dim">$</span> <span class="c-cmd">cat focus.json</span>
 <span class="c-out">{</span>
 <span class="c-out">  "security":  [<span class="c-str">"red team"</span>, <span class="c-str">"threat intel"</span>],</span>
-<span class="c-out">  "platforms": [<span class="c-str">"AI-native"</span>, <span class="c-str">"logistics"</span>],</span>
-<span class="c-out">  "ecosystem": [<span class="c-str">"arab world"</span>, <span class="c-str">"vision 2030"</span>]</span>
+<span class="c-out">  "platforms": [<span class="c-str">"AI Platforms"</span>, <span class="c-str">"logistics"</span>],</span>
+<span class="c-out">  "ecosystem": [<span class="c-str">"Arab Union"</span>, <span class="c-str">"Innovation Ecosystem"</span>]</span>
 <span class="c-out">}</span>
 <span class="c-dim">$</span> <span class="c-cursor">▍</span></code></pre>
       </div>
@@ -1378,7 +1412,7 @@ ul,ol{margin:0;padding:0;list-style:none}
     <h2 data-i18n="cta.title">Ready to harden what you're building?</h2>
     <p data-i18n="cta.sub">Whether it's an adversary simulation, a security architecture review, or an AI platform from zero, I'm one message away.</p>
     <div class="cta-btns">
-      <a href="#booking" class="btn btn-primary" data-i18n="cta.book">Book a session</a>
+      <a href="/questionnaire" class="btn btn-primary" data-i18n="nav.questionnaire">Questionnaire</a>
       <a href="#collaborate" class="btn btn-ghost" data-i18n="cta.collab">Collaborate</a>
     </div>
   </div>
@@ -1604,7 +1638,7 @@ const T = {
 
     'cta.title': 'Ready to harden what you\'re building?',
     'cta.sub': 'Whether it\'s an adversary simulation, a security architecture review, or an AI platform from zero, I\'m one message away.',
-    'cta.book': 'Book a session', 'cta.collab': 'Collaborate',
+    'cta.collab': 'Collaborate',
 
     'foot.tag': 'Security infrastructure · Logistics technology · Innovation ecosystems',
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
@@ -1645,7 +1679,7 @@ const T = {
 
     'hero.badge': 'متاح لعدد محدود من المشاريع',
     'hero.eyebrow': 'مؤسس Arabc0n و InfoLogix · الرياض، المملكة العربية السعودية',
-    'hero.title1': 'آمن بالتصميم.',
+    'hero.title1': 'تصميم آمن.',
     'hero.title2': 'مبني للتحول الإقليمي.',
     'hero.sub': 'أبني البنية الأمنية وتقنيات اللوجستيات ومنظومات الابتكار، من نموذج التهديد وحتى منصة تعمل فعلياً لدى الجهات الحكومية وشركات الاتصالات والمؤسسات.',
     'hero.cta1': 'احجز جلسة', 'hero.cta2': 'استعرض الخبرات',
@@ -1698,7 +1732,7 @@ const T = {
 
     'cta.title': 'جاهز لتحصين ما تبنيه؟',
     'cta.sub': 'سواء كانت محاكاة خصم، أو مراجعة معمارية أمنية، أو منصة ذكاء اصطناعي من الصفر، أنا على بُعد رسالة واحدة.',
-    'cta.book': 'احجز جلسة', 'cta.collab': 'تعاون معي',
+    'cta.collab': 'تعاون معي',
 
     'foot.tag': 'البنية الأمنية · تقنيات اللوجستيات · منظومات الابتكار',
     'foot.contact': 'تواصل', 'foot.social': 'في مكان آخر',
@@ -2553,16 +2587,16 @@ window.QUESTIONNAIRE_CONFIG = {
     status:      { en: "Open now",                  ar: "مفتوح الآن" },
     label:       { en: "Questionnaire invitation",  ar: "دعوة إلى الاستبيان" },
     close:       { en: "Dismiss questionnaire invitation", ar: "إخفاء دعوة الاستبيان" },
-    eyebrow:     { en: "QUESTIONNAIRE / 60 SECONDS", ar: "استبيان · 60 ثانية" },
-    title:       { en: "Tell me what you're <span>building.</span>",
-                   ar: "أخبرني بما <span>تبنيه.</span>" },
-    description: { en: "Eight short questions, about a minute. I read every answer myself, so our first call opens with real context instead of introductions.",
-                   ar: "ثمانية أسئلة قصيرة تستغرق نحو دقيقة. أقرأ كل إجابة بنفسي، لتبدأ أول مكالمة بيننا بسياق واضح بدلاً من التعارف المعتاد." },
-    points:      { en: ["Eight questions", "About 60 seconds", "No obligation", "Book a call next"],
-                   ar: ["ثمانية أسئلة", "نحو 60 ثانية", "دون أي التزام", "ثم احجز جلسة"] },
+    eyebrow:     { en: "PARTNER MATCHING / 90 SECONDS", ar: "مطابقة الشركاء · 90 ثانية" },
+    title:       { en: "Looking for the right <span>partner?</span>",
+                   ar: "تبحث عن <span>الشريك المناسب؟</span>" },
+    description: { en: "Ten short questions, about ninety seconds. I use your answers to introduce you to the right technical or executive partner from my network.",
+                   ar: "عشرة أسئلة قصيرة تستغرق نحو تسعين ثانية. أستخدم إجاباتك لأعرّفك على الشريك التقني أو التنفيذي المناسب من شبكتي." },
+    points:      { en: ["Ten questions", "About 90 seconds", "No obligation", "Introductions only"],
+                   ar: ["عشرة أسئلة", "نحو 90 ثانية", "دون أي التزام", "تعارف فقط"] },
     ctaLabel:    { en: "Start the questionnaire",   ar: "ابدأ الاستبيان" },
-    footnote:    { en: "No sales pitch · Answers reach me directly",
-                   ar: "بلا عروض بيعية · تصلني إجاباتك مباشرة" },
+    footnote:    { en: "Introductions only · Answers reach me directly",
+                   ar: "تعارف فقط · تصلني إجاباتك مباشرة" },
     arrow:       { en: "\u2192",                    ar: "\u2190" }
   };
 

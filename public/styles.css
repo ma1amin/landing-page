@@ -167,7 +167,8 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 .badge-row{margin-bottom:18px}
 .badge{
-  display:inline-flex;align-items:center;gap:9px;padding:6px 15px 6px 12px;
+  display:inline-flex;align-items:center;gap:9px;
+  padding-block:6px;padding-inline:12px 15px;
   border:1px solid rgba(61,220,151,.28);border-radius:999px;
   background:rgba(61,220,151,.07);font-size:12.5px;color:#a9e9cd;
 }
@@ -615,7 +616,10 @@ ul,ol{margin:0;padding:0;list-style:none}
   font-size:11.5px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
   color:var(--amber);margin-bottom:14px;font-weight:600;
 }
-.footer-cols a,.footer-cols span{display:block;font-size:13.5px;color:var(--text-2);margin-bottom:8px}
+.footer-cols a,.footer-cols span{display:block;font-size:13.5px;color:var(--text-2);margin-bottom:8px;text-align:start}
+/* Anchors marked dir="ltr" would otherwise hug the left edge of an RTL
+   column. Align their box back to the column while the text still reads LTR. */
+[dir="rtl"] .footer-cols a[dir="ltr"]{text-align:right}
 .footer-cols a:hover{color:var(--amber)}
 .footer-bottom{
   display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
@@ -753,13 +757,43 @@ ul,ol{margin:0;padding:0;list-style:none}
   padding:26px;border:1px solid var(--line);border-radius:var(--radius);
   background:var(--panel);
 }
-.q-step-num{
-  display:grid;place-items:center;width:38px;height:38px;margin-bottom:17px;
-  border-radius:50%;border:1px solid rgba(245,194,86,.4);
-  color:var(--amber);font-size:14px;font-weight:700;
-}
+/* shield badge on each stage */
+.q-shield{display:block;line-height:0;margin-bottom:16px}
+.q-shield .sh-face{fill:rgba(245,194,86,.07);stroke:rgba(245,194,86,.45);stroke-width:1.15}
+.q-shield .sh-num{fill:var(--amber);font-family:var(--mono);font-size:9.5px;font-weight:700}
 .q-step h3{font-size:17px;margin-bottom:9px}
 .q-step p{font-size:14px;color:var(--text-2);margin:0}
+
+/* the four agreements, kept to one line */
+.q-docs{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 0;padding:0;list-style:none}
+.q-docs li{
+  font-size:12px;line-height:1.35;padding:6px 12px;border-radius:999px;
+  border:1px solid var(--line-2);background:rgba(255,255,255,.025);
+  color:var(--text-2);white-space:nowrap;
+}
+.q-step .q-step-foot{
+  margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line);
+  font-size:12.5px;color:var(--muted);line-height:1.55;
+}
+
+/* disclaimer at the top of the page */
+.q-disclaimer{
+  display:flex;gap:14px;align-items:flex-start;margin-top:30px;
+  border:1px solid rgba(245,194,86,.26);border-radius:var(--radius);
+  background:rgba(245,194,86,.045);padding:18px 20px;
+}
+.q-disclaimer-ico{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;
+  background:rgba(245,194,86,.13);color:var(--amber);font-size:15px;font-weight:700;
+}
+.q-disclaimer h3{
+  margin:0 0 6px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--amber);font-family:var(--mono);
+}
+.q-disclaimer p{margin:0;font-size:14px;color:var(--text-2);line-height:1.6}
+
+/* the no-sales-pitch line, styled as the hero badge */
+.q-badge-row{display:flex;justify-content:center;margin-top:18px}
 
 @media (max-width:640px){
   .q-legend .q-q{font-size:17px}

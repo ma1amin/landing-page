@@ -76,7 +76,7 @@ const T = {
 
     'cta.title': 'Ready to harden what you\'re building?',
     'cta.sub': 'Whether it\'s an adversary simulation, a security architecture review, or an AI platform from zero, I\'m one message away.',
-    'cta.book': 'Book a session', 'cta.collab': 'Collaborate',
+    'cta.collab': 'Collaborate',
 
     'foot.tag': 'Security infrastructure · Logistics technology · Innovation ecosystems',
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
@@ -117,7 +117,7 @@ const T = {
 
     'hero.badge': 'متاح لعدد محدود من المشاريع',
     'hero.eyebrow': 'مؤسس Arabc0n و InfoLogix · الرياض، المملكة العربية السعودية',
-    'hero.title1': 'آمن بالتصميم.',
+    'hero.title1': 'تصميم آمن.',
     'hero.title2': 'مبني للتحول الإقليمي.',
     'hero.sub': 'أبني البنية الأمنية وتقنيات اللوجستيات ومنظومات الابتكار، من نموذج التهديد وحتى منصة تعمل فعلياً لدى الجهات الحكومية وشركات الاتصالات والمؤسسات.',
     'hero.cta1': 'احجز جلسة', 'hero.cta2': 'استعرض الخبرات',
@@ -170,7 +170,7 @@ const T = {
 
     'cta.title': 'جاهز لتحصين ما تبنيه؟',
     'cta.sub': 'سواء كانت محاكاة خصم، أو مراجعة معمارية أمنية، أو منصة ذكاء اصطناعي من الصفر، أنا على بُعد رسالة واحدة.',
-    'cta.book': 'احجز جلسة', 'cta.collab': 'تعاون معي',
+    'cta.collab': 'تعاون معي',
 
     'foot.tag': 'البنية الأمنية · تقنيات اللوجستيات · منظومات الابتكار',
     'foot.contact': 'تواصل', 'foot.social': 'في مكان آخر',
