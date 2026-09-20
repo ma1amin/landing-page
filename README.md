@@ -9,7 +9,8 @@ Zero dependencies · plain Node + static HTML/CSS/JS. No build step, no `node_mo
 
 ```bash
 cd brand-site
-node server.js          # http://localhost:3000
+cp config.example.env .env     # optional, now actually read on startup
+node server.js                 # http://localhost:3000
 ```
 
 ## Replace the photo
@@ -59,13 +60,29 @@ Gmail needs a 16-character App Password (not your account password).
 
 | Method | Route | Purpose |
 |---|---|---|
-| GET | `/api/health` | server time, Riyadh time, mail status |
+| GET | `/api/config` | public settings, currently the Turnstile site key |
+| GET | `/api/health` | server time, Riyadh time, mail and captcha status |
 | GET | `/api/slots?month=YYYY-MM&type=discovery` | available slots for a month |
 | POST | `/api/bookings` | create a booking (returns a `MA-XXXXXX` reference) |
 | POST | `/api/collaborations` | submit the collaboration form (`COL-XXXXXX`) |
 | POST | `/api/questionnaire` | submit the questionnaire (`QNR-XXXXXX`) |
 | GET | `/api/admin/bookings?token=…` | list bookings |
 | GET | `/api/admin/collaborations?token=…` | list collaboration requests |
+
+### Bot protection
+
+The questionnaire is guarded with Cloudflare Turnstile. Both keys live in
+`.env`, and the page fetches the public site key from `GET /api/config`, so no
+key is baked into the markup. When no keys are configured the widget never
+renders and the server skips the check, which is what keeps `preview.html`
+working offline.
+
+Get keys from Cloudflare dashboard, Turnstile, Add site. You do **not** need an
+API Token, and you do not need to move your DNS to Cloudflare. See the
+Turnstile section in `config.example.env`, which ships with Cloudflare's public
+test keys.
+
+`GET /api/health` reports `captcha: turnstile` when the check is active.
 
 Bookings live in `data/bookings.json`, requests in `data/collaborations.json`,
 questionnaire answers in `data/questionnaire.json`.

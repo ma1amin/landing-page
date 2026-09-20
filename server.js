@@ -15,7 +15,31 @@ const fs = require('node:fs');
 const fsp = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const https = require('node:https');
 const { sendMail } = require('./smtp');
+
+/*
+ * Reads ./.env if present so the keys documented in config.example.env
+ * actually work. Real environment variables always win.
+ */
+(function loadDotEnv() {
+  try {
+    const file = path.join(__dirname, '.env');
+    if (!fs.existsSync(file)) return;
+    fs.readFileSync(file, 'utf8').split(/\r?\n/).forEach((line) => {
+      const t = line.trim();
+      if (!t || t.startsWith('#')) return;
+      const i = t.indexOf('=');
+      if (i === -1) return;
+      const key = t.slice(0, i).trim();
+      let val = t.slice(i + 1).trim();
+      if (val.length > 1 && val[0] === val[val.length - 1] && (val[0] === '"' || val[0] === "'")) {
+        val = val.slice(1, -1);
+      }
+      if (key && process.env[key] === undefined) process.env[key] = val;
+    });
+  } catch (_) {}
+})();
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -24,6 +48,11 @@ const PUBLIC_DIR = path.join(ROOT, 'public');
 const DATA_DIR = path.join(ROOT, 'data');
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || 'letmein';
 const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'mo7dalamin@gmail.com';
+
+/* Bot protection for the questionnaire. Empty means the check is skipped,
+   which is what keeps the offline preview working. */
+const TURNSTILE_SECRET = process.env.TURNSTILE_SECRET || '';
+const TURNSTILE_SITE_KEY = process.env.TURNSTILE_SITE_KEY || '';
 
 /* ------------------------------------------------------------------ *
  * Timezone helpers · Asia/Riyadh is a fixed UTC+3 (no DST)
@@ -157,6 +186,50 @@ const SMTP = {
 const mailEnabled = Boolean(SMTP.host && SMTP.user && SMTP.pass && SMTP.from);
 if (mailEnabled) console.log('[mail] SMTP configured · notifications will be sent to', NOTIFY_EMAIL);
 else console.log('[mail] SMTP not configured · submissions will be stored locally only.');
+  console.log('[captcha] ' + (TURNSTILE_SECRET ? 'Turnstile enabled' : 'not configured · questionnaire submissions are unchecked'));
+
+/*
+ * Verifies a Turnstile token with Cloudflare. Resolves ok:true when no
+ * secret is configured, so the site works without bot protection.
+ */
+async function verifyTurnstile(token, remoteIp) {
+  if (!TURNSTILE_SECRET) return { ok: true, skipped: true };
+  if (!token) return { ok: false, reason: 'missing_token' };
+
+  const params = new URLSearchParams({ secret: TURNSTILE_SECRET, response: token });
+  if (remoteIp) params.set('remoteip', remoteIp);
+  const body = params.toString();
+
+  return new Promise((resolve) => {
+    const req = https.request({
+      hostname: 'challenges.cloudflare.com',
+      path: '/turnstile/v0/siteverify',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(body),
+      },
+      timeout: 8000,
+    }, (res) => {
+      let data = '';
+      res.on('data', (c) => { data += c; });
+      res.on('end', () => {
+        try {
+          const j = JSON.parse(data);
+          resolve(j.success
+            ? { ok: true }
+            : { ok: false, reason: 'rejected', codes: j['error-codes'] || [] });
+        } catch (_) {
+          resolve({ ok: false, reason: 'bad_response' });
+        }
+      });
+    });
+    req.on('timeout', () => { req.destroy(); resolve({ ok: false, reason: 'timeout' }); });
+    req.on('error', () => resolve({ ok: false, reason: 'network_error' }));
+    req.write(body);
+    req.end();
+  });
+}
 
 async function notify(subject, body) {
   if (!mailEnabled) {
@@ -382,6 +455,19 @@ const server = http.createServer(async (req, res) => {
     /* ---------- Questionnaire ---------- */
     if (p === '/api/questionnaire' && req.method === 'POST') {
       const b = await readBody(req);
+
+      /* Bot check runs first, so a rejected submission is never stored. */
+      const remoteIp = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim()
+        || req.socket.remoteAddress || '';
+      const captcha = await verifyTurnstile(clean(b.turnstileToken, 2048), remoteIp);
+      if (!captcha.ok) {
+        return json(res, 400, {
+          error: 'captcha',
+          reason: captcha.reason,
+          codes: captcha.codes || [],
+        });
+      }
+
       const errors = {};
       if (!clean(b.firstName, 80)) errors.firstName = 'required';
       if (!clean(b.lastName, 80)) errors.lastName = 'required';
@@ -451,8 +537,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     /* ---------- Health ---------- */
+    if (p === '/api/config' && req.method === 'GET') {
+      return json(res, 200, { turnstileSiteKey: TURNSTILE_SITE_KEY });
+    }
+
     if (p === '/api/health') {
-      return json(res, 200, { ok: true, now: new Date().toISOString(), riyadh: riyadhParts().toISOString(), mail: mailEnabled });
+      return json(res, 200, { ok: true, now: new Date().toISOString(), riyadh: riyadhParts().toISOString(), mail: mailEnabled, captcha: TURNSTILE_SECRET ? 'turnstile' : 'off' });
     }
 
     /* ---------- Static ---------- */

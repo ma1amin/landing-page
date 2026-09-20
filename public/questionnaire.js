@@ -239,6 +239,8 @@
       "q.errEmail": "Enter a valid email address.",
       "q.errPhone": "Enter a valid phone number.",
       "q.errSend": "Could not send. Please try again.",
+      "q.errCaptcha": "Please confirm you are human, then try again.",
+      "q.errCaptchaExpired": "That check expired. Please confirm it again.",
       "q.sending": "Sending…",
       "q.selectRole": "Select your role"
     },
@@ -293,6 +295,8 @@
       "q.errEmail": "أدخل بريداً إلكترونياً صحيحاً.",
       "q.errPhone": "أدخل رقم هاتف صحيحاً.",
       "q.errSend": "تعذّر الإرسال. يرجى المحاولة مرة أخرى.",
+      "q.errCaptcha": "يرجى تأكيد أنك لست روبوتاً، ثم المحاولة مرة أخرى.",
+      "q.errCaptchaExpired": "انتهت صلاحية التحقق. يرجى تأكيده مرة أخرى.",
       "q.sending": "جارٍ الإرسال…",
       "q.selectRole": "اختر دورك"
     }
@@ -447,9 +451,66 @@
     });
   }
 
+  /* ------------------------------------------------------------------
+     Bot protection. The site key is read from the server rather than
+     baked into the markup, so both keys stay in .env. When no key is
+     configured the widget never renders and the server skips the check,
+     which is what keeps the offline preview working.
+     ------------------------------------------------------------------ */
+
+  var TURNSTILE_SITE_KEY = "";
+
+  function turnstileToken() {
+    try {
+      if (window.turnstile && window.turnstile.getResponse) {
+        return window.turnstile.getResponse() || "";
+      }
+    } catch (_) {}
+    return "";
+  }
+
+  function showCaptchaError(message) {
+    var box = document.getElementById("qCaptchaErr");
+    if (!box) return;
+    box.textContent = message;
+    box.hidden = false;
+  }
+
+  function clearCaptchaError() {
+    var box = document.getElementById("qCaptchaErr");
+    if (box) { box.hidden = true; box.textContent = ""; }
+  }
+
+  function loadTurnstile() {
+    if (typeof fetch !== "function") return;
+    fetch("/api/config").then(function (r) { return r.json(); }).then(function (cfg) {
+      TURNSTILE_SITE_KEY = (cfg && cfg.turnstileSiteKey) || "";
+      if (!TURNSTILE_SITE_KEY) return;
+      var box = document.getElementById("qCaptcha");
+      if (!box) return;
+      box.hidden = false;
+      var s = document.createElement("script");
+      s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+      s.async = true;
+      s.defer = true;
+      s.onerror = function () { box.hidden = true; };
+      s.onload = function () {
+        if (!window.turnstile) return;
+        window.turnstile.render("#qCaptcha", {
+          sitekey: TURNSTILE_SITE_KEY,
+          theme: "dark",
+          "error-callback": function () { showCaptchaError(t("q.errCaptcha")); },
+          "expired-callback": function () { showCaptchaError(t("q.errCaptchaExpired")); }
+        });
+      };
+      document.head.appendChild(s);
+    }).catch(function () { /* offline preview: nothing to render */ });
+  }
+
   async function submit(event) {
     event.preventDefault();
     clearErrors();
+    clearCaptchaError();
 
     var first = $("#qFirst").value.trim();
     var last = $("#qLast").value.trim();
@@ -490,12 +551,26 @@
           role: role,
           about: $("#qAbout").value.trim(),
           locale: LANG,
+          turnstileToken: turnstileToken(),
           answers: collectAnswers()
         })
       });
 
-      if (!response.ok) throw new Error("bad status");
-      var data = await response.json();
+      var data = {};
+      try { data = await response.json(); } catch (_) {}
+
+      if (!response.ok) {
+        if (response.status === 400 && data.error === "captcha") {
+          showCaptchaError(t("q.errCaptcha"));
+          if (window.turnstile && window.turnstile.reset) {
+            try { window.turnstile.reset(); } catch (_) {}
+          }
+          button.disabled = false;
+          button.textContent = original;
+          return;
+        }
+        throw new Error((data && data.message) || "bad status");
+      }
 
       var form = $("#qForm");
       var done = $("#qDone");
@@ -591,6 +666,8 @@
     LANG = lang();
     initChrome();
     applyI18n();
+
+    loadTurnstile();
 
     var form = $("#qForm");
     if (form) form.addEventListener("submit", submit);
