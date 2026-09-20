@@ -160,8 +160,9 @@
             pick(TEXT.arrow, lang) +
           '</span>' +
         '</a>' +
-        '<p class="questionnaire-widget-foot" data-q-text="footnote">' +
-          escapeHtml(pick(TEXT.footnote, lang)) +
+        '<p class="questionnaire-widget-foot">' +
+          '<i class="questionnaire-widget-pulse" aria-hidden="true"></i>' +
+          '<span data-q-text="footnote">' + escapeHtml(pick(TEXT.footnote, lang)) + '</span>' +
         '</p>' +
       '</div>';
     return element;

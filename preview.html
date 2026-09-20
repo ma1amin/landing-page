@@ -994,12 +994,44 @@ ul,ol{margin:0;padding:0;list-style:none}
 /* Point the arrow back the other way in Arabic. */
 [dir="rtl"] .questionnaire-widget-arrow { transform: scaleX(-1); }
 
+/* footnote carries the same badge treatment as the hero badge */
 .questionnaire-widget-foot {
   position: relative;
-  margin-top: 12px;
-  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px auto 0;
+  padding: 6px 14px;
+  width: fit-content;
+  max-width: 100%;
+  border: 1px solid rgba(61,220,151,.28);
+  border-radius: 999px;
+  background: rgba(61,220,151,.07);
+  color: #a9e9cd;
   font: 10px/1.4 var(--mono);
   text-align: center;
+}
+.questionnaire-widget-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+  position: relative;
+  flex: 0 0 auto;
+}
+.questionnaire-widget-pulse::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--ok);
+  opacity: .5;
+  animation: questionnaire-widget-pulse 2.2s infinite;
+}
+@keyframes questionnaire-widget-pulse {
+  0%   { transform: scale(.6); opacity: .8; }
+  100% { transform: scale(1.5); opacity: 0; }
 }
 
 @media (max-width: 700px) {
@@ -1021,6 +1053,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 @media (prefers-reduced-motion: reduce) {
   .questionnaire-widget,
   .questionnaire-widget-cta { transition: none; }
+  .questionnaire-widget-pulse::after { animation: none; }
 }
 
 </style>
@@ -2723,8 +2756,9 @@ window.QUESTIONNAIRE_CONFIG = {
             pick(TEXT.arrow, lang) +
           '</span>' +
         '</a>' +
-        '<p class="questionnaire-widget-foot" data-q-text="footnote">' +
-          escapeHtml(pick(TEXT.footnote, lang)) +
+        '<p class="questionnaire-widget-foot">' +
+          '<i class="questionnaire-widget-pulse" aria-hidden="true"></i>' +
+          '<span data-q-text="footnote">' + escapeHtml(pick(TEXT.footnote, lang)) + '</span>' +
         '</p>' +
       '</div>';
     return element;
