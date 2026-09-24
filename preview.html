@@ -365,6 +365,8 @@ ul,ol{margin:0;padding:0;list-style:none}
   font-size:13px;color:var(--amber);
 }
 .project-outcome::before{content:"→ ";font-family:var(--mono)}
+/* Arrow follows reading direction: points left in Arabic */
+[dir="rtl"] .project-outcome::before{content:"← "}
 
 /* ---------- timeline ---------- */
 .timeline{position:relative;padding-inline-start:34px}
