@@ -135,13 +135,13 @@ const favicon = 'data:image/svg+xml;base64,' + b64('assets/favicon.svg');
 let out = html
   .replace('<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />',
            () => '<link rel="icon" href="' + favicon + '" type="image/svg+xml" />')
-  .replace('<link rel="stylesheet" href="styles.css" />',
+  .replace('<link rel="stylesheet" href="styles.css?v=3" />',
            () => '<style>\n' + css + '\n</style>')
   .replace('src="assets/portrait.jpg"',
            () => 'src="' + portrait + '"')
   .replace('<link rel="stylesheet" href="questionnaire-widget.css" />',
            () => '<style>\n' + widgetCss + '\n</style>')
-  .replace('<script src="app.js"></script>',
+  .replace('<script src="app.js?v=3"></script>',
            () => '<script>' + SHIM + '</script>\n<script>\n' + appjs + '\n</script>')
   .replace('<script src="questionnaire-widget.js" defer></script>',
            () => '<script>\n' + widgetJs + '\n</script>');
