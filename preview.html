@@ -1200,7 +1200,7 @@ ul,ol{margin:0;padding:0;list-style:none}
       <div class="stat"><span class="stat-num" data-count="18" data-suffix="+">0</span><span class="stat-label" data-i18n="stats.years">Years in the field</span></div>
       <div class="stat"><span class="stat-num" data-count="10" data-suffix="+">0</span><span class="stat-label" data-i18n="stats.redteam">Red-team engagements</span></div>
       <div class="stat"><span class="stat-num" data-count="5" data-suffix="">0</span><span class="stat-label" data-i18n="stats.unit">Elite operators led</span></div>
-      <div class="stat"><span class="stat-num" data-count="6" data-suffix="">0</span><span class="stat-label" data-i18n="stats.initiatives">Flagship initiatives</span></div>
+      <div class="stat"><span class="stat-num" data-count="9" data-suffix="">0</span><span class="stat-label" data-i18n="stats.initiatives">Flagship initiatives</span></div>
       <div class="stat"><span class="stat-num" data-count="2" data-suffix="">0</span><span class="stat-label" data-i18n="stats.ventures">Ventures founded</span></div>
     </div>
   </div>
@@ -1251,7 +1251,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   <div class="wrap">
     <div class="section-head reveal">
       <span class="kicker">03 · <span data-i18n="ini.kicker">Selected work</span></span>
-      <h2 data-i18n="ini.title">Initiatives &amp; platforms</h2>
+      <h2 data-i18n="ini.title">Initiatives &amp; Platforms</h2>
       <p class="section-sub" data-i18n="ini.sub">Strategic regional programmes, AI-native products and open infrastructure, built to outlive the launch.</p>
     </div>
     <div class="projects" id="initiativesGrid"></div>
@@ -1645,7 +1645,7 @@ const T = {
     'exp.kicker': 'What I do', 'exp.title': 'Expertise',
     'exp.sub': 'From adversary simulation to AI-native platforms: engagement models for teams that need decisions, not slide decks.',
 
-    'ini.kicker': 'Selected work', 'ini.title': 'Initiatives & platforms',
+    'ini.kicker': 'Selected work', 'ini.title': 'Initiatives & Platforms',
     'ini.sub': 'Strategic regional programmes, AI-native products and open infrastructure, built to outlive the launch.',
 
     'jr.kicker': 'Track record', 'jr.title': 'Journey',
@@ -1871,6 +1871,13 @@ const INITIATIVES = [
     g:{en:['Governance','Policy','Arab Region'], ar:['حوكمة','سياسات','المنطقة العربية']},
     o:{en:'Comprehensive roadmap, governance models, training programmes and international cooperation strategies, strengthening collective cyber resilience.',
        ar:'خارطة تنفيذ شاملة ونماذج حوكمة وبرامج تدريب واستراتيجيات تعاون دولي، لتعزيز الصمود السيبراني الجماعي.'} },
+  { icon:'🏛️', kind:{en:'National Framework', ar:'إطار وطني'},
+    t:{en:'Sudan Cybersecurity Authority (SCA)', ar:'هيئة الأمن السيبراني السودانية (SCA)'},
+    d:{en:'The Sudan National Cybersecurity Framework (SNCF): a national baseline of governance, risk management and protection controls for government and critical sectors, developed under the supervision of the SCA.',
+       ar:'إطار السودان الوطني للأمن السيبراني (SNCF): خط أساس وطني للحوكمة وإدارة المخاطر وضوابط الحماية في القطاع الحكومي والقطاعات الحيوية، طُوّر تحت إشراف هيئة الأمن السيبراني السودانية.'},
+    g:{en:['Governance','Critical Infrastructure','National'], ar:['حوكمة','بنية تحتية حيوية','وطني']},
+    o:{en:'Five national frameworks and seven control families, each with maturity levels and implementation guidance aligned to international standards.',
+       ar:'خمسة أطر وطنية وسبع مجموعات ضوابط، لكل منها مستويات نضج وإرشادات تنفيذ متوافقة مع المعايير الدولية.'} },
   { icon:'🌍', kind:{en:'Ecosystem Platform', ar:'منصة منظومة'},
     t:{en:'Sudan Innovation & Investment Ecosystem', ar:'منظومة الابتكار والاستثمار في السودان'},
     d:{en:'A secure, AI-powered digital platform connecting Sudanese entrepreneurs, investors, mentors, experts and the global diaspora within one trusted innovation ecosystem.',
@@ -1899,6 +1906,20 @@ const INITIATIVES = [
     g:{en:['Vision 2030','Fleet Ops','Analytics'], ar:['رؤية 2030','عمليات الأساطيل','تحليلات']},
     o:{en:'Unified fleet and financial operations, driver performance analytics and real-time business intelligence, aligned with Saudi Vision 2030.',
        ar:'عمليات أساطيل ومالية موحّدة، وتحليلات أداء السائقين، وذكاء أعمال لحظي، متوافق مع رؤية السعودية 2030.'} },
+  { icon:'📍', kind:{en:'In Development', ar:'قيد التطوير'},
+    t:{en:'PIOS: Place Intelligence Operating System', ar:'PIOS: نظام تشغيل الاستخبارات المكانية'},
+    d:{en:'An Arabic-first, trust-driven location intelligence platform that answers one question for every user: what is the best option for me, in this context, and why?',
+       ar:'منصة استخبارات مكانية عربية أولاً ومبنية على الثقة، تجيب عن سؤال واحد لكل مستخدم: ما الخيار الأفضل لي في هذا السياق، ولماذا؟'},
+    g:{en:['Location Intelligence','Arabic-First','Saudi Launch'], ar:['استخبارات مكانية','عربية أولاً','إطلاق سعودي']},
+    o:{en:'Context-aware discovery, multi-source evidence with provenance, and explainable ranking built on trust rather than star ratings, launching in Riyadh and Jeddah.',
+       ar:'اكتشاف مدرك للسياق، وأدلة متعددة المصادر ذات منشأ موثّق، وترتيب قابل للتفسير مبني على الثقة لا على تقييمات النجوم، مع إطلاق في الرياض وجدة.'} },
+  { icon:'🗺️', kind:{en:'Market Intelligence', ar:'استخبارات سوق'},
+    t:{en:'LEAP 2026 Directory', ar:'دليل LEAP 2026'},
+    d:{en:'A bilingual directory platform mapping all 1,475 LEAP 2026 exhibitors into ten sectors with hall and booth detail, search and export.',
+       ar:'منصة دليل ثنائية اللغة ترسم خريطة شركات معرض LEAP 2026 البالغ عددها 1,475 شركة، مصنّفة في عشرة قطاعات مع تفاصيل القاعات والأجنحة والبحث والتصدير.'},
+    g:{en:['LEAP 2026','Riyadh','Open Data'], ar:['LEAP 2026','الرياض','بيانات مفتوحة']},
+    o:{en:'Arabic and English descriptions for every exhibitor, intelligent categorisation and CSV, Excel and JSON export for analysis.',
+       ar:'وصف عربي وإنجليزي لكل شركة عارضة، وتصنيف ذكي، وتصدير بصيغ CSV و Excel و JSON للتحليل.'} },
   { icon:'🌐', kind:{en:'Open Source', ar:'مفتوح المصدر'},
     t:{en:'NorthStar (ORIG)', ar:'NorthStar: الرسم المعرفي المفتوح للموارد'},
     d:{en:'An open-source, community-driven Resource Intelligence Platform that turns fragmented information into a structured, searchable knowledge graph of tools, platforms and communities.',
