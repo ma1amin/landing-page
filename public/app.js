@@ -48,7 +48,7 @@ const T = {
     'ini.sub': 'Strategic regional programmes, AI-native products and open infrastructure, built to outlive the launch.',
 
     'jr.kicker': 'Track record', 'jr.title': 'Journey',
-    'cr.kicker': 'Credentials', 'cr.title': 'Certifications & education',
+    'cr.kicker': 'Credentials', 'cr.title': 'Certifications & Education',
 
     'bk.kicker': 'Booking', 'bk.title': 'Book a session',
     'bk.sub': 'Pick a slot that works for you. All times are shown in <strong>Asia/Riyadh (GMT+3)</strong>. You\'ll get a confirmation reference instantly.',
@@ -361,14 +361,14 @@ const TIMELINE = [
 ];
 
 const CREDS = [
-  { icon:'🎓', t:{en:'Professional Doctorate in Information Security', ar:'دكتوراه مهنية في أمن المعلومات'}, s:{en:'Nevada University, in association with Nevada Training & Consultancy, Egypt: representative of the University of Nevada in the Middle East', ar:'جامعة نيفادا، بالتعاون مع Nevada Training & Consultancy في مصر: ممثل جامعة نيفادا في الشرق الأوسط'}, y:'2023' },
+  { icon:'🎓', t:{en:'Professional Doctorate in Information Security', ar:'دكتوراه مهنية في أمن المعلومات'}, s:{en:'Nevada University, in association with Nevada Training & Consultancy, Egypt: representative of the University of Nevada in the Middle East', ar:'جامعة نيفادا، بالتعاون مع نيفادا للتدريب والاستشارات في مصر: ممثل جامعة نيفادا في الشرق الأوسط'}, y:'2023' },
   { icon:'🏅', t:{en:'Membership of the American Association of Innovation', ar:'عضوية الرابطة الأمريكية للابتكار'}, s:{en:'American Association of Innovation (AAI)', ar:'الرابطة الأمريكية للابتكار (AAI)'}, y:'2023' },
-  { icon:'🛡️', t:{en:'Certified Ethical Hacker (CEH v9)', ar:'مخترق أخلاقي معتمد (CEH v9)'}, s:{en:'EC-Council', ar:'EC-Council'}, y:'' },
-  { icon:'👤', t:{en:'Certified Information Security Officer (CISO)', ar:'رئيس أمن معلومات معتمد (CISO)'}, s:{en:'Professional Certification', ar:'شهادة مهنية'}, y:'' },
+  { icon:'🛡️', t:{en:'Certified Ethical Hacker (CEH v9)', ar:'مخترق أخلاقي معتمد (CEH v9)'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
+  { icon:'👤', t:{en:'Certified Information Security Officer (CISO)', ar:'رئيس أمن معلومات معتمد (CISO)'}, s:{en:'Professional Certification', ar:'شهادة مهنية'}, y:'2016' },
   { icon:'🧬', t:{en:'Advanced Malware Reverse Engineering', ar:'هندسة عكسية متقدمة للبرمجيات الخبيثة'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
   { icon:'📱', t:{en:'Android Development, Exploitation & Reverse Engineering', ar:'تطوير أندرويد واستغلال ثغراته وهندسته العكسية'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
-  { icon:'🌐', t:{en:'IPv6 Forum Verified', ar:'معتمد من منتدى IPv6'}, s:{en:'IPv6 Forum', ar:'منتدى IPv6'}, y:'' },
-  { icon:'🦜', t:{en:'Parrot Ambassador', ar:'سفير Parrot'}, s:{en:'Parrot Security · Community Award', ar:'Parrot Security · جائزة مجتمعية'}, y:'' },
+  { icon:'🌐', t:{en:'IPv6 Forum Verified', ar:'معتمد من منتدى IPv6'}, s:{en:'IPv6 Forum · National Telecommunication Corporation (NTC), Sudanese IPv6 Task Force (SDv6TF)', ar:'منتدى IPv6 · الهيئة القومية للاتصالات (NTC)، فريق العمل السوداني للإصدار السادس (SDv6TF)'}, y:'2017' },
+  { icon:'<svg viewBox="0 0 24 24" width="19" height="19" fill="#15E0ED" aria-hidden="true"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0Zm6.267 2.784L13.03 5.54l8.05-.179-8.05 3.333-2.154 2.688 5.007 9.038-1.536-1.605 1.645 3.456-4.937-5.527-6.268-6.28L2.77 12.11l.7-3.442 4.018-.261.823-4.06Z"/></svg>', t:{en:'ParrotOS Security Ambassador', ar:'سفير نظام تشغيل باروت الأمني'}, s:{en:'Parrot Security · Security educator advocating Parrot, cybersecurity and software freedom: first Arab and African ambassador', ar:'Parrot Security · مثقّف أمني يدعم مشروع باروت والأمن السيبراني وحرية البرمجيات: أول سفير عربي وأفريقي'}, y:'2017' },
 ];
 
 const INTERESTS = [
