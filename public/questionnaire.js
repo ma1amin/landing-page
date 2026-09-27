@@ -214,7 +214,7 @@
       "q.about": "Briefly describe what you are building", "q.opt": "(optional)",
       "q.submit": "Request Consultation",
       "q.submitNote": "No sales pitch. Just a straightforward conversation.",
-      "q.consent": "By submitting, you agree that I may keep these answers and contact you about your enquiry.",
+      "q.consent": "By submitting, you agree that I may keep these answers and contact you about your inquiry.",
       "q.doneTitle": "Answers received",
       "q.doneSub": "Saved. Opening the calendar so you can pick a time.",
       "q.nextEyebrow": "After you send",
