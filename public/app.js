@@ -368,7 +368,7 @@ const CREDS = [
   { icon:'📱', t:{en:'Android Development, Exploitation & Reverse Engineering', ar:'تطوير أندرويد واستغلال ثغراته وهندسته العكسية'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
   { icon:'⚙️', t:{en:'Assembly for Reverse Engineering', ar:'لغة التجميع للهندسة العكسية'}, s:{en:'Marshal Institute · Malaysia', ar:'معهد مارشال · ماليزيا'}, y:'2017' },
   { icon:'🌐', t:{en:'IPv6 Forum Verified', ar:'معتمد من منتدى IPv6'}, s:{en:'IPv6 Forum · National Telecommunication Corporation (NTC), Sudanese IPv6 Task Force (SDv6TF)', ar:'منتدى IPv6 · الهيئة القومية للاتصالات (NTC)، فريق العمل السوداني للإصدار السادس (SDv6TF)'}, y:'2017' },
-  { icon:'<svg viewBox="0 0 24 24" width="19" height="19" fill="#15E0ED" aria-hidden="true"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0Zm6.267 2.784L13.03 5.54l8.05-.179-8.05 3.333-2.154 2.688 5.007 9.038-1.536-1.605 1.645 3.456-4.937-5.527-6.268-6.28L2.77 12.11l.7-3.442 4.018-.261.823-4.06Z"/></svg>', t:{en:'ParrotOS Security Ambassador', ar:'سفير نظام تشغيل باروت الأمني'}, hi:{en:'1st Arab/African Ambassador', ar:'أول سفير عربي/أفريقي'}, s:{en:'The Parrot OS Ambassador Program was a global initiative that appointed regional community leaders to support local users, promote cybersecurity education, and represent the official Linux distribution worldwide.', ar:'برنامج سفراء نظام Parrot OS مبادرة عالمية عيّنت قادة مجتمع إقليميين لدعم المستخدمين المحليين، وتعزيز التثقيف في الأمن السيبراني، وتمثيل التوزيعة الرسمية حول العالم.'}, y:'2017' },
+  { icon:'<svg viewBox="0 0 24 24" width="19" height="19" fill="#15E0ED" aria-hidden="true"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0Zm6.267 2.784L13.03 5.54l8.05-.179-8.05 3.333-2.154 2.688 5.007 9.038-1.536-1.605 1.645 3.456-4.937-5.527-6.268-6.28L2.77 12.11l.7-3.442 4.018-.261.823-4.06Z"/></svg>', t:{en:'ParrotOS Security Ambassador', ar:'سفير نظام تشغيل باروت الأمني'}, hi:{en:'1st Arab/African Ambassador', ar:'أول سفير عربي/أفريقي'}, s:{en:'A global Parrot OS programme appointing regional community leaders to support local users and advance cybersecurity education.', ar:'برنامج عالمي من Parrot OS يعيّن قادة مجتمع إقليميين لدعم المستخدمين المحليين وتعزيز التثقيف في الأمن السيبراني.'}, y:'2017' },
   { icon:'👤', t:{en:'Certified Information Security Officer (CISO)', ar:'رئيس أمن معلومات معتمد (CISO)'}, s:{en:'Professional Certification', ar:'شهادة مهنية'}, y:'2016' },
 ];
 
@@ -551,7 +551,7 @@ function renderCreds() {
   box.innerHTML = CREDS.map((c) =>
     '<article class="cred"><div class="cred-badge" aria-hidden="true">' + c.icon + '</div>' +
       '<div><h4>' + esc(pick(c.t)) + '</h4><span>' +
-        (c.hi ? '<b class="cred-hi">' + esc(pick(c.hi)) + '</b> · ' : '') + esc(pick(c.s)) + '</span>' +
+        (c.hi ? '<b class="cred-hi">' + esc(pick(c.hi)) + '</b>' : '') + esc(pick(c.s)) + '</span>' +
       (c.y ? '<em>' + esc(c.y) + '</em>' : '') + '</div></article>'
   ).join('');
 }
