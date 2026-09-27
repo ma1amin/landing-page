@@ -82,7 +82,7 @@ const T = {
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
     'foot.loc': 'Riyadh, Saudi Arabia', 'foot.markets': 'Markets',
     'foot.marketsList': 'Saudi Arabia · Sudan · GCC', 'foot.langs': 'Arabic · English',
-    'foot.rights': 'All rights reserved.', 'foot.built': 'Built secure by default.',
+    'foot.rights': 'All rights reserved.', 'foot.built': 'Built Secure By Default',
 
     /* runtime */
     'rt.tz': 'Asia/Riyadh (GMT+3)',
@@ -176,7 +176,7 @@ const T = {
     'foot.contact': 'تواصل', 'foot.social': 'في مكان آخر',
     'foot.loc': 'الرياض، المملكة العربية السعودية', 'foot.markets': 'الأسواق',
     'foot.marketsList': 'السعودية · السودان · الخليج', 'foot.langs': 'العربية · الإنجليزية',
-    'foot.rights': 'جميع الحقوق محفوظة.', 'foot.built': 'مبني ليكون آمناً بصورة افتراضية.',
+    'foot.rights': 'جميع الحقوق محفوظة.', 'foot.built': 'مبني ليكون آمناً بصورة افتراضية',
 
     /* runtime */
     'rt.tz': 'الرياض (GMT+3)',
