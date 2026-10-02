@@ -641,6 +641,11 @@ ul,ol{margin:0;padding:0;list-style:none}
   font-size:12.5px;color:var(--muted);
 }
 .footer-bottom .mono{font-size:11.5px;letter-spacing:.05em}
+.sitelock-badge{
+  display:inline-flex;align-items:center;opacity:.7;transition:opacity .25s var(--ease);
+}
+.sitelock-badge:hover{opacity:1}
+.sitelock-badge img{height:32px;width:auto}
 
 /* ---------- reveal ---------- */
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
