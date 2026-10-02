@@ -32,7 +32,7 @@ scheduling widgets.
 |---|---|
 | Bilingual by design | Full EN / AR dictionary with a language toggle, native Arabic copy, and complete RTL mirroring including logical spacing and direction aware iconography |
 | Self hosted booking | Availability engine, Asia/Riyadh timezone, Saudi working week, server side pricing, collision free slot allocation |
-| Client intake | Eight question matchmaking questionnaire with a dismissible prompt card, linked to the booking record by reference |
+| Client intake | Ten question matchmaking questionnaire with a dismissible prompt card, linked to the booking record by reference |
 | Hardened server | Nonce based CSP, per IP rate limiting, header only admin authentication, no default credentials |
 | Zero dependencies | Plain Node standard library, including a minimal SMTP client. No `node_modules`, no build step |
 | Offline artifact | `preview.html` is a single self contained file with CSS, JS, and images inlined |
@@ -67,7 +67,7 @@ All settings are environment variables, read from the process environment or fro
 | `PORT` | `3000` | Listening port |
 | `HOST` | `0.0.0.0` | Bind address |
 | `ADMIN_TOKEN` | *(unset)* | Enables the admin read routes. Unset means every admin route returns `503` |
-| `NOTIFY_EMAIL` | `mo7dalamin@gmail.com` | Destination for submission notifications |
+| `NOTIFY_EMAIL` | `info@malamin.cc` | Destination for submission notifications |
 | `SMTP_HOST` | *(unset)* | SMTP server. Absent means local storage only |
 | `SMTP_PORT` | `587` | SMTP port |
 | `SMTP_SECURE` | `false` | `true` for implicit TLS on port 465 |
@@ -124,7 +124,7 @@ Adjust the rules in the `Availability rules` block near the top of `server.js`.
 
 The questionnaire exists to qualify a fit before any call is scheduled, not to collect applications.
 
-1. A visitor completes the eight questions and receives a `QNR-XXXXXX` reference.
+1. A visitor completes the ten questions and receives a `QNR-XXXXXX` reference.
 2. Answers are stored and emailed immediately, whether or not a booking follows.
 3. The visitor is redirected to `/?qref=QNR-XXXXXX#booking`.
 4. If they book, the reference is attached to the booking record and the questionnaire is marked
@@ -217,7 +217,7 @@ inert in that file by design.
 
 ## Contact
 
-- Email: mo7dalamin@gmail.com
+- Email: info@malamin.cc
 - LinkedIn: [in/mohalamin](https://www.linkedin.com/in/mohalamin/)
 - GitHub: [ma1amin](https://github.com/ma1amin)
 - Web: [infologix.co](https://infologix.co)

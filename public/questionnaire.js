@@ -1,7 +1,7 @@
 /* ============================================================
    Questionnaire page · zero dependency
 
-   Eight qualifying questions, then contact details. Submissions
+   Ten qualifying questions, then contact details. Submissions
    go to POST /api/questionnaire, which stores and emails them
    immediately. On success the visitor is sent to the booking
    calendar with the reference attached, so a completed booking

@@ -1,0 +1,16 @@
+{
+  "name": "brand-site",
+  "version": "1.0.0",
+  "description": "Dr. Mohammed Al Amin Personal Brand Site",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "seed-admin": "node seed-admin.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.6.0"
+  },
+  "keywords": [],
+  "author": "Dr. Mohammed Al Amin",
+  "license": "UNLICENSED"
+}

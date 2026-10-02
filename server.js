@@ -1,14 +1,17 @@
 'use strict';
 /**
- * Personal branding site · zero-dependency Node server.
+ * Personal branding site · MySQL database + admin portal
  *  - static hosting for /public
  *  - /api/slots          -> available booking slots for a month
- *  - /api/bookings       -> create a booking
- *  - /api/collaborations -> "Open to collaboration" submissions
- *  - /api/admin/*        -> read submissions (token protected)
+ *  - /api/bookings       -> create a booking (stored in MySQL)
+ *  - /api/collaborations -> "Open to collaboration" submissions (stored in MySQL)
+ *  - /api/questionnaire  -> questionnaire submissions (stored in MySQL)
+ *  - /api/admin/login     -> admin login (session-based)
+ *  - /api/admin/logout    -> admin logout
+ *  - /api/admin/*         -> admin dashboard endpoints (session protected)
  *
  * Email delivery is optional: set SMTP_* env vars (see config.example.env).
- * Without them, everything is still stored to /data and logged to the console.
+ * Database is required: set DB_* env vars (see config.example.env).
  */
 const http = require('node:http');
 const fs = require('node:fs');
@@ -17,6 +20,16 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const https = require('node:https');
 const { sendMail } = require('./smtp');
+const db = require('./database');
+const { 
+  generateSalt, 
+  hashPassword, 
+  verifyPassword, 
+  generateSessionId, 
+  getSessionExpiry,
+  isValidSessionId,
+  validatePasswordStrength 
+} = require('./auth');
 
 /*
  * Reads ./.env if present so the keys documented in config.example.env
@@ -45,11 +58,7 @@ const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
 const ROOT = __dirname;
 const PUBLIC_DIR = path.join(ROOT, 'public');
-const DATA_DIR = path.join(ROOT, 'data');
-/* No default. An empty value disables every admin route, so a forgotten
-   env var closes the door instead of opening it. */
-const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
-const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'mo7dalamin@gmail.com';
+const NOTIFY_EMAIL = process.env.NOTIFY_EMAIL || 'info@malamin.cc';
 
 /* Bot protection for the questionnaire. Empty means the check is skipped,
    which is what keeps the offline preview working. */
@@ -81,15 +90,6 @@ function clientIp(req) {
   return (req.socket && req.socket.remoteAddress) || 'unknown';
 }
 
-/* Constant-time compare so the admin token cannot be recovered byte by byte
-   from response timing. */
-function safeEqual(a, b) {
-  const ba = Buffer.from(String(a));
-  const bb = Buffer.from(String(b));
-  if (ba.length !== bb.length) return false;
-  return crypto.timingSafeEqual(ba, bb);
-}
-
 /* ------------------------------------------------------------------ *
  * Rate limiting · in-memory, per IP, fixed window
  * ------------------------------------------------------------------ */
@@ -117,16 +117,21 @@ const LIMITS = {
   'POST /api/collaborations': { limit: 5,  windowMs: 10 * 60 * 1000 },
   'POST /api/questionnaire':  { limit: 5,  windowMs: 10 * 60 * 1000 },
   'GET /api/slots':           { limit: 60, windowMs: 60 * 1000 },
+  'POST /api/admin/login':    { limit: 5,  windowMs: 5 * 60 * 1000 },
   'admin':                    { limit: 20, windowMs: 10 * 60 * 1000 },
 };
 
 /* ------------------------------------------------------------------ *
  * Security headers
  * ------------------------------------------------------------------ */
-function csp(nonce) {
+function csp(nonce, isAdmin = false) {
+  const adminDirectives = isAdmin 
+    ? " script-src 'self' 'nonce-" + nonce + "'" 
+    : " script-src 'self' https://challenges.cloudflare.com" + (nonce ? " 'nonce-" + nonce + "'" : '');
+  
   return [
     "default-src 'self'",
-    "script-src 'self' https://challenges.cloudflare.com" + (nonce ? " 'nonce-" + nonce + "'" : ''),
+    adminDirectives,
     "style-src 'self'",
     "img-src 'self' data: https://avatars.githubusercontent.com",
     "font-src 'self'",
@@ -139,9 +144,9 @@ function csp(nonce) {
   ].join('; ');
 }
 
-function securityHeaders(req, nonce) {
+function securityHeaders(req, nonce, isAdmin = false) {
   const h = {
-    'Content-Security-Policy': csp(nonce),
+    'Content-Security-Policy': csp(nonce, isAdmin),
     'X-Content-Type-Options': 'nosniff',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'X-Frame-Options': 'DENY',
@@ -154,6 +159,24 @@ function securityHeaders(req, nonce) {
     h['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
   }
   return h;
+}
+
+/* ------------------------------------------------------------------ *
+ * Session validation helper
+ * ------------------------------------------------------------------ */
+async function validateSession(req) {
+  const sessionId = req.cookies.session_id;
+  
+  if (!sessionId || !isValidSessionId(sessionId)) {
+    return null;
+  }
+  
+  const session = await db.getSession(sessionId);
+  if (!session) {
+    return null;
+  }
+  
+  return { id: session.user_id, username: session.username };
 }
 
 /* ------------------------------------------------------------------ *
@@ -216,31 +239,14 @@ function toMin(hhmmStr) {
 }
 
 /* ------------------------------------------------------------------ *
- * Persistence
+ * Database-based availability (replaces JSON)
  * ------------------------------------------------------------------ */
-async function readJson(file, fallback) {
-  try {
-    return JSON.parse(await fsp.readFile(path.join(DATA_DIR, file), 'utf8'));
-  } catch (_) {
-    return fallback;
-  }
-}
-async function writeJson(file, value) {
-  await fsp.mkdir(DATA_DIR, { recursive: true });
-  const tmp = path.join(DATA_DIR, '.' + file + '.tmp');
-  await fsp.writeFile(tmp, JSON.stringify(value, null, 2), 'utf8');
-  await fsp.rename(tmp, path.join(DATA_DIR, file));
-}
-const loadBookings = () => readJson('bookings.json', []);
-const loadCollabs = () => readJson('collaborations.json', []);
-const loadQuestionnaires = () => readJson('questionnaire.json', []);
-
 function overlap(aStart, aEnd, bStart, bEnd) {
   return aStart < bEnd && bStart < aEnd;
 }
 
 async function busyIntervals(dateStr) {
-  const bookings = await loadBookings();
+  const bookings = await db.getBookings();
   return bookings
     .filter((b) => b.date === dateStr && b.status !== 'cancelled')
     .map((b) => [toMin(b.time), toMin(b.time) + (b.duration || 30)]);
@@ -287,8 +293,9 @@ const SMTP = {
 
 const mailEnabled = Boolean(SMTP.host && SMTP.user && SMTP.pass && SMTP.from);
 if (mailEnabled) console.log('[mail] SMTP configured · notifications will be sent to', NOTIFY_EMAIL);
-else console.log('[mail] SMTP not configured · submissions will be stored locally only.');
-  console.log('[captcha] ' + (TURNSTILE_SECRET ? 'Turnstile enabled' : 'not configured · questionnaire submissions are unchecked'));
+else console.log('[mail] SMTP not configured · submissions will be stored in database only.');
+console.log('[captcha] ' + (TURNSTILE_SECRET ? 'Turnstile enabled' : 'not configured · questionnaire submissions are unchecked'));
+console.log('[database] MySQL integration enabled');
 
 /*
  * Verifies a Turnstile token with Cloudflare. Resolves ok:true when no
@@ -390,6 +397,19 @@ const MIME = {
   '.txt': 'text/plain; charset=utf-8',
 };
 
+function parseCookies(cookieHeader) {
+  const cookies = {};
+  if (!cookieHeader) return cookies;
+  
+  cookieHeader.split(';').forEach(cookie => {
+    const [name, ...parts] = cookie.split('=');
+    const value = parts.join('=');
+    cookies[name.trim()] = decodeURIComponent(value.trim());
+  });
+  
+  return cookies;
+}
+
 async function serveStatic(req, res, urlPath) {
   let rel = decodeURIComponent(urlPath.split('?')[0]);
   if (rel === '/' || rel === '') rel = '/index.html';
@@ -449,6 +469,7 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
   const p = url.pathname;
   const ip = clientIp(req);
+  req.cookies = parseCookies(req.headers.cookie);
 
   /* Rate limit before any work is done. */
   const gate = LIMITS[req.method + ' ' + p];
@@ -520,18 +541,22 @@ const server = http.createServer(async (req, res) => {
         timezone: TZ_LABEL,
         createdAt: new Date().toISOString(),
       };
-      const all = await loadBookings();
-      all.push(booking);
-      await writeJson('bookings.json', all);
+      
+      // Double-check slot availability (fix race condition)
+      const allBookings = await db.getBookings();
+      const slotTaken = allBookings.some(bk => 
+        bk.date === booking.date && 
+        bk.time === booking.time && 
+        bk.status !== 'cancelled'
+      );
+      if (slotTaken) {
+        return json(res, 409, { error: 'slot_taken', message: 'That slot was just taken. Please pick another time.' });
+      }
+      
+      await db.createBooking(booking);
 
       if (booking.questionnaireRef) {
-        const qs = await loadQuestionnaires();
-        const match = qs.find((q) => q.ref === booking.questionnaireRef);
-        if (match && !match.booked) {
-          match.booked = true;
-          match.bookingRef = booking.ref;
-          await writeJson('questionnaire.json', qs);
-        }
+        await db.updateBookingQuestionnaireRef(booking.ref, booking.questionnaireRef);
       }
 
       const mail = await notify(
@@ -572,9 +597,7 @@ const server = http.createServer(async (req, res) => {
         message: clean(b.message, 4000),
         createdAt: new Date().toISOString(),
       };
-      const all = await loadCollabs();
-      all.push(entry);
-      await writeJson('collaborations.json', all);
+      await db.createCollaboration(entry);
 
       const mail = await notify(
         `[Collaboration] ${entry.ref} · ${entry.name} (${entry.kind})`,
@@ -636,14 +659,12 @@ const server = http.createServer(async (req, res) => {
         role: clean(b.role, 80),
         about: clean(b.about, 2000),
         locale: clean(b.locale, 5) || 'en',
-        answers: answers,
         booked: false,
         bookingRef: '',
         createdAt: new Date().toISOString(),
       };
-      const all = await loadQuestionnaires();
-      all.push(entry);
-      await writeJson('questionnaire.json', all);
+      await db.createQuestionnaire(entry);
+      await db.createQuestionnaireAnswers(entry.id, answers);
 
       const lines = answers.map((a, i) => {
         const label = String(i + 1).padStart(2, '0') + '. ' + a.question;
@@ -668,32 +689,303 @@ const server = http.createServer(async (req, res) => {
       return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent });
     }
 
-    /* ---------- Admin reads ---------- */
-    if (p.startsWith('/api/admin/') && req.method === 'GET') {
-      /* Fail closed: with no token configured the route does not exist. */
-      if (!ADMIN_TOKEN) return json(res, 503, { error: 'admin_disabled', message: 'Set ADMIN_TOKEN to enable admin reads.' });
-      const adminGate = rateLimit(ip + '|admin', LIMITS.admin.limit, LIMITS.admin.windowMs);
-      if (!adminGate.ok) {
-        res.setHeader('Retry-After', String(adminGate.retryAfter));
-        return json(res, 429, { error: 'rate_limited', message: 'Too many requests. Please try again in a few minutes.' });
+    /* ---------- Admin login ---------- */
+    if (p === '/api/admin/login' && req.method === 'POST') {
+      const r = rateLimit(ip + '|POST /api/admin/login', 5, 5 * 60 * 1000);
+      if (!r.ok) {
+        res.setHeader('Retry-After', String(r.retryAfter));
+        return json(res, 429, { error: 'rate_limited', message: 'Too many login attempts. Please try again later.' });
       }
-      /* Token travels in a header, not the query string, so it stays out of
-         access logs, proxy logs and browser history. */
-      const authHeader = String(req.headers.authorization || '');
-      const provided = String(req.headers['x-admin-token'] || authHeader.replace(/^Bearer\s+/i, '')).trim();
-      if (!provided || !safeEqual(provided, ADMIN_TOKEN)) return json(res, 401, { error: 'unauthorized' });
-      if (p === '/api/admin/bookings') return json(res, 200, { bookings: await loadBookings() });
-      if (p === '/api/admin/collaborations') return json(res, 200, { collaborations: await loadCollabs() });
-      return json(res, 404, { error: 'not_found' });
+
+      const b = await readBody(req);
+      const errors = {};
+      if (!clean(b.username, 50)) errors.username = 'required';
+      if (!clean(b.password, 200)) errors.password = 'required';
+      if (Object.keys(errors).length) return json(res, 400, { error: 'validation', fields: errors });
+
+      const user = await db.getUserByUsername(b.username);
+      if (!user) {
+        return json(res, 401, { error: 'invalid_credentials' });
+      }
+
+      const isValid = await verifyPassword(b.password, user.salt, user.password_hash);
+      if (!isValid) {
+        return json(res, 401, { error: 'invalid_credentials' });
+      }
+
+      // Create session
+      const sessionId = generateSessionId();
+      const expiresAt = getSessionExpiry(24); // 24 hours
+      await db.createSession(sessionId, user.id, expiresAt);
+      await db.updateUserLastLogin(user.id);
+
+      // Set HTTP-only cookie
+      const cookieValue = `session_id=${sessionId}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${24 * 60 * 60}`;
+      res.setHeader('Set-Cookie', cookieValue);
+
+      return json(res, 200, { ok: true, username: user.username });
     }
 
-    /* ---------- Health ---------- */
+    /* ---------- Admin logout ---------- */
+    if (p === '/api/admin/logout' && req.method === 'POST') {
+      const sessionId = req.cookies.session_id;
+      if (sessionId) {
+        await db.deleteSession(sessionId);
+      }
+      res.setHeader('Set-Cookie', 'session_id=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0');
+      return json(res, 200, { ok: true });
+    }
+
+    /* ---------- Admin stats ---------- */
+    if (p === '/api/admin/stats' && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const bookingStats = await db.getBookingStats();
+      const collabCount = (await db.getCollaborations({})).length;
+      const questionnaireCount = (await db.getQuestionnaires({})).length;
+      
+      return json(res, 200, {
+        bookings: bookingStats,
+        collaborations: collabCount,
+        questionnaires: questionnaireCount,
+      });
+    }
+
+    /* ---------- Admin bookings ---------- */
+    if (p === '/api/admin/bookings' && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const filters = {
+        startDate: url.searchParams.get('startDate'),
+        endDate: url.searchParams.get('endDate'),
+        status: url.searchParams.get('status'),
+        type: url.searchParams.get('type'),
+        search: url.searchParams.get('search'),
+        limit: parseInt(url.searchParams.get('limit') || '20'),
+        offset: parseInt(url.searchParams.get('offset') || '0'),
+      };
+      
+      const bookings = await db.getBookings(filters);
+      return json(res, 200, { bookings });
+    }
+
+    if (p.match(/^\/api\/admin\/bookings\/[^/]+$/) && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const ref = p.split('/').pop();
+      const booking = await db.getBookingByRef(ref);
+      if (!booking) return json(res, 404, { error: 'not_found' });
+      
+      const questionnaire = booking.questionnaire_ref
+        ? await db.getQuestionnaireByRef(booking.questionnaire_ref)
+        : null;
+      
+      return json(res, 200, { booking, questionnaire });
+    }
+
+    if (p.match(/^\/api\/admin\/bookings\/[^/]+\/cancel$/) && req.method === 'POST') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const ref = p.split('/')[3];
+      await db.updateBookingStatus(ref, 'cancelled');
+      return json(res, 200, { ok: true });
+    }
+
+    /* ---------- Admin collaborations ---------- */
+    if (p === '/api/admin/collaborations' && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const filters = {
+        startDate: url.searchParams.get('startDate'),
+        endDate: url.searchParams.get('endDate'),
+        kind: url.searchParams.get('kind'),
+        search: url.searchParams.get('search'),
+        limit: parseInt(url.searchParams.get('limit') || '20'),
+        offset: parseInt(url.searchParams.get('offset') || '0'),
+      };
+      
+      const collabs = await db.getCollaborations(filters);
+      return json(res, 200, { collaborations: collabs });
+    }
+
+    if (p.match(/^\/api\/admin\/collaborations\/[^/]+$/) && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const ref = p.split('/').pop();
+      const collab = await db.getCollaborationByRef(ref);
+      if (!collab) return json(res, 404, { error: 'not_found' });
+      
+      return json(res, 200, { collaboration: collab });
+    }
+
+    /* ---------- Admin questionnaires ---------- */
+    if (p === '/api/admin/questionnaires' && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const filters = {
+        startDate: url.searchParams.get('startDate'),
+        endDate: url.searchParams.get('endDate'),
+        booked: url.searchParams.get('booked'),
+        search: url.searchParams.get('search'),
+        limit: parseInt(url.searchParams.get('limit') || '20'),
+        offset: parseInt(url.searchParams.get('offset') || '0'),
+      };
+      
+      const questionnaires = await db.getQuestionnaires(filters);
+      return json(res, 200, { questionnaires });
+    }
+
+    if (p.match(/^\/api\/admin\/questionnaires\/[^/]+$/) && req.method === 'GET') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const ref = p.split('/').pop();
+      const questionnaire = await db.getQuestionnaireByRef(ref);
+      if (!questionnaire) return json(res, 404, { error: 'not_found' });
+      
+      const answers = await db.getQuestionnaireAnswers(questionnaire.id);
+      
+      return json(res, 200, { questionnaire, answers });
+    }
+
+    /* ---------- Admin settings - change password ---------- */
+    if (p === '/api/admin/settings/password' && req.method === 'POST') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      
+      const b = await readBody(req);
+      const errors = {};
+      if (!clean(b.currentPassword, 200)) errors.currentPassword = 'required';
+      if (!clean(b.newPassword, 200)) errors.newPassword = 'required';
+      if (Object.keys(errors).length) return json(res, 400, { error: 'validation', fields: errors });
+      
+      // Verify current password
+      const userData = await db.getUserByUsername(user.username);
+      const isValid = await verifyPassword(b.currentPassword, userData.salt, userData.password_hash);
+      if (!isValid) {
+        return json(res, 401, { error: 'invalid_password' });
+      }
+      
+      // Validate new password strength
+      if (!validatePasswordStrength(b.newPassword)) {
+        return json(res, 400, { error: 'password_too_weak', message: 'Password must be at least 12 characters with uppercase, lowercase, and numbers.' });
+      }
+      
+      // Hash new password
+      const newSalt = generateSalt();
+      const newHash = await hashPassword(b.newPassword, newSalt);
+      
+      // Update user password
+      await db.updateUserPassword(userData.id, newHash, newSalt);
+      
+      return json(res, 200, { ok: true, message: 'Password updated successfully.' });
+    }
+
+    /* ---------- Admin pages (serve HTML) ---------- */
+    if (p === '/admin' || p === '/admin/') {
+      const filePath = path.join(PUBLIC_DIR, 'admin-dashboard.html');
+      try {
+        const nonce = crypto.randomBytes(16).toString('base64');
+        const raw = await fsp.readFile(filePath, 'utf8');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const buf = Buffer.from(patched, 'utf8');
+        res.writeHead(200, Object.assign({
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': buf.length,
+          'Cache-Control': 'no-cache',
+        }, securityHeaders(req, nonce, true)));
+        res.end(buf);
+      } catch (err) {
+        if (err.code === 'ENOENT') {
+          const b = Buffer.from('<h1>Admin dashboard not found. Please ensure admin-dashboard.html exists in public/</h1>', 'utf8');
+          res.writeHead(404, Object.assign({
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': b.length,
+          }, securityHeaders(req, null)));
+          res.end(b);
+        } else {
+          throw err;
+        }
+      }
+      return;
+    }
+
+    if (p === '/admin/login') {
+      const filePath = path.join(PUBLIC_DIR, 'admin.html');
+      try {
+        const nonce = crypto.randomBytes(16).toString('base64');
+        const raw = await fsp.readFile(filePath, 'utf8');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const buf = Buffer.from(patched, 'utf8');
+        res.writeHead(200, Object.assign({
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': buf.length,
+          'Cache-Control': 'no-cache',
+        }, securityHeaders(req, nonce, true)));
+        res.end(buf);
+      } catch (err) {
+        if (err.code === 'ENOENT') {
+          const b = Buffer.from('<h1>Login page not found. Please ensure admin.html exists in public/</h1>', 'utf8');
+          res.writeHead(404, Object.assign({
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': b.length,
+          }, securityHeaders(req, null)));
+          res.end(b);
+        } else {
+          throw err;
+        }
+      }
+      return;
+    }
+
+    if (p === '/admin/settings') {
+      const user = await validateSession(req);
+      if (!user) {
+        res.writeHead(302, { 'Location': '/admin/login' });
+        return res.end();
+      }
+      
+      const filePath = path.join(PUBLIC_DIR, 'admin-settings.html');
+      try {
+        const nonce = crypto.randomBytes(16).toString('base64');
+        const raw = await fsp.readFile(filePath, 'utf8');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const buf = Buffer.from(patched, 'utf8');
+        res.writeHead(200, Object.assign({
+          'Content-Type': 'text/html; charset=utf-8',
+          'Content-Length': buf.length,
+          'Cache-Control': 'no-cache',
+        }, securityHeaders(req, nonce, true)));
+        res.end(buf);
+      } catch (err) {
+        if (err.code === 'ENOENT') {
+          const b = Buffer.from('<h1>Settings page not found. Please ensure admin-settings.html exists in public/</h1>', 'utf8');
+          res.writeHead(404, Object.assign({
+            'Content-Type': 'text/html; charset=utf-8',
+            'Content-Length': b.length,
+          }, securityHeaders(req, null)));
+          res.end(b);
+        } else {
+          throw err;
+        }
+      }
+      return;
+    }
+
+    /* ---------- Config ---------- */
     if (p === '/api/config' && req.method === 'GET') {
       return json(res, 200, { turnstileSiteKey: TURNSTILE_SITE_KEY });
     }
 
     if (p === '/api/health') {
-      return json(res, 200, { ok: true, now: new Date().toISOString(), riyadh: riyadhParts().toISOString(), mail: mailEnabled, captcha: TURNSTILE_SECRET ? 'turnstile' : 'off' });
+      return json(res, 200, { ok: true, now: new Date().toISOString(), riyadh: riyadhParts().toISOString(), mail: mailEnabled, captcha: TURNSTILE_SECRET ? 'turnstile' : 'off', database: 'mysql' });
     }
 
     /* ---------- Static ---------- */
@@ -704,10 +996,65 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(PORT, HOST, () => {
-  console.log(`\n  ▸ Site running: http://${HOST}:${PORT}`);
-  console.log(`  ▸ Riyadh date: ${todayRiyadh()}  (${TZ_LABEL})`);
-  console.log(`  ▸ Admin reads: ${ADMIN_TOKEN ? 'enabled (header token)' : 'DISABLED · set ADMIN_TOKEN to enable'}`);
-  console.log(`  ▸ Rate limits: on    HSTS: ${ENABLE_HSTS ? 'on' : 'off (set ENABLE_HSTS=1 behind HTTPS)'}`);
-  console.log(`  ▸ Data dir:    ${DATA_DIR}\n`);
+/* ------------------------------------------------------------------ *
+ * Initialize database and start server
+ * ------------------------------------------------------------------ */
+async function initialize() {
+  console.log('[init] Testing database connection...');
+  const dbConnected = await db.testConnection();
+  if (!dbConnected) {
+    console.error('[init] Database connection failed. Please ensure:');
+    console.error('  1. Database is created in cPanel');
+    console.error('  2. DB_HOST, DB_USER, DB_PASS, DB_NAME are set in .env');
+    console.error('  3. schema.sql has been run to create tables');
+    process.exit(1);
+  }
+  
+  console.log('[init] Checking database schema...');
+  const schemaOk = await db.initializeSchema();
+  if (!schemaOk) {
+    console.error('[init] Database schema not found. Please run schema.sql in cPanel phpMyAdmin');
+    process.exit(1);
+  }
+  
+  console.log('[init] Database initialized successfully');
+  
+  // Start 12-month data cleanup job
+  setInterval(async () => {
+    try {
+      const result = await db.cleanupOldData();
+      if (result.bookings > 0 || result.collaborations > 0 || result.questionnaires > 0) {
+        console.log('[cleanup] Deleted records older than 12 months:', result);
+      }
+    } catch (err) {
+      console.error('[cleanup] Error:', err.message);
+    }
+  }, 24 * 60 * 60 * 1000).unref();
+  
+  // Clean up expired sessions daily
+  setInterval(async () => {
+    try {
+      const deleted = await db.deleteExpiredSessions();
+      if (deleted > 0) {
+        console.log('[sessions] Cleaned up', deleted, 'expired sessions');
+      }
+    } catch (err) {
+      console.error('[sessions] Error cleaning sessions:', err.message);
+    }
+  }, 60 * 60 * 1000).unref();
+}
+
+initialize().then(() => {
+  server.listen(PORT, HOST, () => {
+    console.log(`\n  ▸ Site running: http://${HOST}:${PORT}`);
+    console.log(`  ▸ Riyadh date: ${todayRiyadh()}  (${TZ_LABEL})`);
+    console.log(`  ▸ Database: MySQL enabled`);
+    console.log(`  ▸ Admin login: http://${HOST}:${PORT}/admin/login`);
+    console.log(`  ▸ Admin dashboard: http://${HOST}:${PORT}/admin`);
+    console.log(`  ▸ Admin settings: http://${HOST}:${PORT}/admin/settings`);
+    console.log(`  ▸ Rate limits: on    HSTS: ${ENABLE_HSTS ? 'on' : 'off (set ENABLE_HSTS=1 behind HTTPS)'}\n`);
+  });
+}).catch((err) => {
+  console.error('[init] Initialization failed:', err);
+  process.exit(1);
 });

@@ -39,7 +39,7 @@
 
   var DEFAULTS = {
     delay: 3500,
-    dismissDays: 14,
+    dismissDays: 3,
     storageKey: "questionnaireWidgetDismissedAt",
     ctaUrl: "/questionnaire",
     draggable: true,
