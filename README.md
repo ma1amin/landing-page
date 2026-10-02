@@ -326,7 +326,7 @@ For production deployment on cPanel, see [README-DEPLOYMENT.md](README-DEPLOYMEN
   <img src="https://animated-fluent-emoji.vercel.app/image/1f512?size=64&color=f5c256" width="64" />
 </p>
 
-This project is **UNLICENSED**. All rights reserved.
+This project is **PRIVATE**. All Rights Reserved.
 
 © 2026 Dr. Mohammed Al Amin
 

@@ -5,119 +5,178 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Login - Dr. Mohammed Al Amin</title>
   <style>
+    :root {
+      --bg: #07080b;
+      --bg-2: #0a0c11;
+      --panel: #0d1016;
+      --panel-2: #11151d;
+      --line: rgba(255, 255, 255, 0.075);
+      --line-2: rgba(255, 255, 255, 0.14);
+      --text: #ece9e3;
+      --text-2: #b9bdc6;
+      --muted: #8b919d;
+      --amber: #f5c256;
+      --amber-2: #ffd982;
+      --amber-deep: #c2851a;
+      --ok: #3ddc97;
+      --danger: #ff6b6b;
+      --radius: 16px;
+      --radius-sm: 10px;
+      --sans: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont, system-ui, "Noto Sans Arabic", "Segoe UI Historic", Tahoma, sans-serif;
+      --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+      --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      font-family: var(--sans);
+      background: var(--bg);
+      background: linear-gradient(135deg, var(--bg) 0%, var(--bg-2) 100%);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px;
+      color: var(--text);
     }
-    
+
     .login-container {
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      padding: 40px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      padding: 48px;
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
+      position: relative;
     }
-    
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--amber-deep), var(--amber-2), var(--amber));
+      border-radius: var(--radius) var(--radius) 0 0;
+    }
+
     .logo {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 32px;
     }
-    
+
     .logo h1 {
       font-size: 24px;
-      color: #1a1a2e;
+      font-weight: 650;
+      color: var(--text);
       margin-bottom: 8px;
+      letter-spacing: -0.02em;
     }
-    
+
     .logo p {
       font-size: 14px;
-      color: #666;
+      color: var(--muted);
     }
-    
+
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
-    
+
     .form-group label {
       display: block;
       margin-bottom: 8px;
       font-size: 14px;
       font-weight: 500;
-      color: #333;
+      color: var(--text-2);
     }
-    
+
     .form-group input {
       width: 100%;
       padding: 12px 16px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: border-color 0.3s;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      font-size: 15px;
+      font-family: var(--sans);
+      transition: border-color 0.25s var(--ease), box-shadow 0.25s var(--ease);
     }
-    
+
     .form-group input:focus {
       outline: none;
-      border-color: #4a90e2;
+      border-color: var(--amber);
+      box-shadow: 0 0 0 3px rgba(245, 194, 86, 0.1);
     }
-    
+
+    .form-group input::placeholder {
+      color: var(--muted);
+    }
+
     .btn {
       width: 100%;
-      padding: 12px;
-      background: #4a90e2;
-      color: white;
+      padding: 14px 24px;
+      background: linear-gradient(100deg, var(--amber-2), var(--amber) 45%, var(--amber-deep));
       border: none;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: var(--radius-sm);
+      color: var(--bg);
+      font-size: 15px;
       font-weight: 600;
+      font-family: var(--sans);
       cursor: pointer;
-      transition: background 0.3s;
+      transition: transform 0.2s var(--ease), box-shadow 0.25s var(--ease);
     }
-    
+
     .btn:hover {
-      background: #357abd;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(245, 194, 86, 0.3);
     }
-    
-    .btn:disabled {
-      background: #ccc;
-      cursor: not-allowed;
+
+    .btn:active {
+      transform: translateY(0);
     }
-    
+
     .error {
-      background: #fee;
-      color: #c33;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      background: rgba(255, 107, 107, 0.1);
+      border: 1px solid rgba(255, 107, 107, 0.3);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      color: var(--danger);
       font-size: 14px;
       display: none;
     }
-    
+
     .error.show {
       display: block;
     }
-    
-    .loading {
+
+    .footer {
       text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-      display: none;
+      margin-top: 24px;
+      font-size: 13px;
+      color: var(--muted);
     }
-    
-    .loading.show {
-      display: block;
+
+    .footer a {
+      color: var(--amber);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 32px 24px;
+      }
     }
   </style>
 </head>
@@ -127,42 +186,38 @@
       <h1>Admin Portal</h1>
       <p>Dr. Mohammed Al Amin</p>
     </div>
-    
+
     <div class="error" id="error"></div>
-    
+
     <form id="loginForm">
       <div class="form-group">
         <label for="username">Username</label>
-        <input type="text" id="username" name="username" required autocomplete="username">
+        <input type="text" id="username" name="username" placeholder="Enter your username" required autofocus>
       </div>
-      
+
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" name="password" required autocomplete="current-password">
+        <input type="password" id="password" name="password" placeholder="Enter your password" required>
       </div>
-      
-      <button type="submit" class="btn" id="loginBtn">Login</button>
+
+      <button type="submit" class="btn">Sign In</button>
     </form>
-    
-    <div class="loading" id="loading">Logging in...</div>
+
+    <div class="footer">
+      <a href="/">← Back to Main Site</a>
+    </div>
   </div>
-  
+
   <script>
     const form = document.getElementById('loginForm');
     const errorDiv = document.getElementById('error');
-    const loadingDiv = document.getElementById('loading');
-    const loginBtn = document.getElementById('loginBtn');
-    
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
-      
-      errorDiv.classList.remove('show');
-      loadingDiv.classList.add('show');
-      loginBtn.disabled = true;
-      
+
       try {
         const response = await fetch('/api/admin/login', {
           method: 'POST',
@@ -171,23 +226,18 @@
           },
           body: JSON.stringify({ username, password }),
         });
-        
+
         const data = await response.json();
-        
+
         if (response.ok) {
           window.location.href = '/admin';
         } else {
-          errorDiv.textContent = data.error === 'invalid_credentials' 
-            ? 'Invalid username or password' 
-            : data.message || 'Login failed';
+          errorDiv.textContent = data.error || 'Login failed. Please try again.';
           errorDiv.classList.add('show');
         }
       } catch (err) {
-        errorDiv.textContent = 'Network error. Please try again.';
+        errorDiv.textContent = 'An error occurred. Please try again.';
         errorDiv.classList.add('show');
-      } finally {
-        loadingDiv.classList.remove('show');
-        loginBtn.disabled = false;
       }
     });
   </script>

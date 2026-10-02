@@ -78,11 +78,11 @@ const T = {
     'cta.sub': 'Whether it\'s an adversary simulation, a security architecture review, or an AI platform from zero, I\'m one message away.',
     'cta.collab': 'Collaborate',
 
-    'foot.tag': 'Security infrastructure · Logistics technology · Innovation ecosystems',
+    'foot.tag': 'Security Infrastructure · Logistics Technology · Innovation Ecosystems',
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
     'foot.loc': 'Riyadh, Saudi Arabia', 'foot.markets': 'Markets',
     'foot.marketsList': 'Saudi Arabia · Sudan · GCC', 'foot.langs': 'Arabic · English',
-    'foot.rights': 'All rights reserved.', 'foot.built': 'Built Secure By Default',
+    'foot.rights': 'All Rights Reserved.', 'foot.built': 'Built Secure By Default',
 
     /* runtime */
     'rt.tz': 'Asia/Riyadh (GMT+3)',
@@ -373,13 +373,13 @@ const CREDS = [
 ];
 
 const INTERESTS = [
-  { icon:'🔐', t:{en:'Cybersecurity infrastructure projects', ar:'مشاريع البنية التحتية الأمنية'},
+  { icon:'🔐', t:{en:'Cybersecurity Infrastructure Projects', ar:'مشاريع البنية التحتية الأمنية'},
     d:{en:'Red teaming, security architecture, threat intelligence programs.', ar:'الفريق الأحمر، المعمارية الأمنية، برامج استخبارات التهديدات.'} },
-  { icon:'🌱', t:{en:'Innovation ecosystem development', ar:'تطوير منظومات الابتكار'},
+  { icon:'🌱', t:{en:'Innovation Ecosystem Development', ar:'تطوير منظومات الابتكار'},
     d:{en:'Ecosystem design, founder support, cross-border collaboration.', ar:'تصميم المنظومات، دعم المؤسسين، التعاون العابر للحدود.'} },
-  { icon:'🤖', t:{en:'AI-powered solutions', ar:'حلول قائمة على الذكاء الاصطناعي'},
+  { icon:'🤖', t:{en:'AI-Powered Solutions', ar:'حلول قائمة على الذكاء الاصطناعي'},
     d:{en:'Applied AI, automation and decision-support platforms.', ar:'الذكاء الاصطناعي التطبيقي، الأتمتة، منصات دعم القرار.'} },
-  { icon:'🌍', t:{en:'Regional digital transformation', ar:'التحول الرقمي الإقليمي'},
+  { icon:'🌍', t:{en:'Regional Digital Transformation', ar:'التحول الرقمي الإقليمي'},
     d:{en:'Arab world connectivity, Vision 2030 alignment, national-scale initiatives.', ar:'الربط في العالم العربي، التوافق مع رؤية 2030، المبادرات الوطنية.'} },
 ];
 
