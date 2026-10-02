@@ -53,6 +53,12 @@
       z-index: 100;
     }
 
+    .header > div:first-child {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
     .header h1 {
       font-size: 24px;
       font-weight: 650;
@@ -79,6 +85,17 @@
 
     .header .settings-link:hover {
       color: var(--amber-2);
+    }
+
+    .header .back-link {
+      color: var(--text-2);
+      text-decoration: none;
+      font-size: 14px;
+      transition: color 0.25s var(--ease);
+    }
+
+    .header .back-link:hover {
+      color: var(--amber);
     }
 
     .header .logout-btn {
@@ -479,6 +496,11 @@
         align-items: flex-start;
       }
 
+      .header > div:first-child {
+        width: 100%;
+        justify-content: space-between;
+      }
+
       .header .user-info {
         width: 100%;
         justify-content: space-between;
@@ -502,7 +524,10 @@
 </head>
 <body>
   <div class="header">
-    <h1>Admin Dashboard</h1>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <a href="/" class="back-link">← Back to Home</a>
+      <h1>Admin Dashboard</h1>
+    </div>
     <div class="user-info">
       <span class="username" id="username">Loading...</span>
       <a href="/admin/settings" class="settings-link">Settings</a>
