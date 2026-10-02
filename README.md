@@ -1,230 +1,341 @@
-# Dr. Mohammed Al Amin · Personal Brand Site
+# <img src="https://animated-fluent-emoji.vercel.app/image/1f4f1?size=128&color=ff6b6b" width="32" /> Dr. Mohammed Al Amin
 
-A bilingual (English / Arabic) founder site with a self-hosted booking engine, a client intake
-questionnaire, and a hardened Node.js server. No frameworks, no build pipeline, no third party
-scheduling widgets.
-
-> Cybersecurity leader and founder. Arabc0n Cyber Security and InfoLogix. Riyadh, Saudi Arabia.
+> <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=24&color=f5c256" width="20" /> **Cybersecurity Leader & Founder** · Arabc0n Cyber Security · InfoLogix · Riyadh, Saudi Arabia
 
 ---
 
-## Contents
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f916?size=32&color=3ddc97" width="28" /> Vision
 
-- [Highlights](#highlights)
-- [Stack](#stack)
-- [Quick start](#quick-start)
-- [Configuration](#configuration)
-- [Project layout](#project-layout)
-- [Booking engine](#booking-engine)
-- [Questionnaire flow](#questionnaire-flow)
-- [API reference](#api-reference)
-- [Security](#security)
-- [Editing content](#editing-content)
-- [Standalone preview](#standalone-preview)
-- [Contact](#contact)
-- [License](#license)
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f30c?size=64&color=f5c256" width="64" />
+</p>
+
+To be the leading cybersecurity voice in the Arab world, empowering organizations with robust security strategies, AI-native platforms, and digital transformation solutions that protect and advance regional business interests.
 
 ---
 
-## Highlights
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f3af?size=32&color=3ddc97" width="28" /> Mission
 
-| Capability | Detail |
-|---|---|
-| Bilingual by design | Full EN / AR dictionary with a language toggle, native Arabic copy, and complete RTL mirroring including logical spacing and direction aware iconography |
-| Self hosted booking | Availability engine, Asia/Riyadh timezone, Saudi working week, server side pricing, collision free slot allocation |
-| Client intake | Ten question matchmaking questionnaire with a dismissible prompt card, linked to the booking record by reference |
-| Hardened server | Nonce based CSP, per IP rate limiting, header only admin authentication, no default credentials |
-| Zero dependencies | Plain Node standard library, including a minimal SMTP client. No `node_modules`, no build step |
-| Offline artifact | `preview.html` is a single self contained file with CSS, JS, and images inlined |
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f4e1?size=64&color=f5c256" width="64" />
+</p>
 
-## Stack
+- <img src="https://animated-fluent-emoji.vercel.app/image/2705?size=20&color=3ddc97" width="20" /> Deliver cutting-edge red teaming and security architecture services
+- <img src="https://animated-fluent-emoji.vercel.app/image/2705?size=20&color=3ddc97" width="20" /> Build AI-native platforms that transform logistics and operations
+- <img src="https://animated-fluent-emoji.vercel.app/image/2705?size=20&color=3ddc97" width="20" /> Bridge the gap between technical and executive leadership
+- <img src="https://animated-fluent-emoji.vercel.app/image/2705?size=20&color=3ddc97" width="20" /> Foster a security-first culture across the Arab world
 
-- **Runtime**: Node.js 18 or newer, standard library only
-- **Front end**: semantic HTML, hand written CSS with custom properties, vanilla ES2019 JavaScript
-- **Storage**: append only JSON documents under `data/`, created on first write
-- **Mail**: `smtp.js`, a minimal SMTPS and STARTTLS client written for this project
-- **Bot protection**: Cloudflare Turnstile, optional and disabled unless keys are present
+---
 
-## Quick start
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f3c3?size=32&color=3ddc97" width="28" /> Strategy
+
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f4c8?size=64&color=f5c256" width="64" />
+</p>
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=24&color=f5c256" width="20" /> Core Pillars
+
+| Pillar | Description |
+|--------|-------------|
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=24&color=ff6b6b" width="20" /> **Security First** | Every solution built with security at its foundation |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f310?size=24&color=3ddc97" width="20" /> **Regional Focus** | Tailored for Saudi/GCC market needs and compliance |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f9af?size=24&color=f5c256" width="20" /> **Innovation** | AI-native solutions that push boundaries |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f465?size=24&color=a8b0bd" width="20" /> **Partnership** | Building lasting relationships through trust |
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=24&color=f5c256" width="20" /> Strategic Goals
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f3c3?size=20&color=3ddc97" width="20" /> Expand Arabc0n's reach across GCC region
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4ca?size=20&color=3ddc97" width="20" /> Launch 3 new AI-native platforms by 2027
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4a1?size=20&color=3ddc97" width="20" /> Train 100+ cybersecurity professionals annually
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f514?size=20&color=3ddc97" width="20" /> Establish InfoLogix as logistics tech leader
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=32&color=3ddc97" width="28" /> About This Site
+
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=64&color=f5c256" width="64" />
+</p>
+
+A bilingual (English/Arabic) personal brand website featuring:
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4de?size=20&color=f5c256" width="20" /> **Self-hosted booking engine** with Saudi working week (Sunday-Thursday)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4cb?size=20&color=f5c256" width="20" /> **Client intake questionnaire** (10 questions, ~90 seconds)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=f5c256" width="20" /> **Admin portal** with MySQL database and session-based authentication
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6b0?size=20&color=f5c256" width="20" /> **Hardened security** with CSP, rate limiting, and Turnstile protection
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f3c3?size=20&color=f5c256" width="20" /> **Saudi/GCC compliance** with 12-month data retention
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f3a0?size=32&color=3ddc97" width="28" /> Architecture
+
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f4f0?size=64&color=f5c256" width="64" />
+</p>
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Cloudflare CDN                          │
+│  (SSL, DDoS Protection, Turnstile, Rate Limiting)          │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│              cPanel Node.js Application                      │
+│  ┌──────────────────────────────────────────────────────┐   │
+│  │              Node.js Server (server.js)              │   │
+│  │  ┌──────────────────────────────────────────────┐  │   │
+│  │  │  Authentication (auth.js)                   │  │   │
+│  │  │  - scrypt password hashing                   │  │   │
+│  │  │  - Session management                       │  │   │
+│  │  └──────────────────────────────────────────────┘  │   │
+│  │  ┌──────────────────────────────────────────────┐  │   │
+│  │  │  Database Layer (database.js)                │  │   │
+│  │  │  - MySQL connection pooling                  │  │   │
+│  │  │  - CRUD operations                          │  │   │
+│  │  └──────────────────────────────────────────────┘  │   │
+│  │  ┌──────────────────────────────────────────────┐  │   │
+│  │  │  Security Layer                              │  │   │
+│  │  │  - CSP with nonces                          │  │   │
+│  │  │  - Rate limiting                            │  │   │
+│  │  │  - Input validation                         │  │   │
+│  │  └──────────────────────────────────────────────┘  │   │
+│  └──────────────────────────────────────────────────────┘   │
+└──────────────────────┬──────────────────────────────────────┘
+                       │
+                       ▼
+┌─────────────────────────────────────────────────────────────┐
+│                  MySQL Database                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │    Users     │  │   Sessions   │  │  Bookings    │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│  ┌──────────────┐  ┌──────────────┐                       │
+│  │ Collaboratns │  │Questionnaires│                       │
+│  └──────────────┘  └──────────────┘                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f504?size=24&color=f5c256" width="20" /> Key Features
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Session-based authentication** with HTTP-only cookies
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4be?size=20&color=3ddc97" width="20" /> **MySQL database** with connection pooling
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=f5c256" width="20" /> **12-month data retention** with automated cleanup
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6b0?size=20&color=f5c256" width="20" /> **Admin dashboard** with CSV export and detailed views
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4de?size=20&color=f5c256" width="20" /> **Custom booking engine** (Saudi working week, Riyadh timezone)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f30d?size=20&color=f5c256" width="20" /> **Bilingual support** (English/Arabic with RTL)
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=32&color=3ddc97" width="28" /> Technology Stack
+
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f9f0?size=64&color=f5c256" width="64" />
+</p>
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f527?size=24&color=f5c256" width="20" /> Backend
+
+| Technology | Purpose |
+|------------|---------|
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=24&color=68a063" width="20" /> **Node.js 18+** | Runtime environment |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4be?size=24&color=00758f" width="20" /> **MySQL** | Database storage |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4b3?size=24&color=f5c256" width="20" /> **mysql2** | MySQL driver |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4b0?size=24&color=f5c256" width="20" /> **crypto** | Password hashing (scrypt) |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4e7?size=24&color=f5c256" width="20" /> **Custom SMTP client** | Email notifications |
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f5a5?size=24&color=f5c256" width="20" /> Frontend
+
+| Technology | Purpose |
+|------------|---------|
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f3af?size=24&color=e34c26" width="20" /> **HTML5** | Semantic markup |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f3a8?size=24&color=264de4" width="20" /> **CSS3** | Styling with custom properties |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f4cb?size=24&color=f7df1e" width="20" /> **Vanilla JS** | No frameworks, ES2019+ |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f30d?size=24&color=f5c256" width="20" /> **RTL support** | Full Arabic layout support |
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f310?size=24&color=f5c256" width="20" /> Infrastructure
+
+| Technology | Purpose |
+|------------|---------|
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f30d?size=24&color=f5c256" width="20" /> **Namecheap cPanel** | Shared hosting |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f465?size=24&color=f68212" width="20" /> **Cloudflare** | CDN, SSL, DDoS protection |
+| <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=24&color=f5c256" width="20" /> **Turnstile** | Bot protection |
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=32&color=3ddc97" width="28" /> Security & Privacy
+
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=64&color=f5c256" width="64" />
+</p>
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=24&color=ff6b6b" width="20" /> Security Features
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Content Security Policy (CSP)** with nonces
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Per-IP rate limiting** on all endpoints
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Session-based authentication** with HTTP-only cookies
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **scrypt password hashing** (memory-hard algorithm)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **SQL injection prevention** (parameterized queries)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Input validation** and sanitization
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Cloudflare Turnstile** bot protection
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=3ddc97" width="20" /> **Security headers** (X-Frame-Options, HSTS-ready)
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f507?size=24&color=f5c256" width="20" /> Privacy & Compliance
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=3ddc97" width="20" /> **12-month data retention** (Saudi/GCC compliance)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=3ddc97" width="20" /> **Automated data cleanup** of old records
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=3ddc97" width="20" /> **No default credentials** (fail-closed design)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=3ddc97" width="20" /> **Environment-based configuration** (no secrets in code)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4c5?size=20&color=3ddc97" width="20" /> **Minimized data collection** (only what's necessary)
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f4c8?size=24&color=f5c256" width="20" /> Security Best Practices
+
+✅ **Zero-dependency architecture** (minimal attack surface)  
+✅ **Timing-safe comparisons** (prevent timing attacks)  
+✅ **Race condition mitigation** (booking double-check)  
+✅ **HTTPS-only cookies** (prevent XSS theft)  
+✅ **Session expiration** (24-hour validity)  
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f5c4?size=32&color=3ddc97" width="28" /> Project Structure
+
+```
+brand-site/
+├── server.js                      # Main server application
+├── database.js                    # MySQL database operations
+├── auth.js                        # Authentication & session management
+├── smtp.js                        # Custom SMTP client
+├── seed-admin.js                  # Admin user seeding script
+├── schema.sql                     # Database schema
+├── package.json                   # Dependencies
+├── config.example.env             # Configuration template
+├── .env                           # Environment variables (git ignored)
+├── public/
+│   ├── index.html                 # Main page
+│   ├── styles.css                 # Styling
+│   ├── app.js                     # Frontend logic
+│   ├── questionnaire.html         # Questionnaire page
+│   ├── questionnaire.js           # Questionnaire logic
+│   ├── questionnaire-widget.css   # Widget styling
+│   ├── questionnaire-widget.js    # Widget logic
+│   ├── admin.html                 # Admin login
+│   ├── admin-dashboard.html       # Admin dashboard
+│   ├── admin-settings.html       # Admin settings
+│   └── assets/
+│       ├── portrait.jpg           # Profile photo
+│       └── favicon.svg            # Site icon
+└── README.md                      # This file
+```
+
+---
+
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f30d?size=32&color=3ddc97" width="28" /> Getting Started
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f4f1?size=24&color=f5c256" width="20" /> Prerequisites
+
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> Node.js 18 or higher
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4be?size=20&color=00758f" width="20" /> MySQL/MariaDB database
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=20&color=f5c256" width="20" /> SMTP server for email notifications
+
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=24&color=f5c256" width="20" /> Local Development
 
 ```bash
-git clone git@github.com:ma1amin/landing-page.git
+# Clone the repository
+git clone https://github.com/ma1amin/landing-page.git
 cd landing-page
-cp config.example.env .env     # optional, read automatically on startup
-node server.js                 # http://localhost:3000
+
+# Install dependencies
+npm install
+
+# Copy environment template
+cp config.example.env .env
+
+# Edit .env with your credentials
+# Configure database, SMTP, Turnstile
+
+# Import database schema
+mysql -u root -p brand_site < schema.sql
+
+# Seed admin user
+npm run seed-admin
+# Save the generated password!
+
+# Start the server
+npm start
 ```
 
-The site runs with no configuration at all. Without SMTP credentials, submissions are written to
-`data/` and echoed to the console. Without Turnstile keys, the captcha is skipped and the widget
-never renders.
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f310?size=24&color=f5c256" width="20" /> Deployment
 
-## Configuration
+For production deployment on cPanel, see [README-DEPLOYMENT.md](README-DEPLOYMENT.md) for detailed instructions.
 
-All settings are environment variables, read from the process environment or from `.env`.
+---
 
-| Variable | Default | Purpose |
-|---|---|---|
-| `PORT` | `3000` | Listening port |
-| `HOST` | `0.0.0.0` | Bind address |
-| `ADMIN_TOKEN` | *(unset)* | Enables the admin read routes. Unset means every admin route returns `503` |
-| `NOTIFY_EMAIL` | `info@malamin.cc` | Destination for submission notifications |
-| `SMTP_HOST` | *(unset)* | SMTP server. Absent means local storage only |
-| `SMTP_PORT` | `587` | SMTP port |
-| `SMTP_SECURE` | `false` | `true` for implicit TLS on port 465 |
-| `SMTP_USER` / `SMTP_PASS` | *(unset)* | SMTP credentials. Gmail requires a 16 character App Password |
-| `SMTP_FROM` | `SMTP_USER` | Envelope sender |
-| `TURNSTILE_SITE_KEY` | *(unset)* | Public key, served to the browser through `/api/config` |
-| `TURNSTILE_SECRET` | *(unset)* | Private key, used for server side verification |
-| `TRUST_PROXY` | `0` | Set to `1` only behind a proxy you control, so `X-Forwarded-For` can be trusted |
-| `ENABLE_HSTS` | `0` | Set to `1` only once HTTPS is confirmed |
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f4ca?size=32&color=3ddc97" width="28" /> Additional Suggestions
 
-`.env` and `data/` are git ignored. No secret is ever baked into the markup.
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f3a8?size=24&color=f5c256" width="20" /> Future Enhancements
 
-## Project layout
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Multi-language CMS** - Easy content updates without code changes
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Analytics dashboard** - Track visitor behavior and conversions
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Calendar integration** - Sync bookings with Google/Outlook calendars
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Payment gateway** - Accept payments directly through the booking flow
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Video conferencing** - Direct integration with Zoom/Google Meet
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Blog section** - Share cybersecurity insights and thought leadership
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Portfolio gallery** - Showcase past projects and case studies
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f525?size=20&color=ff6b6b" width="20" /> **Testimonials** - Client feedback and success stories
 
-```
-server.js                        static host, JSON API, availability engine, security layer
-smtp.js                          minimal SMTP client (SMTPS and STARTTLS)
-build-preview.js                 inlines the site into a single portable preview.html
-config.example.env               annotated configuration template
-preview.html                     generated, self contained, offline viewable build
-public/
-  index.html                     page structure, English text doubles as the no JavaScript fallback
-  styles.css                     amber on near black theme, RTL aware, design tokens in :root
-  app.js                         i18n dictionary, content data, calendar, forms, reveal logic
-  questionnaire.html             intake page
-  questionnaire.js               questions, copy, submit logic
-  questionnaire-widget.css       prompt card styling, inherits the site tokens
-  questionnaire-widget.js        prompt card timing, drag, dismissal, i18n
-  assets/                        portrait, favicon
-```
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f4b0?size=24&color=f5c256" width="20" /> Performance Optimizations
 
-## Booking engine
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=20&color=3ddc97" width="20" /> **Static asset CDN** - Cache static files on Cloudflare edge
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=20&color=3ddc97" width="20" /> **Image optimization** - WebP format with responsive images
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=20&color=3ddc97" width="20" /> **Code splitting** - Load JavaScript only when needed
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=20&color=3ddc97" width="20" /> **Database indexing** - Optimize frequently queried columns
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=20&color=3ddc97" width="20" /> **Connection pooling** - Tune MySQL pool size for production
 
-Availability is computed server side, so a slot that is taken disappears for everyone.
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f510?size=24&color=f5c256" width="20" /> Security Enhancements
 
-- **Working week**: Sunday to Thursday. Friday and Saturday are closed
-- **Hours**: 10:00 to 16:00 Asia/Riyadh, on a 30 minute grid
-- **Lunch**: 12:00 to 13:00 is blocked, and no session is allowed to straddle it
-- **Lead time**: 4 hours minimum
-- **Horizon**: 60 days
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=20&color=ff6b6b" width="20" /> **Two-factor authentication** - Add 2FA for admin login
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=20&color=ff6b6b" width="20" /> **IP whitelisting** - Restrict admin access to specific IPs
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=20&color=ff6b6b" width="20" /> **Audit logging** - Track all admin actions for compliance
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=20&color=ff6b6b" width="20" /> **Security headers analyzer** - Automated security header testing
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f6e1?size=20&color=ff6b6b" width="20" /> **Rate limiting refinement** - Per-endpoint custom limits
 
-| Session | Duration | Price |
-|---|---|---|
-| Discovery Call | 20 min | Free |
-| Technical Deep Dive | 45 min | $20 |
-| Advisory Retainer Intro | 60 min | $50 |
+### <img src="https://animated-fluent-emoji.vercel.app/image/1f4c8?size=24&color=f5c256" width="20" /> Developer Experience
 
-Prices are resolved from `SESSION_TYPES` in `server.js`. The client never transmits a price, so it
-cannot be tampered with. Every confirmed booking returns a `MA-XXXXXX` reference.
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> **Docker support** - Containerized development environment
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> **Automated testing** - Unit and integration tests
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> **CI/CD pipeline** - Automated deployment with GitHub Actions
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> **API documentation** - Swagger/OpenAPI specification
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f4bb?size=20&color=68a063" width="20" /> **Development mode** - Hot reload and debug tools
 
-Adjust the rules in the `Availability rules` block near the top of `server.js`.
+---
 
-## Questionnaire flow
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f4de?size=32&color=3ddc97" width="28" /> Contact
 
-The questionnaire exists to qualify a fit before any call is scheduled, not to collect applications.
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f4e9?size=64&color=f5c256" width="64" />
+</p>
 
-1. A visitor completes the ten questions and receives a `QNR-XXXXXX` reference.
-2. Answers are stored and emailed immediately, whether or not a booking follows.
-3. The visitor is redirected to `/?qref=QNR-XXXXXX#booking`.
-4. If they book, the reference is attached to the booking record and the questionnaire is marked
-   `booked`, so both records can be read as one thread.
+- <img src="https://animated-fluent-emoji.vercel.app/image/2709?size=20&color=f5c256" width="20" /> **Email:** [info@malamin.cc](mailto:info@malamin.cc)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f310?size=20&color=f5c256" width="20" /> **Website:** [malamin.cc](https://malamin.cc)
+- <img src="https://animated-fluent-emoji.vercel.app/image/1f426?size=20&color=f5c256" width="20" /> **Location:** Riyadh, Saudi Arabia
 
-The prompt card appears on the main page only. Its delay, dismissal lifetime, and analytics hook
-are configured through `window.QUESTIONNAIRE_CONFIG` in `index.html`. A dismissal is remembered for
-14 days in `localStorage`.
+---
 
-## API reference
+## <img src="https://animated-fluent-emoji.vercel.app/image/1f454?size=32&color=3ddc97" width="28" /> License
 
-| Method | Route | Purpose |
-|---|---|---|
-| `GET` | `/api/config` | Public settings, currently the Turnstile site key |
-| `GET` | `/api/health` | Server time, Riyadh time, mail status, captcha status |
-| `GET` | `/api/slots?month=YYYY-MM&type=discovery` | Available slots for a month |
-| `POST` | `/api/bookings` | Create a booking, returns `MA-XXXXXX` |
-| `POST` | `/api/collaborations` | Collaboration request, returns `COL-XXXXXX` |
-| `POST` | `/api/questionnaire` | Questionnaire submission, returns `QNR-XXXXXX` |
-| `GET` | `/api/admin/bookings` | List bookings, requires `X-Admin-Token` |
-| `GET` | `/api/admin/collaborations` | List collaboration requests, requires `X-Admin-Token` |
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f512?size=64&color=f5c256" width="64" />
+</p>
 
-Records are persisted to `data/bookings.json`, `data/collaborations.json`, and
-`data/questionnaire.json`.
+This project is **UNLICENSED**. All rights reserved.
 
-## Security
+© 2026 Dr. Mohammed Al Amin
 
-Hardening lives in `server.js`, so it holds regardless of what sits in front of the application.
+---
 
-**Admin authentication.** The token travels in a header, never in a query string, because query
-strings leak into access logs, proxy logs, and browser history.
-
-```bash
-curl -H "X-Admin-Token: $ADMIN_TOKEN" https://your-host/api/admin/bookings
-```
-
-There is no default token. An unset `ADMIN_TOKEN` closes the admin surface rather than opening it.
-
-**Rate limiting** is per IP, in memory, fixed window. Exceeding a limit returns `429` with
-`Retry-After`. Buckets are pruned every minute.
-
-| Endpoint | Limit |
-|---|---|
-| `POST /api/bookings` | 10 per 10 min |
-| `POST /api/collaborations` | 5 per 10 min |
-| `POST /api/questionnaire` | 5 per 10 min |
-| `GET /api/slots` | 60 per min |
-| `/api/admin/*` | 20 per 10 min |
-
-**Response headers** on every request: a nonce based `Content-Security-Policy`,
-`X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`,
-`Cross-Origin-Opener-Policy`, and `Cross-Origin-Resource-Policy`. The CSP permits
-`challenges.cloudflare.com` for scripts, connections, and frames so Turnstile functions, and allows
-no inline script, style, or event handler.
-
-Two consequences when editing the front end:
-
-- An inline `<script>` requires the per response nonce the server injects.
-- `onclick`, `onerror`, and `style=` attributes are blocked. Attach listeners from a script file
-  instead. The portrait fallback in `app.js` is the pattern to copy.
-
-`X-Frame-Options: DENY` and `frame-ancestors 'none'` mean the site will not render inside an iframe.
-That is intentional. Open it in a top level tab.
-
-**HSTS** is off by default. Enable it only after HTTPS is confirmed, since sending it over plain
-HTTP can lock visitors out for the duration of `max-age`.
-
-## Editing content
-
-- **Copy**: `public/app.js`, the `T` object holds every UI string in both languages.
-- **Data**: the `SKILLS`, `FOCUS`, `SERVICES`, `INITIATIVES`, `TIMELINE`, `CREDS`, `INTERESTS`,
-  `SESSIONS`, and `KINDS` arrays in `public/app.js`. Every entry carries an `{ en, ar }` pair.
-- **Questions**: the `QUESTIONS` array at the top of `public/questionnaire.js`.
-- **Design**: the `:root` token block at the top of `public/styles.css`.
-- **Portrait**: drop a square image at `public/assets/portrait.jpg`, roughly 640 x 640 or larger.
-  The fallback chain is GitHub avatar, then an "MA" monogram.
-
-After changing anything under `public/`, regenerate the portable build:
-
-```bash
-node build-preview.js
-```
-
-## Standalone preview
-
-`preview.html` is a single file with the stylesheet, scripts, favicon, and portrait inlined as data
-URIs. It opens from disk with no server and no network, which makes it convenient for sharing a
-snapshot or reviewing offline. Server backed features, meaning booking, forms, and captcha, are
-inert in that file by design.
-
-## Contact
-
-- Email: info@malamin.cc
-- LinkedIn: [in/mohalamin](https://www.linkedin.com/in/mohalamin/)
-- GitHub: [ma1amin](https://github.com/ma1amin)
-- Web: [infologix.co](https://infologix.co)
-
-## License
-
-Copyright (c) Dr. Mohammed Al Amin. All rights reserved.
-
-The source is published for reference and review. The content, branding, portrait, and copy are not
-licensed for reuse. Open an issue if you would like to discuss permission.
+<p align="center">
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f680?size=48&color=f5c256" width="48" />
+  <br>
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f30c?size=32&color=f5c256" width="32" />
+  <em>Built with passion for cybersecurity excellence</em>
+  <img src="https://animated-fluent-emoji.vercel.app/image/1f30c?size=32&color=f5c256" width="32" />
+</p>
