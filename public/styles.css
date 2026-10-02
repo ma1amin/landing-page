@@ -696,6 +696,35 @@ ul,ol{margin:0;padding:0;list-style:none}
   .cal-grid,.cal-dow{gap:4px}
   .hero-cta .btn{flex:1;min-width:160px}
 }
+@media (max-width:480px){
+  .wrap{padding-inline:16px}
+  .section{padding:56px 0}
+  .hero{padding-top:40px}
+  .hero h1{font-size:32px}
+  .hero .lead{font-size:16px}
+  .nav-inner{height:56px}
+  .burger{width:42px;height:38px}
+  .burger span{width:18px}
+  .stats{grid-template-columns:1fr}
+  .stat{border-inline-end:none;border-bottom:1px solid var(--line)}
+  .stat:nth-child(n+2){border-top:1px solid var(--line)}
+  .footer-bottom{flex-direction:column;gap:12px;align-items:flex-start}
+  .sitelock-badge img{height:28px}
+  .book-panel,.form-card{padding:20px 16px}
+  .btn{padding:12px 20px;font-size:14px}
+  .btn-sm{padding:10px 16px;font-size:13px}
+  .cal-cell{font-size:13px}
+  .cal-dow span{font-size:8px}
+}
+@media (max-width:360px){
+  .wrap{padding-inline:14px}
+  .section{padding:48px 0}
+  .hero h1{font-size:28px}
+  .hero .lead{font-size:15px}
+  .nav-inner{height:52px}
+  .btn{padding:11px 18px;font-size:13px}
+  .book-panel,.form-card{padding:18px 14px}
+}
 
 /* ============================================================
    Questionnaire page
