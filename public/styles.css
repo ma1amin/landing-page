@@ -42,7 +42,7 @@ p:last-child{margin-bottom:0}
 ul,ol{margin:0;padding:0;list-style:none}
 ::selection{background:rgba(245,194,86,.28)}
 
-.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px}
+.wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px;overflow-x:hidden}
 .mono{font-family:var(--mono)}
 .grad{
   background:linear-gradient(100deg,var(--amber-2),var(--amber) 45%,var(--amber-deep));
@@ -731,13 +731,14 @@ ul,ol{margin:0;padding:0;list-style:none}
    ============================================================ */
 body#top .hero-inner{padding-bottom:24px!important}
 body#top .hero h1{margin-bottom:6px!important}
-body#top .hero .lead{max-width:100%!important;margin-bottom:16px!important;line-height:1.3!important;font-size:14px!important;white-space:nowrap!important}
+body#top .hero .lead{max-width:100%!important;margin-bottom:16px!important;line-height:1.3!important;font-size:14px!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
 body#top .hero{padding:60px 0 20px!important}
 
 /* ============================================================
    PRIVACY POLICY SECTION
    ============================================================ */
 body#top .section{padding-top:32px!important}
+body#top{overflow-x:hidden}
 
 /* ============================================================
    COOKIE CONSENT
@@ -820,7 +821,11 @@ body#top .section{padding-top:32px!important}
   background:var(--panel);
   border:1px solid var(--line);
   border-radius:var(--radius);
-  padding:40px
+  padding:40px;
+  max-width:100%;
+  overflow-wrap:break-word;
+  word-wrap:break-word;
+  word-break:break-word
 }
 .content-card h2{
   font-size:24px;
@@ -836,7 +841,9 @@ body#top .section{padding-top:32px!important}
   color:var(--text-2);
   font-size:15px;
   line-height:1.7;
-  margin:0 0 16px
+  margin:0 0 16px;
+  overflow-wrap:break-word;
+  word-wrap:break-word
 }
 .content-card ul{
   margin:0 0 20px;
@@ -846,7 +853,9 @@ body#top .section{padding-top:32px!important}
   color:var(--text-2);
   font-size:15px;
   line-height:1.7;
-  margin-bottom:8px
+  margin-bottom:8px;
+  overflow-wrap:break-word;
+  word-wrap:break-word
 }
 .content-card strong{
   color:var(--text);
@@ -855,7 +864,8 @@ body#top .section{padding-top:32px!important}
 .content-card a{
   color:var(--amber);
   text-decoration:none;
-  transition:color .25s var(--ease)
+  transition:color .25s var(--ease);
+  word-break:break-all
 }
 .content-card a:hover{
   color:var(--amber-2)
