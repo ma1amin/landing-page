@@ -40,6 +40,7 @@
   var DEFAULTS = {
     delay: 3500,
     dismissDays: 3,
+    autoDismissAfter: 20000,
     storageKey: "questionnaireWidgetDismissedAt",
     ctaUrl: "/questionnaire",
     draggable: true,
@@ -253,7 +254,8 @@
   function init(userConfig) {
     var config = merge(DEFAULTS, userConfig || window.QUESTIONNAIRE_CONFIG || {});
     if (document.querySelector(".questionnaire-widget") || isDismissed(config)) return null;
-    if (!config.showOnMobile && window.matchMedia("(max-width: " + MOBILE_MAX + "px)").matches) return null;
+    // Always show on mobile (showOnMobile check removed)
+    // if (!config.showOnMobile && window.matchMedia("(max-width: " + MOBILE_MAX + "px)").matches) return null;
 
     var lang = currentLang();
     var element = createMarkup(config, lang);
@@ -283,6 +285,17 @@
     window.setTimeout(function () {
       element.classList.add("q-is-visible");
       track(config, "impression");
+      
+      // Auto-dismiss after configured time
+      if (config.autoDismissAfter) {
+        window.setTimeout(function () {
+          if (element.classList.contains("q-is-visible")) {
+            element.classList.remove("q-is-visible");
+            track(config, "auto_dismiss");
+            window.setTimeout(function () { element.remove(); }, 300);
+          }
+        }, config.autoDismissAfter);
+      }
     }, Math.max(0, Number(config.delay) || 0));
 
     return {

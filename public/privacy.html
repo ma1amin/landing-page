@@ -28,20 +28,30 @@
         </svg>
       </span>
       <span class="brand-text">
-        <strong>Dr. Mohammed Al Amin</strong>
-        <em>Cybersecurity Leader · Founder</em>
+        <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+        <em data-i18n="brand.role">Cybersecurity Leader · Founder</em>
       </span>
     </a>
 
-    <nav class="nav-links" aria-label="Main">
-      <a href="/">Home</a>
-      <a href="/#about">About</a>
-      <a href="/#expertise">Expertise</a>
-      <a href="/#collaborate">Collaborate</a>
+    <nav class="nav-links" id="navLinks" aria-label="Main">
+      <a href="/" data-i18n="nav.about">About</a>
+      <a href="/#expertise" data-i18n="nav.expertise">Expertise</a>
+      <a href="/#initiatives" data-i18n="nav.initiatives">Initiatives</a>
+      <a href="/#journey" data-i18n="nav.journey">Journey</a>
+      <a href="/#credentials" data-i18n="nav.credentials">Credentials</a>
+      <a href="/#collaborate" data-i18n="nav.collaborate">Collaborate</a>
     </nav>
 
     <div class="nav-actions">
-      <a href="/" class="btn btn-primary btn-sm">Back to Home</a>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch language">
+        <span class="lang-opt is-on" data-lang="en">EN</span>
+        <span class="lang-sep" aria-hidden="true">/</span>
+        <span class="lang-opt" data-lang="ar">ع</span>
+      </button>
+      <a href="/#booking" class="btn btn-primary btn-sm" data-i18n="nav.book">Book a Call</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
@@ -165,28 +175,87 @@
 <footer class="footer">
   <div class="wrap footer-inner">
     <div class="footer-brand">
-      <strong>Dr. Mohammed Al Amin</strong>
-      <p>Security Infrastructure · Logistics Technology · Innovation Ecosystems</p>
+      <strong data-i18n="brand.name">Dr. Mohammed Al Amin</strong>
+      <p data-i18n="foot.tag">Security Infrastructure · Logistics Technology · Innovation Ecosystems</p>
     </div>
     <div class="footer-cols">
       <div>
-        <h4>Contact</h4>
-        <p><a href="mailto:info@malamin.cc">info@malamin.cc</a></p>
-        <p><a href="https://malamin.cc">malamin.cc</a></p>
+        <h4 data-i18n="foot.contact">Contact</h4>
+        <a href="mailto:info@malamin.cc" dir="ltr">info@malamin.cc</a>
+        <a href="tel:+966581773494" dir="ltr">+966 58 177 3494</a>
+        <span data-i18n="foot.loc">Riyadh, Saudi Arabia</span>
       </div>
       <div>
-        <h4>Legal</h4>
-        <p><a href="/privacy">Privacy Policy</a></p>
+        <h4 data-i18n="foot.social">Elsewhere</h4>
+        <a href="https://www.linkedin.com/in/mohalamin/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/ma1amin" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://www.instagram.com/i.secur1ty" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.facebook.com/m.a1amin" target="_blank" rel="noopener">Facebook</a>
+      </div>
+      <div>
+        <h4 data-i18n="foot.markets">Markets</h4>
+        <span data-i18n="foot.marketsList">Saudi Arabia · Sudan · GCC</span>
+        <span data-i18n="foot.langs">Arabic · English</span>
+      </div>
+      <div>
+        <h4 data-i18n="foot.legal">Legal</h4>
+        <p><a href="/privacy" data-i18n="foot.privacy">Privacy Policy</a></p>
       </div>
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <span>© 2026 Dr. Mohammed Al Amin. All Rights Reserved.</span>
+    <span>© <span id="year">2026</span> <span data-i18n="brand.name">Dr. Mohammed Al Amin</span>. <span data-i18n="foot.rights">All Rights Reserved.</span></span>
     <a href="#" onclick="window.open('https://www.sitelock.com/verify.php?site=malamin.cc','SiteLock','width=600,height=600,left=160,top=170');" class="sitelock-badge" title="SiteLock"><img alt="SiteLock" src="https://shield.sitelock.com/shield/malamin.cc" /></a>
-    <span class="badge badge-gold"><span class="pulse" aria-hidden="true"></span><span class="mono">Built Secure By Default</span></span>
+    <span class="badge badge-gold"><span class="pulse" aria-hidden="true"></span><span class="mono" data-i18n="foot.built">Built Secure By Default</span></span>
   </div>
 </footer>
 
+<!-- Cookie Consent Popup -->
+<div id="cookieConsent" class="cookie-consent" hidden>
+  <div class="cookie-content">
+    <div class="cookie-icon" aria-hidden="true">🍪</div>
+    <div class="cookie-text">
+      <p>We use cookies to enhance your experience and for security purposes. By continuing to use this site, you agree to our use of cookies.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn btn-primary btn-sm" id="cookieAccept">Accept</button>
+      <a href="/privacy" class="cookie-learn-more">Learn More</a>
+      <button class="cookie-close" id="cookieClose" aria-label="Close">✕</button>
+    </div>
+  </div>
+</div>
+
 <script src="app.js?v=3"></script>
+<script>
+// Initialize cookie consent on privacy page
+document.addEventListener('DOMContentLoaded', function() {
+  const consent = localStorage.getItem('cookie_consent');
+  const popup = document.getElementById('cookieConsent');
+  
+  if (!consent && popup) {
+    setTimeout(function () {
+      popup.hidden = false;
+    }, 2000);
+  }
+  
+  const acceptBtn = document.getElementById('cookieAccept');
+  const closeBtn = document.getElementById('cookieClose');
+  
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', function () {
+      localStorage.setItem('cookie_consent', 'accepted');
+      document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000; secure; samesite=strict';
+      if (popup) popup.hidden = true;
+    });
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function () {
+      if (popup) popup.hidden = true;
+    });
+  }
+});
+</script>
+
 </body>
 </html>
