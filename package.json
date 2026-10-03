@@ -5,7 +5,9 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "seed-admin": "node seed-admin.js"
+    "seed-admin": "node seed-admin.js",
+    "authorize-google": "node scripts/google-authorize.js",
+    "test": "node --test"
   },
   "dependencies": {
     "mysql2": "^3.6.0",

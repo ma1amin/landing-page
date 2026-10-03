@@ -13,6 +13,12 @@
  * ------------------------------------------------------------------ */
 const T = {
   en: {
+    'bk.platform': 'Meeting platform',
+    'bk.platformNote': 'Meeting details are sent by email. The 60-minute session uses Google Meet.',
+    'bk.meetingPending': 'Your booking is reserved. Your meeting link and calendar invitation will arrive by email once ready.',
+    'bk.meetingEmailed': 'Your meeting link and calendar invitation have been sent by email.',
+    'bk.meetingEmailPending': 'Your booking is reserved. Meeting details will be sent by email; contact me if they do not arrive.',
+    'bk.meetingPreview': 'Preview only: no real meeting or email is created.',
     'brand.name': 'Dr. Mohammed Al Amin',
     'brand.role': 'Cybersecurity Leader · Founder',
     'nav.about': 'About', 'nav.expertise': 'Expertise', 'nav.initiatives': 'Initiatives',
@@ -175,6 +181,12 @@ const T = {
   },
 
   ar: {
+    'bk.platform': 'منصة الاجتماع',
+    'bk.platformNote': 'تُرسل تفاصيل الاجتماع بالبريد الإلكتروني. جلسة الستين دقيقة متاحة عبر Google Meet فقط.',
+    'bk.meetingPending': 'تم حجز جلستك. سيصلك رابط الاجتماع ودعوة التقويم بالبريد الإلكتروني فور جاهزيتهما.',
+    'bk.meetingEmailed': 'تم إرسال رابط الاجتماع ودعوة التقويم إلى بريدك الإلكتروني.',
+    'bk.meetingEmailPending': 'تم حجز جلستك. ستصلك تفاصيل الاجتماع بالبريد الإلكتروني؛ تواصل معي إن لم تصلك.',
+    'bk.meetingPreview': 'معاينة فقط: لا يتم إنشاء اجتماع فعلي أو إرسال بريد إلكتروني.',
     'brand.name': 'د. محمد الأمين',
     'brand.role': 'قائد أمن سيبراني · مؤسس',
     'nav.about': 'نبذة عني', 'nav.expertise': 'الخبرات', 'nav.initiatives': 'المبادرات',
@@ -522,7 +534,7 @@ const INTERESTS = [
 const SESSIONS = [
   { id:'discovery', dur:20, price:0, t:{en:'Discovery Call', ar:'مكالمة تعارف'},
     d:{en:'A short intro call to scope your security or platform challenge.', ar:'مكالمة تعريفية قصيرة لتحديد نطاق التحدي الأمني أو التقني.'} },
-  { id:'technical', dur:45, price:20, t:{en:'Technical Deep Dive', ar:'جلسة تقنية معمقة'},
+  { id:'technical', dur:40, price:20, t:{en:'Technical Deep Dive', ar:'جلسة تقنية معمقة'},
     d:{en:'Architecture review, threat modeling or platform deep dive with your team.', ar:'مراجعة معمارية أو نمذجة تهديدات أو تحليل معمق للمنصة مع فريقك.'} },
   { id:'advisory', dur:60, price:50, t:{en:'Advisory Retainer Intro', ar:'جلسة استشارية تمهيدية'},
     d:{en:'Scoping ongoing executive advisory and governance support.', ar:'تحديد نطاق الاستشارات التنفيذية ودعم الحوكمة المستمر.'} },
@@ -629,7 +641,8 @@ function applyI18n() {
 
   renderSkills(); renderFocus(); renderServices(); renderInitiatives();
   renderTimeline(); renderCreds(); renderInterests(); renderKinds();
-  renderSessions(); renderCalendar(/*keepState*/ true); renderSummary();
+  renderSessions(); renderPlatforms(); renderCalendar(/*keepState*/ true); renderSummary();
+  if (lastMeetingNote) renderMeetingConfirmation(lastMeetingNote);
 }
 
 /* ------------------------------------------------------------------ *
@@ -719,6 +732,8 @@ function renderKinds() {
 let curYear, curMonth;                 // month being displayed
 let monthData = null;                  // {days:[{date,slots:[{time,available}]}]}
 let selType = 'discovery';
+let selProvider = 'google_meet';
+let lastMeetingNote = null;
 let selDate = null, selTime = null;
 let loadingMonth = false;
 
@@ -852,6 +867,21 @@ function formatDate(dateStr) {
   return dayName + sep + d + ' ' + MONTHS[LANG][m - 1] + ' ' + y;
 }
 
+function renderPlatforms() {
+  const select = $('#bkPlatform'); if (!select) return;
+  if (currentSession().dur >= 60) selProvider = 'google_meet';
+  select.innerHTML = '<option value="google_meet">Google Meet</option>' +
+    (currentSession().dur < 60 ? '<option value="zoom">Zoom</option>' : '');
+  select.value = selProvider;
+}
+function renderMeetingConfirmation(data) {
+  const platform = $('#donePlatform'), note = $('#doneMeetingNote');
+  if (platform) platform.textContent = t('bk.platform') + ': ' + (data.booking.meetingProvider === 'zoom' ? 'Zoom' : 'Google Meet');
+  const key = window.__OFFLINE_PREVIEW__ ? 'bk.meetingPreview'
+    : data.booking.meetingStatus === 'ready' && data.userNotified ? 'bk.meetingEmailed'
+    : data.booking.meetingStatus === 'pending' || data.booking.meetingStatus === 'failed' ? 'bk.meetingPending' : 'bk.meetingEmailPending';
+  if (note) note.textContent = t(key);
+}
 function renderSummary() {
   const box = $('#bookSummary'), btn = $('#bkSubmit');
   if (!box) return;
@@ -866,6 +896,7 @@ function renderSummary() {
     '<div class="summary-row"><span>' + esc(t('rt.lblDate')) + '</span><span>' + esc(formatDate(selDate)) + '</span></div>' +
     '<div class="summary-row"><span>' + esc(t('rt.lblTime')) + '</span><span>' + esc(selTime) + ' ' + esc(t('rt.tz')) + '</span></div>' +
     '<div class="summary-row"><span>' + esc(t('rt.lblDuration')) + '</span><span>' + esc(t('rt.minutes', { n: s.dur })) + '</span></div>' +
+    '<div class="summary-row"><span>' + esc(t('bk.platform')) + '</span><span>' + (selProvider === 'zoom' ? 'Zoom' : 'Google Meet') + '</span></div>' +
     '<div class="summary-row fee"><span>' + esc(t('rt.lblFee')) + '</span><span>' + esc(priceLabel(s)) + '</span></div>';
   if (btn) btn.disabled = false;
 }
@@ -927,7 +958,7 @@ async function submitBooking(e) {
         type: selType, date: selDate, time: selTime,
         name: name, email: email,
         org: $('#bkOrg').value.trim(), notes: $('#bkNotes').value.trim(),
-        questionnaireRef: Q_REF,
+        questionnaireRef: Q_REF, meetingProvider: selProvider,
       }),
     });
     const data = await res.json();
@@ -949,6 +980,8 @@ async function submitBooking(e) {
     done.hidden = false;
     $('#doneSub').textContent = t('rt.doneSub', { session: pick(s.t), date: formatDate(selDate), time: selTime });
     setText($('#doneRef'), data.booking.ref);
+    lastMeetingNote = data;
+    renderMeetingConfirmation(data);
     const feeEl = $('#doneFee');
     if (feeEl) feeEl.textContent = t('rt.feeLine', { price: priceLabel(s) });
   } catch (err) {
@@ -1131,9 +1164,11 @@ function initBooking() {
     const btn = e.target.closest('.stype'); if (!btn) return;
     selType = btn.getAttribute('data-type');
     selTime = null;
-    renderSessions(); renderSummary();
+    renderSessions(); renderPlatforms(); renderSummary();
     loadMonth();
   });
+
+  $('#bkPlatform').addEventListener('change', (event) => { selProvider = event.target.value; renderSummary(); });
 
   $('#calGrid').addEventListener('click', (e) => {
     const cell = e.target.closest('.cal-cell'); if (!cell || cell.disabled) return;

@@ -3,6 +3,7 @@
  * Database layer for MySQL/MariaDB
  * Handles connection pooling and all database operations
  */
+require('./env').loadEnv();
 const mysql = require('mysql2/promise');
 
 // Database configuration from environment
@@ -11,6 +12,8 @@ const pool = mysql.createPool({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  dateStrings: ['DATE'],
+  timezone: 'Z',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
@@ -48,6 +51,10 @@ async function initializeSchema() {
       return false;
     }
     
+    if (!['users','sessions','bookings','collaborations','questionnaires','questionnaire_answers','booking_day_locks','booking_meetings'].every(name => tableNames.includes(name))) {
+      console.error('[database] Missing tables. Apply migrations/001-meetings.sql to an existing database.');
+      return false;
+    }
     console.log('[database] Tables found:', tableNames.join(', '));
     return true;
   } catch (err) {
@@ -120,24 +127,31 @@ async function deleteExpiredSessions() {
 /**
  * Booking operations
  */
-async function createBooking(booking) {
-  const sql = `
-    INSERT INTO bookings (
-      id, ref, date, time, duration, price, type, session_name,
-      name, email, org, notes, questionnaire_ref, status, timezone, created_at
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
-  `;
-  const values = [
-    booking.id, booking.ref, booking.date, booking.time, booking.duration,
-    booking.price, booking.type, booking.sessionName, booking.name, booking.email,
-    booking.org, booking.notes, booking.questionnaireRef, booking.status,
-    booking.timezone
-  ];
-  await pool.execute(sql, values);
+async function createBooking(booking, meetingsEnabled = false) {
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    await connection.execute('INSERT IGNORE INTO booking_day_locks (date) VALUES (?)', [booking.date]);
+    await connection.execute('SELECT date FROM booking_day_locks WHERE date=? FOR UPDATE', [booking.date]);
+    const [conflicts] = await connection.execute(`SELECT id FROM bookings WHERE date=? AND status <> 'cancelled'
+      AND time < ADDTIME(?, SEC_TO_TIME(? * 60)) AND ADDTIME(time, SEC_TO_TIME(duration * 60)) > ?`,
+      [booking.date, booking.time, booking.duration, booking.time]);
+    if (conflicts.length) { await connection.rollback(); return false; }
+    await connection.execute(`INSERT INTO bookings (id, ref, date, time, duration, price, type, session_name,
+      name, email, org, notes, questionnaire_ref, status, timezone, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())`,
+      [booking.id, booking.ref, booking.date, booking.time, booking.duration, booking.price, booking.type,
+       booking.sessionName, booking.name, booking.email, booking.org, booking.notes, booking.questionnaireRef,
+       booking.status, booking.timezone]);
+    await connection.execute(`INSERT INTO booking_meetings (booking_id, provider, state, next_attempt_at)
+      VALUES (?, ?, ?, ?)`, [booking.id, booking.meetingProvider, meetingsEnabled ? 'pending' : 'disabled', meetingsEnabled ? new Date() : null]);
+    await connection.commit(); return true;
+  } catch (error) { await connection.rollback(); throw error; }
+  finally { connection.release(); }
 }
 
 async function getBookings(filters = {}) {
-  let sql = 'SELECT * FROM bookings WHERE 1=1';
+  let sql = 'SELECT bookings.*, booking_meetings.provider AS meeting_provider, booking_meetings.state AS meeting_status FROM bookings LEFT JOIN booking_meetings ON booking_meetings.booking_id=bookings.id WHERE 1=1';
   const params = [];
   
   if (filters.startDate) {
@@ -162,7 +176,7 @@ async function getBookings(filters = {}) {
     params.push(searchTerm, searchTerm, searchTerm);
   }
   
-  sql += ' ORDER BY created_at DESC';
+  sql += ' ORDER BY bookings.created_at DESC';
   
   if (filters.limit) {
     sql += ' LIMIT ?';
@@ -178,7 +192,7 @@ async function getBookings(filters = {}) {
 }
 
 async function getBookingByRef(ref) {
-  const sql = 'SELECT * FROM bookings WHERE ref = ?';
+  const sql = 'SELECT b.*, m.provider AS meeting_provider, m.state AS meeting_status FROM bookings b LEFT JOIN booking_meetings m ON m.booking_id=b.id WHERE b.ref = ?';
   const [rows] = await pool.execute(sql, [ref]);
   return rows[0];
 }
@@ -190,8 +204,15 @@ async function getBookingById(id) {
 }
 
 async function updateBookingStatus(ref, status) {
-  const sql = 'UPDATE bookings SET status = ? WHERE ref = ?';
-  await pool.execute(sql, [status, ref]);
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+    await connection.execute('UPDATE bookings SET status=? WHERE ref=?', [status, ref]);
+    if (status === 'cancelled') await connection.execute(`UPDATE booking_meetings m JOIN bookings b ON b.id=m.booking_id
+      SET m.state=IF(m.state='disabled','cancelled','cleanup_pending'), m.next_attempt_at=UTC_TIMESTAMP(), m.admin_alert_sent=FALSE WHERE b.ref=?`, [ref]);
+    await connection.commit();
+  } catch (error) { await connection.rollback(); throw error; }
+  finally { connection.release(); }
 }
 
 async function updateBookingQuestionnaireRef(ref, questionnaireRef) {
@@ -200,7 +221,8 @@ async function updateBookingQuestionnaireRef(ref, questionnaireRef) {
 }
 
 async function deleteOldBookings(cutoffDate) {
-  const sql = 'DELETE FROM bookings WHERE created_at < ?';
+  const sql = `DELETE b FROM bookings b LEFT JOIN booking_meetings m ON m.booking_id=b.id
+    WHERE b.created_at < ? AND (m.state IS NULL OR m.state IN ('cancelled','disabled') OR (m.state='ready' AND m.ready_email_sent=TRUE))`;
   const [result] = await pool.execute(sql, [cutoffDate]);
   return result.affectedRows;
 }

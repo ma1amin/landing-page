@@ -687,8 +687,8 @@
           html += `<td>${item.type}</td>`;
           html += `<td><span class="status ${item.status}">${item.status}</span></td>`;
           html += `<td>
-            <button class="action-btn" onclick="viewBooking('${item.ref}')">View</button>
-            ${item.status === 'confirmed' ? `<button class="action-btn danger" onclick="cancelBooking('${item.ref}')">Cancel</button>` : ''}
+            <button class="action-btn" data-action="viewBooking" data-ref="${item.ref}">View</button>
+            ${item.status === 'confirmed' ? `<button class="action-btn danger" data-action="cancelBooking" data-ref="${item.ref}">Cancel</button>` : ''}
           </td>`;
         } else if (currentTab === 'collaborations') {
           html += `<td>${item.ref}</td>`;
@@ -697,7 +697,7 @@
           html += `<td>${item.org || 'N/A'}</td>`;
           html += `<td>${item.kind || 'N/A'}</td>`;
           html += `<td>${new Date(item.created_at).toLocaleDateString()}</td>`;
-          html += `<td><button class="action-btn" onclick="viewCollaboration('${item.ref}')">View</button></td>`;
+          html += `<td><button class="action-btn" data-action="viewCollaboration" data-ref="${item.ref}">View</button></td>`;
         } else if (currentTab === 'questionnaires') {
           html += `<td>${item.ref}</td>`;
           html += `<td>${item.first_name} ${item.last_name}</td>`;
@@ -706,7 +706,7 @@
           html += `<td>${item.role}</td>`;
           html += `<td>${item.booked ? 'Yes' : 'No'}</td>`;
           html += `<td>${new Date(item.created_at).toLocaleDateString()}</td>`;
-          html += `<td><button class="action-btn" onclick="viewQuestionnaire('${item.ref}')">View</button></td>`;
+          html += `<td><button class="action-btn" data-action="viewQuestionnaire" data-ref="${item.ref}">View</button></td>`;
         }
 
         html += '</tr>';
@@ -714,6 +714,17 @@
 
       html += '</tbody></table>';
       container.innerHTML = html;
+      container.querySelectorAll('[data-action]').forEach(button => {
+        const actions = { viewBooking, cancelBooking, viewCollaboration, viewQuestionnaire };
+        button.addEventListener('click', () => actions[button.dataset.action](button.dataset.ref));
+      });
+    }
+
+    async function retryMeeting(ref) {
+      const response = await fetch('/api/admin/bookings/' + encodeURIComponent(ref) + '/retry-meeting', {method: 'POST'});
+      if (!response.ok) { alert('Meeting retry unavailable. Check configuration or booking status.'); return; }
+      alert('Retry queued. Meeting details will be delivered by email.');
+      await viewBooking(ref);
     }
 
     // View booking details
@@ -747,7 +758,7 @@
           </div>
           <div class="field">
             <div class="label">Session</div>
-            <div class="value">${data.booking.sessionName} (${data.booking.duration} min)</div>
+            <div class="value">${data.booking.session_name || data.booking.sessionName} (${data.booking.duration} min)</div>
           </div>
           <div class="field">
             <div class="label">Price</div>
@@ -787,6 +798,17 @@
         }
 
         modalBody.innerHTML = html;
+        if (data.booking) {
+          const details = document.createElement('p');
+          details.textContent = 'Platform: ' + (data.booking.meeting_provider === 'zoom' ? 'Zoom' : data.booking.meeting_provider === 'google_meet' ? 'Google Meet' : 'Legacy booking') +
+            ' / Meeting status: ' + (data.booking.meeting_status || 'not configured');
+          modalBody.appendChild(details);
+          if (data.booking.status !== 'cancelled' && ['pending','failed','ready'].includes(data.booking.meeting_status)) {
+            const retry = document.createElement('button'); retry.type = 'button'; retry.className = 'action-btn';
+            retry.textContent = 'Retry meeting/email'; retry.addEventListener('click', () => retryMeeting(data.booking.ref));
+            modalBody.appendChild(retry);
+          }
+        }
         modal.classList.add('show');
       } catch (err) {
         alert('Failed to load booking details');

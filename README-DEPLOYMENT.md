@@ -208,3 +208,11 @@ public/
 ## License
 
 UNLICENSED
+
+## Deploying automatic meeting links
+
+This update requires Node.js 18 or later and new database tables. Back up the database and import `migrations/001-meetings.sql` once before deploying the updated files. For a new database, import the full updated `schema.sql`. The migration leaves historical bookings and durations unchanged.
+
+Keep `MEETINGS_ENABLED=0` until Zoom credentials, Gmail OAuth authorization and SMTP are ready. Copy the new variables from `config.example.env` without overwriting existing secrets. Follow [MEETINGS-SETUP.md](MEETINGS-SETUP.md) to authorize Google locally, transfer the refresh token securely, verify one real meeting per provider and enable the worker. Do not commit `.env`.
+
+Deploy the server modules, migration and public assets together, regenerate `preview.html` with `node build-preview.js`, restart Node, and purge cached public assets. Check English and Arabic session choices, emails and calendar invitations, admin retries, and external deletion after cancellation. Public and admin responses must contain no attendee or host links. Disabled-mode bookings need manual follow-up and are not automatically provisioned later.

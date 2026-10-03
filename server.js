@@ -20,7 +20,15 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const https = require('node:https');
 const nodemailer = require('nodemailer');
+require('./env').loadEnv();
 const db = require('./database');
+const { SESSION_TYPES, allowedProviders, publicBooking, adminBooking } = require('./meeting-policy');
+const { configuration, assertConfiguration, createProviders } = require('./meeting-providers');
+const { createMeetingStore } = require('./meeting-store');
+const { createMeetingWorker } = require('./meeting-worker');
+const { generateICS } = require('./calendar-invite');
+const meetingConfig = configuration();
+assertConfiguration(meetingConfig);
 const { 
   generateSalt, 
   hashPassword, 
@@ -30,29 +38,6 @@ const {
   isValidSessionId,
   validatePasswordStrength 
 } = require('./auth');
-
-/*
- * Reads ./.env if present so the keys documented in config.example.env
- * actually work. Real environment variables always win.
- */
-(function loadDotEnv() {
-  try {
-    const file = path.join(__dirname, '.env');
-    if (!fs.existsSync(file)) return;
-    fs.readFileSync(file, 'utf8').split(/\r?\n/).forEach((line) => {
-      const t = line.trim();
-      if (!t || t.startsWith('#')) return;
-      const i = t.indexOf('=');
-      if (i === -1) return;
-      const key = t.slice(0, i).trim();
-      let val = t.slice(i + 1).trim();
-      if (val.length > 1 && val[0] === val[val.length - 1] && (val[0] === '"' || val[0] === "'")) {
-        val = val.slice(1, -1);
-      }
-      if (key && process.env[key] === undefined) process.env[key] = val;
-    });
-  } catch (_) {}
-})();
 
 const PORT = Number(process.env.PORT || 3000);
 const HOST = process.env.HOST || '0.0.0.0';
@@ -132,7 +117,7 @@ function csp(nonce, isAdmin = false) {
   return [
     "default-src 'self'",
     adminDirectives,
-    "style-src 'self'",
+    "style-src 'self'" + (isAdmin ? " 'nonce-" + nonce + "'" : ''),
     "img-src 'self' data: https://avatars.githubusercontent.com",
     "font-src 'self'",
     "connect-src 'self' https://challenges.cloudflare.com",
@@ -213,11 +198,7 @@ const HORIZON_DAYS = 60;
 
 /* price is in USD; 0 means free. The client never sends a price, it is
    always derived from the session type here, so it cannot be spoofed. */
-const SESSION_TYPES = {
-  discovery: { duration: 20, price: 0,  en: 'Discovery Call',         ar: 'مكالمة تعارف' },
-  technical: { duration: 45, price: 20, en: 'Technical Deep Dive',    ar: 'جلسة تقنية معمقة' },
-  advisory:  { duration: 60, price: 50, en: 'Advisory Retainer Intro', ar: 'جلسة استشارية تمهيدية' },
-};
+
 function priceText(usd) { return usd === 0 ? 'Free (no charge)' : '$' + usd + ' USD'; }
 
 function slotStarts() {
@@ -347,16 +328,17 @@ async function notify(subject, body) {
   }
   try {
     const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_SECURE,
+      host: SMTP.host,
+      port: SMTP.port,
+      secure: SMTP.secure,
+      connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
       auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
+        user: SMTP.user,
+        pass: SMTP.pass
       }
     });
     await transporter.sendMail({
-      from: SMTP_FROM,
+      from: SMTP.from,
       to: NOTIFY_EMAIL,
       subject: subject,
       text: body
@@ -375,10 +357,10 @@ async function sendUserConfirmation(type, data) {
   let html, text, subject, icsContent = null;
   
   if (type === 'booking') {
-    subject = `Booking Confirmed: ${data.ref} - ${data.sessionName}`;
+    subject = `${data.meetingPending ? 'Booking Confirmed - Meeting Details Pending' : 'Booking Confirmed'}: ${data.ref} - ${data.sessionName}`;
     html = templates.bookingConfirmationHTML(data);
     text = templates.bookingTextFallback(data);
-    icsContent = generateICS(data);
+    icsContent = data.meetingPending ? null : generateICS(data);
   } else if (type === 'collaboration') {
     subject = `Collaboration Request Received: ${data.ref}`;
     html = templates.collaborationConfirmationHTML(data);
@@ -390,7 +372,7 @@ async function sendUserConfirmation(type, data) {
   }
   
   const mailOptions = {
-    from: SMTP_FROM,
+    from: SMTP.from,
     to: data.email,
     subject: subject,
     text: text,
@@ -408,12 +390,13 @@ async function sendUserConfirmation(type, data) {
   
   try {
     const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_SECURE,
+      host: SMTP.host,
+      port: SMTP.port,
+      secure: SMTP.secure,
+      connectionTimeout: 10000, greetingTimeout: 10000, socketTimeout: 15000,
       auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS
+        user: SMTP.user,
+        pass: SMTP.pass
       }
     });
     await transporter.sendMail(mailOptions);
@@ -424,37 +407,11 @@ async function sendUserConfirmation(type, data) {
   }
 }
 
-function generateICS(booking) {
-  // Convert Riyadh time (GMT+3) to UTC
-  const [year, month, day] = booking.date.split('-').map(Number);
-  const [hour, minute] = booking.time.split(':').map(Number);
-  
-  const startTime = new Date(Date.UTC(year, month - 1, day, hour - 3, minute));
-  const endTime = new Date(startTime.getTime() + booking.duration * 60000);
-  
-  const formatDate = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-  
-  return [
-    'BEGIN:VCALENDAR',
-    'VERSION:2.0',
-    'PRODID:-//Dr. Mohammed Al Amin//Brand Site//EN',
-    'CALSCALE:GREGORIAN',
-    'METHOD:REQUEST',
-    'BEGIN:VEVENT',
-    `UID:${booking.ref}@malamin.cc`,
-    `DTSTAMP:${formatDate(new Date())}`,
-    `DTSTART:${formatDate(startTime)}`,
-    `DTEND:${formatDate(endTime)}`,
-    `SUMMARY:${booking.sessionName} - Dr. Mohammed Al Amin`,
-    `DESCRIPTION:Booking reference: ${booking.ref}\\n\\nSession: ${booking.sessionName}\\nDuration: ${booking.duration} minutes\\n\\nJoin link will be provided before the session.`,
-    'ORGANIZER;CN=Dr. Mohammed Al Amin:mailto:info@malamin.cc',
-    'LOCATION:Online (Video Call)',
-    'STATUS:CONFIRMED',
-    'SEQUENCE:0',
-    'END:VEVENT',
-    'END:VCALENDAR'
-  ].join('\r\n');
-}
+const meetingStore = createMeetingStore(db.pool);
+const meetingWorker = createMeetingWorker({ store: meetingStore, providers: createProviders(meetingConfig),
+  sendConfirmation: (booking, ready) => sendUserConfirmation('booking', {
+    ...booking, sessionName: booking.session_name, meetingPending: !ready, join_url: ready ? booking.join_url : null,
+  }), notifyAdmin: notify });
 
 /* ------------------------------------------------------------------ *
  * HTTP helpers
@@ -537,7 +494,8 @@ async function serveStatic(req, res, urlPath) {
     if (ext === '.html') {
       const nonce = crypto.randomBytes(16).toString('base64');
       const raw = await fsp.readFile(filePath, 'utf8');
-      const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+      const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"')
+          .replace(/<style(?![^>]*\bnonce=)/gi, '<style nonce="' + nonce + '"');
       const buf = Buffer.from(patched, 'utf8');
       res.writeHead(200, Object.assign({
         'Content-Type': type,
@@ -618,6 +576,8 @@ const server = http.createServer(async (req, res) => {
       if (!isEmail(b.email)) errors.email = 'invalid';
       if (!/^\d{4}-\d{2}-\d{2}$/.test(String(b.date || ''))) errors.date = 'invalid';
       if (!/^\d{2}:\d{2}$/.test(String(b.time || ''))) errors.time = 'invalid';
+      const meetingProvider = b.meetingProvider || 'google_meet';
+      if (!allowedProviders(session.duration).includes(meetingProvider)) errors.meetingProvider = 'invalid';
       if (Object.keys(errors).length) return json(res, 400, { error: 'validation', fields: errors });
 
       const avail = await dayAvailability(b.date, session.duration);
@@ -632,6 +592,7 @@ const server = http.createServer(async (req, res) => {
         date: b.date,
         time: b.time,
         duration: session.duration,
+        meetingProvider,
         price: session.price,
         type,
         sessionName: session.en,
@@ -645,18 +606,13 @@ const server = http.createServer(async (req, res) => {
         createdAt: new Date().toISOString(),
       };
       
-      // Double-check slot availability (fix race condition)
-      const allBookings = await db.getBookings();
-      const slotTaken = allBookings.some(bk => 
-        bk.date === booking.date && 
-        bk.time === booking.time && 
-        bk.status !== 'cancelled'
-      );
-      if (slotTaken) {
-        return json(res, 409, { error: 'slot_taken', message: 'That slot was just taken. Please pick another time.' });
+      const reserved = await db.createBooking(booking, meetingConfig.enabled);
+      if (!reserved) return json(res, 409, { error: 'slot_taken', message: 'That slot was just taken. Please pick another time.' });
+      let meeting = { state: 'disabled', provider: meetingProvider };
+      if (meetingConfig.enabled) {
+        try { meeting = await meetingWorker.run(booking.ref) || await meetingStore.get(booking.ref); }
+        catch (_) { meeting = { state: 'pending', provider: meetingProvider }; console.error('[meetings] Booking reserved; background worker will retry.'); }
       }
-      
-      await db.createBooking(booking);
 
       if (booking.questionnaireRef) {
         await db.updateBookingQuestionnaireRef(booking.ref, booking.questionnaireRef);
@@ -677,19 +633,11 @@ const server = http.createServer(async (req, res) => {
         `Booked at:  ${booking.createdAt}\n`
       );
 
-      // Send confirmation to user
-      const userMail = await sendUserConfirmation('booking', {
-        ref: booking.ref,
-        name: booking.name,
-        email: booking.email,
-        sessionName: booking.sessionName,
-        date: booking.date,
-        time: booking.time,
-        duration: booking.duration,
-        timezone: TZ_LABEL
-      });
+      const userMail = meetingConfig.enabled
+        ? { sent: Boolean(meeting.ready_email_sent || meeting.pending_email_sent) }
+        : await sendUserConfirmation('booking', { ...booking, provider: meetingProvider, meetingPending: true });
+      return json(res, 201, { ok: true, booking: publicBooking(booking, meeting), notified: mail.sent, userNotified: userMail.sent });
 
-      return json(res, 201, { ok: true, booking: { ref: booking.ref, date: booking.date, time: booking.time, duration: booking.duration, sessionName: booking.sessionName, timezone: TZ_LABEL }, notified: mail.sent, userNotified: userMail.sent });
     }
 
     /* ---------- Collaboration form ---------- */
@@ -903,7 +851,7 @@ const server = http.createServer(async (req, res) => {
       };
       
       const bookings = await db.getBookings(filters);
-      return json(res, 200, { bookings });
+      return json(res, 200, { bookings: bookings.map(adminBooking) });
     }
 
     if (p.match(/^\/api\/admin\/bookings\/[^/]+$/) && req.method === 'GET') {
@@ -918,16 +866,25 @@ const server = http.createServer(async (req, res) => {
         ? await db.getQuestionnaireByRef(booking.questionnaire_ref)
         : null;
       
-      return json(res, 200, { booking, questionnaire });
+      return json(res, 200, { booking: adminBooking(booking), questionnaire });
     }
 
     if (p.match(/^\/api\/admin\/bookings\/[^/]+\/cancel$/) && req.method === 'POST') {
       const user = await validateSession(req);
       if (!user) return json(res, 401, { error: 'unauthorized' });
       
-      const ref = p.split('/')[3];
+      const ref = p.split('/')[4];
       await db.updateBookingStatus(ref, 'cancelled');
       return json(res, 200, { ok: true });
+    }
+
+    if (p.match(/^\/api\/admin\/bookings\/[^/]+\/retry-meeting$/) && req.method === 'POST') {
+      const user = await validateSession(req);
+      if (!user) return json(res, 401, { error: 'unauthorized' });
+      if (!meetingConfig.enabled) return json(res, 503, { error: 'meetings_disabled' });
+      const ref = p.split('/')[4];
+      const retried = await meetingWorker.retry(ref);
+      return json(res, retried ? 202 : 409, retried ? { ok: true } : { error: 'meeting_not_retryable' });
     }
 
     /* ---------- Admin collaborations ---------- */
@@ -1029,7 +986,8 @@ const server = http.createServer(async (req, res) => {
       try {
         const nonce = crypto.randomBytes(16).toString('base64');
         const raw = await fsp.readFile(filePath, 'utf8');
-        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"')
+          .replace(/<style(?![^>]*\bnonce=)/gi, '<style nonce="' + nonce + '"');
         const buf = Buffer.from(patched, 'utf8');
         res.writeHead(200, Object.assign({
           'Content-Type': 'text/html; charset=utf-8',
@@ -1057,7 +1015,8 @@ const server = http.createServer(async (req, res) => {
       try {
         const nonce = crypto.randomBytes(16).toString('base64');
         const raw = await fsp.readFile(filePath, 'utf8');
-        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"')
+          .replace(/<style(?![^>]*\bnonce=)/gi, '<style nonce="' + nonce + '"');
         const buf = Buffer.from(patched, 'utf8');
         res.writeHead(200, Object.assign({
           'Content-Type': 'text/html; charset=utf-8',
@@ -1091,7 +1050,8 @@ const server = http.createServer(async (req, res) => {
       try {
         const nonce = crypto.randomBytes(16).toString('base64');
         const raw = await fsp.readFile(filePath, 'utf8');
-        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"');
+        const patched = raw.replace(/<script(?![^>]*\bsrc=)(?![^>]*\bnonce=)/gi, '<script nonce="' + nonce + '"')
+          .replace(/<style(?![^>]*\bnonce=)/gi, '<style nonce="' + nonce + '"');
         const buf = Buffer.from(patched, 'utf8');
         res.writeHead(200, Object.assign({
           'Content-Type': 'text/html; charset=utf-8',
@@ -1116,7 +1076,7 @@ const server = http.createServer(async (req, res) => {
 
     /* ---------- Config ---------- */
     if (p === '/api/config' && req.method === 'GET') {
-      return json(res, 200, { turnstileSiteKey: TURNSTILE_SITE_KEY });
+      return json(res, 200, { turnstileSiteKey: TURNSTILE_SITE_KEY, meetingsEnabled: meetingConfig.enabled });
     }
 
     if (p === '/api/health') {
@@ -1153,6 +1113,10 @@ async function initialize() {
   }
   
   console.log('[init] Database initialized successfully');
+  if (meetingConfig.enabled) {
+    if (!mailEnabled) throw new Error('MEETINGS_ENABLED requires SMTP configuration.');
+    meetingWorker.start();
+  }
   
   // Start 12-month data cleanup job
   setInterval(async () => {
@@ -1179,7 +1143,7 @@ async function initialize() {
   }, 60 * 60 * 1000).unref();
 }
 
-initialize().then(() => {
+if (require.main === module) initialize().then(() => {
   server.listen(PORT, HOST, () => {
     console.log(`\n  ▸ Site running: http://${HOST}:${PORT}`);
     console.log(`  ▸ Riyadh date: ${todayRiyadh()}  (${TZ_LABEL})`);
@@ -1193,3 +1157,5 @@ initialize().then(() => {
   console.error('[init] Initialization failed:', err);
   process.exit(1);
 });
+
+module.exports = { server, initialize };

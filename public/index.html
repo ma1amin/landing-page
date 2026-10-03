@@ -301,6 +301,14 @@
             <label for="bkNotes" data-i18n="f.notes">What would you like to cover? <span class="opt" data-i18n="f.opt2">(optional)</span></label>
             <textarea id="bkNotes" name="notes" rows="4" data-i18n-ph="f.notesPh" placeholder="Context, scope, or questions…"></textarea>
           </div>
+          <div class="field">
+            <label for="bkPlatform" data-i18n="bk.platform">Meeting platform</label>
+            <select id="bkPlatform" name="meetingProvider">
+              <option value="google_meet">Google Meet</option>
+              <option value="zoom">Zoom</option>
+            </select>
+            <p class="form-note" data-i18n="bk.platformNote">Meeting details are sent by email. The 60-minute session uses Google Meet.</p>
+          </div>
           <button class="btn btn-primary btn-block" type="submit" id="bkSubmit" data-i18n="bk.confirm" disabled>Confirm booking</button>
           <p class="form-note" data-i18n="bk.note">You'll receive a confirmation reference on screen, and I'll follow up by email.</p>
         </form>
@@ -313,6 +321,8 @@
           <p class="done-sub" id="doneSub"></p>
           <div class="ref" id="doneRef"></div>
           <p class="done-fee" id="doneFee"></p>
+          <p id="donePlatform"></p>
+          <p id="doneMeetingNote"></p>
           <button class="btn btn-ghost btn-sm" type="button" id="bkReset" data-i18n="bk.again">Book another session</button>
         </div>
       </div>

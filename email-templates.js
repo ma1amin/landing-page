@@ -1,4 +1,5 @@
 'use strict';
+const { providerLabel } = require('./meeting-policy');
 
 /**
  * Email templates for user confirmation emails
@@ -156,13 +157,17 @@ function bookingConfirmationHTML(booking) {
       { label: 'Session Type', value: booking.sessionName },
       { label: 'Date', value: booking.date },
       { label: 'Time', value: `${booking.time} (${booking.timezone})` },
-      { label: 'Duration', value: `${booking.duration} minutes` }
+      { label: 'Duration', value: `${booking.duration} minutes` },
+      { label: 'Platform', value: providerLabel(booking.provider || booking.meetingProvider) }
     ])}
+    ${booking.meetingPending
+      ? '<p>Your booking is reserved. Your meeting link and calendar invitation will be sent by email once ready.</p>'
+      : '<p><a href="' + escapeHtml(booking.join_url) + '">Join your ' + providerLabel(booking.provider || booking.meetingProvider) + ' meeting</a></p>'}
     <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 25px 0; padding: 15px; background-color: ${COLORS.line}; border-radius: 8px;">
       <tr>
         <td>
           <p style="margin: 0 0 8px 0; color: ${COLORS.green}; font-size: 14px; font-weight: 600;">📅 Calendar Invitation</p>
-          <p style="margin: 0; color: ${COLORS.text}; font-size: 13px; line-height: 1.5;">An .ics calendar file is attached to this email. You can add this event to your calendar by opening the attachment.</p>
+          <p style="margin: 0; color: ${COLORS.text}; font-size: 13px; line-height: 1.5;">${booking.meetingPending ? 'Your calendar invitation will arrive with your meeting link.' : 'An .ics calendar file with your join link is attached. Open it to add the session to your calendar.'}</p>
         </td>
       </tr>
     </table>
@@ -241,7 +246,8 @@ Date: ${booking.date}
 Time: ${booking.time} (${booking.timezone})
 Duration: ${booking.duration} minutes
 
-A calendar file is attached to this email.
+Platform: ${providerLabel(booking.provider || booking.meetingProvider)}
+${booking.meetingPending ? 'Your booking is reserved. Your meeting link and calendar invitation will arrive by email once ready.' : 'Join: ' + booking.join_url + '\nA calendar file with your join link is attached.'}
 
 ---
 This is an automated email from the Dr. Mohammed Al Amin booking system.

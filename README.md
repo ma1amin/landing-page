@@ -51,6 +51,20 @@ A bilingual (English/Arabic) personal brand website featuring:
 
 ---
 
+## Automatic meeting links
+
+| Session | Duration | Fee | Platforms |
+|---|---:|---:|---|
+| Discovery Call | 20 minutes | Free | Google Meet or Zoom |
+| Technical Deep Dive | 40 minutes | $20 | Google Meet or Zoom |
+| Advisory Retainer Intro | 60 minutes | $50 | Google Meet |
+
+Google Meet is selected by default. Existing bookings keep their original durations. Attendee links appear only in client confirmation emails and calendar attachments. The booking screen and admin portal show the platform and provisioning status without links.
+
+The integration reserves slots atomically, retries provider creation and email delivery, reconciles uncertain provider responses, and removes external meetings when a booking is cancelled. Admin booking details include a retry control. The standalone preview simulates creation.
+
+Automatic creation defaults to disabled. Apply the database migration, configure Zoom server-to-server OAuth, authorize the Gmail Calendar account locally, and configure SMTP before enabling it. Follow [MEETINGS-SETUP.md](MEETINGS-SETUP.md) for environment settings, Google production authorization and live verification. Use Node.js 18 or later. Run `npm test` for the automated checks.
+
 ## Mobile layout and questionnaire widget
 
 Updated on 3 October 2026. Public pages adapt to narrow phones, tablets, and desktop screens in English and Arabic. Grid cards and hero content shrink to the available width, the header switches to a scrollable menu, and booking controls and footer columns reflow on small screens.
@@ -174,7 +188,7 @@ After changing the public assets, regenerate the portable preview with `node bui
 
 ✅ **Zero-dependency architecture** (minimal attack surface)  
 ✅ **Timing-safe comparisons** (prevent timing attacks)  
-✅ **Race condition mitigation** (booking double-check)  
+✅ **Atomic slot reservation** (transactional day lock and overlap check)
 ✅ **HTTPS-only cookies** (prevent XSS theft)  
 ✅ **Session expiration** (24-hour validity)  
 
@@ -261,7 +275,7 @@ For production deployment on cPanel, see [README-DEPLOYMENT.md](README-DEPLOYMEN
 - 🔥 **Analytics dashboard** - Track visitor behavior and conversions
 - 🔥 **Calendar integration** - Sync bookings with Google/Outlook calendars
 - 🔥 **Payment gateway** - Accept payments directly through the booking flow
-- 🔥 **Video conferencing** - Direct integration with Zoom/Google Meet
+- 🔥 **Additional video providers** - Extend the implemented Zoom/Google Meet integration
 - 🔥 **Blog section** - Share cybersecurity insights and thought leadership
 - 🔥 **Portfolio gallery** - Showcase past projects and case studies
 - 🔥 **Testimonials** - Client feedback and success stories

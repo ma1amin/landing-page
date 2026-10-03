@@ -27,7 +27,7 @@ const SHIM = `
                     return mem[k] || (mem[k]=[]); }
   function save(k,v){ mem[k]=v; try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
 
-  var DUR={discovery:30,technical:60,advisory:45};
+  var DUR={discovery:20,technical:40,advisory:60};
   var NAMES={discovery:'Discovery Call',technical:'Technical Deep Dive',advisory:'Advisory Retainer Intro'};
   var STARTS=[];
   for(var m=600;m<960;m+=30){ if(m>=720&&m<780) continue; STARTS.push(m); }
@@ -76,7 +76,7 @@ const SHIM = `
         if(p==='/api/slots'){
           var month=url.searchParams.get('month')||'';
           var type=url.searchParams.get('type')||'discovery';
-          var dur=DUR[type]||30;
+          var dur=DUR[type]||20;
           var y=+month.slice(0,4), mo=+month.slice(5,7);
           var n=new Date(Date.UTC(y,mo,0)).getUTCDate(), arr=[];
           for(var d=1;d<=n;d++){
@@ -86,17 +86,21 @@ const SHIM = `
           }
           data={month:month,timezone:'Asia/Riyadh (GMT+3)',duration:dur,days:arr};
         }
+        else if(p==='/api/config'){ data={turnstileSiteKey:'',meetingsEnabled:false}; }
         else if(p==='/api/bookings'){
-          var dur2=DUR[body.type]||30;
+          var dur2=DUR[body.type]||20;
           var av2=dayAvail(body.date,dur2);
           var slot=null;
           for(var i=0;i<av2.slots.length;i++) if(av2.slots[i].time===body.time) slot=av2.slots[i];
-          if(!slot||!slot.available){
+          if(['google_meet','zoom'].indexOf(body.meetingProvider||'google_meet')<0 || (dur2>=60 && body.meetingProvider==='zoom')){
+            status=400; data={error:'validation',fields:{meetingProvider:'invalid'}};
+          } else if(!slot||!slot.available){
             status=409;
             data={error:'slot_taken',message:'That slot was just taken. Please pick another time.'};
           } else {
             var b={ref:mkref('MA'),date:body.date,time:body.time,duration:dur2,
                    type:body.type,sessionName:NAMES[body.type]||'Session',
+                   meetingProvider:body.meetingProvider||'google_meet',meetingStatus:'simulated',
                    name:body.name,email:body.email,org:body.org,notes:body.notes,
                    status:'confirmed',timezone:'Asia/Riyadh (GMT+3)',
                    createdAt:new Date().toISOString()};
