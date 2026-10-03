@@ -19,7 +19,7 @@ const fsp = require('node:fs/promises');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const https = require('node:https');
-const { sendMail } = require('./smtp');
+const nodemailer = require('nodemailer');
 const db = require('./database');
 const { 
   generateSalt, 
@@ -346,12 +346,114 @@ async function notify(subject, body) {
     return { sent: false };
   }
   try {
-    await sendMail({ ...SMTP, to: NOTIFY_EMAIL, subject, text: body });
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      }
+    });
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: NOTIFY_EMAIL,
+      subject: subject,
+      text: body
+    });
     return { sent: true };
   } catch (err) {
     console.error('[mail] failed:', err.message);
     return { sent: false, error: err.message };
   }
+}
+
+async function sendUserConfirmation(type, data) {
+  if (!mailEnabled) return { sent: false };
+  
+  const templates = require('./email-templates');
+  let html, text, subject, icsContent = null;
+  
+  if (type === 'booking') {
+    subject = `Booking Confirmed: ${data.ref} - ${data.sessionName}`;
+    html = templates.bookingConfirmationHTML(data);
+    text = templates.bookingTextFallback(data);
+    icsContent = generateICS(data);
+  } else if (type === 'collaboration') {
+    subject = `Collaboration Request Received: ${data.ref}`;
+    html = templates.collaborationConfirmationHTML(data);
+    text = templates.collaborationTextFallback(data);
+  } else if (type === 'questionnaire') {
+    subject = `Questionnaire Received: ${data.ref}`;
+    html = templates.questionnaireConfirmationHTML(data);
+    text = templates.questionnaireTextFallback(data);
+  }
+  
+  const mailOptions = {
+    from: SMTP_FROM,
+    to: data.email,
+    subject: subject,
+    text: text,
+    html: html,
+    replyTo: 'no-reply@malamin.cc'
+  };
+  
+  if (icsContent) {
+    mailOptions.icalEvent = {
+      filename: 'invite.ics',
+      method: 'REQUEST',
+      content: icsContent
+    };
+  }
+  
+  try {
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS
+      }
+    });
+    await transporter.sendMail(mailOptions);
+    return { sent: true };
+  } catch (err) {
+    console.error('[user-mail] failed:', err.message);
+    return { sent: false, error: err.message };
+  }
+}
+
+function generateICS(booking) {
+  // Convert Riyadh time (GMT+3) to UTC
+  const [year, month, day] = booking.date.split('-').map(Number);
+  const [hour, minute] = booking.time.split(':').map(Number);
+  
+  const startTime = new Date(Date.UTC(year, month - 1, day, hour - 3, minute));
+  const endTime = new Date(startTime.getTime() + booking.duration * 60000);
+  
+  const formatDate = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+  
+  return [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Dr. Mohammed Al Amin//Brand Site//EN',
+    'CALSCALE:GREGORIAN',
+    'METHOD:REQUEST',
+    'BEGIN:VEVENT',
+    `UID:${booking.ref}@malamin.cc`,
+    `DTSTAMP:${formatDate(new Date())}`,
+    `DTSTART:${formatDate(startTime)}`,
+    `DTEND:${formatDate(endTime)}`,
+    `SUMMARY:${booking.sessionName} - Dr. Mohammed Al Amin`,
+    `DESCRIPTION:Booking reference: ${booking.ref}\\n\\nSession: ${booking.sessionName}\\nDuration: ${booking.duration} minutes\\n\\nJoin link will be provided before the session.`,
+    'ORGANIZER;CN=Dr. Mohammed Al Amin:mailto:info@malamin.cc',
+    'LOCATION:Online (Video Call)',
+    'STATUS:CONFIRMED',
+    'SEQUENCE:0',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
 }
 
 /* ------------------------------------------------------------------ *
@@ -414,6 +516,7 @@ async function serveStatic(req, res, urlPath) {
   let rel = decodeURIComponent(urlPath.split('?')[0]);
   if (rel === '/' || rel === '') rel = '/index.html';
   if (rel === '/questionnaire') rel = '/questionnaire.html';
+  if (rel === '/privacy') rel = '/privacy.html';
   const filePath = path.join(PUBLIC_DIR, path.normalize(rel));
   if (!filePath.startsWith(PUBLIC_DIR)) { res.writeHead(403).end('Forbidden'); return; }
   const notFound = () => {
@@ -574,7 +677,19 @@ const server = http.createServer(async (req, res) => {
         `Booked at:  ${booking.createdAt}\n`
       );
 
-      return json(res, 201, { ok: true, booking: { ref: booking.ref, date: booking.date, time: booking.time, duration: booking.duration, sessionName: booking.sessionName, timezone: TZ_LABEL }, notified: mail.sent });
+      // Send confirmation to user
+      const userMail = await sendUserConfirmation('booking', {
+        ref: booking.ref,
+        name: booking.name,
+        email: booking.email,
+        sessionName: booking.sessionName,
+        date: booking.date,
+        time: booking.time,
+        duration: booking.duration,
+        timezone: TZ_LABEL
+      });
+
+      return json(res, 201, { ok: true, booking: { ref: booking.ref, date: booking.date, time: booking.time, duration: booking.duration, sessionName: booking.sessionName, timezone: TZ_LABEL }, notified: mail.sent, userNotified: userMail.sent });
     }
 
     /* ---------- Collaboration form ---------- */
@@ -612,7 +727,16 @@ const server = http.createServer(async (req, res) => {
         `Received:   ${entry.createdAt}\n`
       );
 
-      return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent });
+      // Send confirmation to user
+      const userMail = await sendUserConfirmation('collaboration', {
+        ref: entry.ref,
+        name: entry.name,
+        email: entry.email,
+        org: entry.org,
+        kind: entry.kind
+      });
+
+      return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent, userNotified: userMail.sent });
     }
 
     /* ---------- Questionnaire ---------- */
@@ -686,7 +810,18 @@ const server = http.createServer(async (req, res) => {
         `Received:   ${entry.createdAt}\n`
       );
 
-      return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent });
+      // Send confirmation to user
+      const userMail = await sendUserConfirmation('questionnaire', {
+        ref: entry.ref,
+        firstName: entry.firstName,
+        lastName: entry.lastName,
+        email: entry.email,
+        company: entry.company,
+        role: entry.role,
+        locale: entry.locale
+      });
+
+      return json(res, 201, { ok: true, ref: entry.ref, notified: mail.sent, userNotified: userMail.sent });
     }
 
     /* ---------- Admin login ---------- */

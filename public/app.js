@@ -82,6 +82,7 @@ const T = {
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
     'foot.loc': 'Riyadh, Saudi Arabia', 'foot.markets': 'Markets',
     'foot.marketsList': 'Saudi Arabia · Sudan · GCC', 'foot.langs': 'Arabic · English',
+    'foot.legal': 'Legal', 'foot.privacy': 'Privacy Policy',
     'foot.rights': 'All Rights Reserved.', 'foot.built': 'Built Secure By Default',
 
     /* runtime */
@@ -176,6 +177,7 @@ const T = {
     'foot.contact': 'تواصل', 'foot.social': 'في مكان آخر',
     'foot.loc': 'الرياض، المملكة العربية السعودية', 'foot.markets': 'الأسواق',
     'foot.marketsList': 'السعودية · السودان · الخليج', 'foot.langs': 'العربية · الإنجليزية',
+    'foot.legal': 'قانوني', 'foot.privacy': 'سياسة الخصوصية',
     'foot.rights': 'جميع الحقوق محفوظة.', 'foot.built': 'مبني ليكون آمناً بصورة افتراضية',
 
     /* runtime */
@@ -932,7 +934,41 @@ function initChrome() {
     counters.forEach(runCounter);
   }
 
+  // cookie consent
+  initCookieConsent();
+
   const y = $('#year'); if (y) y.textContent = String(riyadhNow().getUTCFullYear());
+}
+
+/* ------------------------------------------------------------------ *
+ * Cookie Consent
+ * ------------------------------------------------------------------ */
+function initCookieConsent() {
+  const consent = localStorage.getItem('cookie_consent');
+  const popup = $('#cookieConsent');
+  
+  if (!consent && popup) {
+    setTimeout(() => {
+      popup.hidden = false;
+    }, 2000);
+  }
+  
+  const acceptBtn = $('#cookieAccept');
+  const closeBtn = $('#cookieClose');
+  
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('cookie_consent', 'accepted');
+      document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000; secure; samesite=strict';
+      if (popup) popup.hidden = true;
+    });
+  }
+  
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      if (popup) popup.hidden = true;
+    });
+  }
 }
 
 /* ------------------------------------------------------------------ *

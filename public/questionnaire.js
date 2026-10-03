@@ -197,8 +197,8 @@
       "foot.tag": "Security Infrastructure · Logistics Technology · Innovation Ecosystems",
       "foot.contact": "Contact", "foot.social": "Elsewhere", "foot.markets": "Markets",
       "foot.loc": "Riyadh, Saudi Arabia", "foot.marketsList": "Saudi Arabia · Sudan · GCC",
-      "foot.langs": "Arabic · English", "foot.rights": "All Rights Reserved.",
-      "foot.built": "Built Secure By Default",
+      "foot.langs": "Arabic · English", "foot.legal": "Legal", "foot.privacy": "Privacy Policy",
+      "foot.rights": "All Rights Reserved.", "foot.built": "Built Secure By Default",
       "q.eyebrow": "Partner Matching",
       "q.title": "Find the Right Partner",
       "q.lead": "Ten short questions, about ninety seconds. I use your answers to work out what you actually need, then introduce you to people in my network who fit.",
@@ -253,8 +253,8 @@
       "foot.tag": "بنية أمنية · تقنية لوجستية · منظومات ابتكار",
       "foot.contact": "تواصل", "foot.social": "في مكان آخر", "foot.markets": "الأسواق",
       "foot.loc": "الرياض، المملكة العربية السعودية", "foot.marketsList": "السعودية · السودان · دول الخليج",
-      "foot.langs": "العربية · الإنجليزية", "foot.rights": "جميع الحقوق محفوظة.",
-      "foot.built": "مبني ليكون آمناً بصورة افتراضية",
+      "foot.langs": "العربية · الإنجليزية", "foot.legal": "قانوني", "foot.privacy": "سياسة الخصوصية",
+      "foot.rights": "جميع الحقوق محفوظة.", "foot.built": "مبني ليكون آمناً بصورة افتراضية",
       "q.eyebrow": "مطابقة الشركاء",
       "q.title": "ابحث عن الشريك المناسب",
       "q.lead": "عشرة أسئلة قصيرة تستغرق نحو تسعين ثانية. أستخدم إجاباتك لأحدّد ما تحتاجه فعلياً، ثم أعرّفك على من يناسبك من شبكتي.",
@@ -660,6 +660,36 @@
 
     var year = $("#year");
     if (year) year.textContent = String(new Date().getFullYear());
+
+    initCookieConsent();
+  }
+
+  function initCookieConsent() {
+    var consent = localStorage.getItem('cookie_consent');
+    var popup = $('#cookieConsent');
+    
+    if (!consent && popup) {
+      setTimeout(function () {
+        popup.hidden = false;
+      }, 2000);
+    }
+    
+    var acceptBtn = $('#cookieAccept');
+    var closeBtn = $('#cookieClose');
+    
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', function () {
+        localStorage.setItem('cookie_consent', 'accepted');
+        document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000; secure; samesite=strict';
+        if (popup) popup.hidden = true;
+      });
+    }
+    
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function () {
+        if (popup) popup.hidden = true;
+      });
+    }
   }
 
   document.addEventListener("DOMContentLoaded", function () {
