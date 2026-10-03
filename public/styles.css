@@ -731,6 +731,12 @@ ul,ol{margin:0;padding:0;list-style:none}
    ============================================================ */
 .hero h1{margin-bottom:8px!important}
 .hero .lead{max-width:70ch!important;margin-bottom:24px!important;line-height:1.4!important;font-size:15px!important}
+.hero{padding-bottom:32px!important}
+
+/* ============================================================
+   PRIVACY POLICY SECTION
+   ============================================================ */
+body#top .section{padding-top:40px!important}
 
 /* ============================================================
    COOKIE CONSENT
