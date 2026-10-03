@@ -242,6 +242,13 @@
      * up outside the viewport.
      */
     window.addEventListener("resize", function () {
+      if (isMobile()) {
+        stop();
+        ["left", "top", "inset-inline-end", "inset-block-end"].forEach(function (property) {
+          element.style.removeProperty(property);
+        });
+        return;
+      }
       if (!element.style.left) return;
       var next = clamp(parseFloat(element.style.left) || 0, parseFloat(element.style.top) || 0);
       element.style.left = next.left + "px";
@@ -261,6 +268,43 @@
     var element = createMarkup(config, lang);
     document.body.appendChild(element);
 
+    /* Reserve the space occupied by consent and browser UI, including
+       after rotation, language changes, and opening the mobile keyboard. */
+    var cookie = document.getElementById("cookieConsent");
+    var header = document.getElementById("nav");
+    function fitViewport() {
+      var viewport = window.visualViewport;
+      var height = viewport ? viewport.height : window.innerHeight;
+      var cookieHeight = cookie && !cookie.hidden ? cookie.getBoundingClientRect().height : 0;
+      element.style.setProperty("--q-viewport-height", height + "px");
+      element.style.setProperty("--q-viewport-inset", Math.max(0, window.innerHeight - height - (viewport ? viewport.offsetTop : 0)) + "px");
+      element.style.setProperty("--q-cookie-height", cookieHeight + "px");
+      element.style.setProperty("--q-header-height", (header ? header.getBoundingClientRect().height : 0) + "px");
+    }
+    fitViewport();
+    window.addEventListener("resize", fitViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", fitViewport);
+      window.visualViewport.addEventListener("scroll", fitViewport);
+    }
+    var sizeObserver = window.ResizeObserver ? new ResizeObserver(fitViewport) : null;
+    if (sizeObserver) {
+      if (cookie) sizeObserver.observe(cookie);
+      if (header) sizeObserver.observe(header);
+    }
+    var cookieObserver = cookie ? new MutationObserver(fitViewport) : null;
+    if (cookieObserver) cookieObserver.observe(cookie, { attributes: true, attributeFilter: ["hidden"] });
+    function removeWidget() {
+      window.removeEventListener("resize", fitViewport);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", fitViewport);
+        window.visualViewport.removeEventListener("scroll", fitViewport);
+      }
+      if (sizeObserver) sizeObserver.disconnect();
+      if (cookieObserver) cookieObserver.disconnect();
+      element.remove();
+    }
+
     var closeButton = element.querySelector(".questionnaire-widget-close");
     var cta = element.querySelector(".questionnaire-widget-cta");
 
@@ -268,7 +312,7 @@
       saveDismissal(config);
       element.classList.remove("q-is-visible");
       track(config, "dismiss");
-      window.setTimeout(function () { element.remove(); }, 300);
+      window.setTimeout(removeWidget, 300);
     });
 
     cta.addEventListener("click", function () {
@@ -285,14 +329,14 @@
     window.setTimeout(function () {
       element.classList.add("q-is-visible");
       track(config, "impression");
-      
+
       // Auto-dismiss after configured time
       if (config.autoDismissAfter) {
         window.setTimeout(function () {
           if (element.classList.contains("q-is-visible")) {
             element.classList.remove("q-is-visible");
             track(config, "auto_dismiss");
-            window.setTimeout(function () { element.remove(); }, 300);
+            window.setTimeout(removeWidget, 300);
           }
         }, config.autoDismissAfter);
       }

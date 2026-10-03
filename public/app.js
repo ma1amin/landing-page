@@ -1087,16 +1087,16 @@ function initChrome() {
 function initCookieConsent() {
   const consent = localStorage.getItem('cookie_consent');
   const popup = $('#cookieConsent');
-  
+
   if (!consent && popup) {
     setTimeout(() => {
       popup.hidden = false;
     }, 2000);
   }
-  
+
   const acceptBtn = $('#cookieAccept');
   const closeBtn = $('#cookieClose');
-  
+
   if (acceptBtn) {
     acceptBtn.addEventListener('click', () => {
       localStorage.setItem('cookie_consent', 'accepted');
@@ -1104,7 +1104,7 @@ function initCookieConsent() {
       if (popup) popup.hidden = true;
     });
   }
-  
+
   if (closeBtn) {
     closeBtn.addEventListener('click', () => {
       if (popup) popup.hidden = true;
@@ -1116,6 +1116,7 @@ function initCookieConsent() {
  * Boot
  * ------------------------------------------------------------------ */
 function initBooking() {
+  if (!$('#bookingForm')) return;
   const base = riyadhYMD();
   curYear = base.y; curMonth = base.m;
 

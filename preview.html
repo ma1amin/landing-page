@@ -52,6 +52,10 @@ ul,ol{margin:0;padding:0;list-style:none}
 ::selection{background:rgba(245,194,86,.28)}
 
 .wrap{width:100%;max-width:var(--wrap);margin-inline:auto;padding-inline:24px}
+/* Let grid and flex items shrink to the available screen width. */
+.hero-inner > *,.about-grid > *,.booking-wrap > *,.collab-wrap > *,
+.footer-inner > *,.footer-cols > *,.row > *,.project-top > *{min-width:0}
+.wrap{overflow-wrap:anywhere}
 .mono{font-family:var(--mono)}
 .grad{
   background:linear-gradient(100deg,var(--amber-2),var(--amber) 45%,var(--amber-deep));
@@ -314,7 +318,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .focus-card p{font-size:13.5px;color:var(--muted);line-height:1.6}
 
 /* ---------- cards (expertise) ---------- */
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(268px,1fr));gap:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,268px),1fr));gap:16px}
 .card{
   position:relative;padding:28px 26px 30px;border-radius:var(--radius);
   border:1px solid var(--line);background:var(--panel);overflow:hidden;
@@ -342,7 +346,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 }
 
 /* ---------- projects ---------- */
-.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px}
+.projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
 .project{
   display:flex;flex-direction:column;padding:28px 26px;border-radius:var(--radius);
   border:1px solid var(--line);background:var(--panel);
@@ -405,7 +409,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .tl-desc{font-size:13.5px;color:var(--muted);line-height:1.65}
 
 /* ---------- credentials ---------- */
-.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.creds{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
 .cred{
   display:flex;gap:15px;align-items:flex-start;padding:20px 22px;
   border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--panel);
@@ -634,7 +638,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 .footer-inner{display:grid;grid-template-columns:1.2fr 2fr;gap:40px;padding-bottom:40px}
 .footer-brand strong{font-size:17px;display:block;margin-bottom:10px}
 .footer-brand p{font-size:13.5px;color:var(--muted);max-width:34ch}
-.footer-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.footer-cols{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
 .footer-cols h4{
   font-size:11.5px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase;
   color:var(--amber);margin-bottom:14px;font-weight:600;
@@ -674,17 +678,18 @@ ul,ol{margin:0;padding:0;list-style:none}
   .stat:nth-child(3){border-inline-end:none}
   .stat:nth-child(n+4){border-top:1px solid var(--line)}
 }
-@media (max-width:860px){
+@media (max-width:1200px){
   .nav-links{
-    position:fixed;inset-block-start:72px;inset-inline:0;
+    position:absolute;inset-block-start:100%;inset-inline:0;
     flex-direction:column;gap:0;padding:14px 24px 22px;
     background:rgba(7,8,11,.97);backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line);
-    transform:translateY(-130%);transition:transform .34s var(--ease);
+    max-height:calc(100vh - 72px);max-height:calc(100dvh - 72px);overflow-y:auto;
+    visibility:hidden;transform:translateY(-130%);transition:transform .34s var(--ease),visibility .34s;
   }
-  .nav-links.is-open{transform:translateY(0)}
+  .nav-links.is-open{visibility:visible;transform:translateY(0)}
   .nav-links a{padding:13px 0;border-bottom:1px solid var(--line);font-size:15px}
-  .nav-actions{margin-inline-start:auto}
+  .nav-links + .nav-actions{margin-inline-start:auto}
   .burger{display:flex}
 }
 @media (max-width:640px){
@@ -699,11 +704,221 @@ ul,ol{margin:0;padding:0;list-style:none}
   .stat:nth-child(n+3){border-top:1px solid var(--line)}
   .row{grid-template-columns:1fr}
   .footer-inner{grid-template-columns:1fr;gap:32px}
-  .footer-cols{grid-template-columns:1fr 1fr}
+  .footer-cols{grid-template-columns:1fr 1fr 1fr}
+  .brand{flex:1;min-width:0;gap:8px}
+  .brand-mark,.nav-actions,.burger{flex-shrink:0}
+  .brand-text{min-width:0}
+  .brand-text strong{font-size:13px;overflow-wrap:normal}
+  .nav-inner,.nav-actions{gap:8px}
+  .nav-actions > .btn{display:none}
+  .hero-card{width:100%}
+  .terminal-body{white-space:pre-wrap;overflow-wrap:anywhere}
+  .footer-cols{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 16px}
+  .btn{white-space:normal;text-align:center}
   .book-panel,.form-card{padding:22px 18px}
   .cal-dow span{font-size:9px}
   .cal-grid,.cal-dow{gap:4px}
-  .hero-cta .btn{flex:1;min-width:160px}
+  .hero-cta .btn{flex:1 1 160px;min-width:0}
+}
+@media (max-width:480px){
+  .wrap{padding-inline:16px}
+  .section{padding:56px 0}
+  .hero{padding-top:40px}
+  .hero h1{font-size:32px}
+  .hero .lead{font-size:16px}
+  .nav-inner{height:56px}
+  .burger{width:42px;height:38px}
+  .burger span{width:18px}
+  .stats{grid-template-columns:1fr}
+  .stat{border-inline-end:none;border-bottom:1px solid var(--line)}
+  .stat:nth-child(n+2){border-top:1px solid var(--line)}
+  .footer-bottom{flex-direction:column;gap:12px;align-items:flex-start}
+  .sitelock-badge img{height:28px}
+  .book-panel,.form-card{padding:20px 16px}
+  .btn{padding:12px 20px;font-size:14px}
+  .btn-sm{padding:10px 16px;font-size:13px}
+  .cal-cell{font-size:13px}
+  .cal-dow span{font-size:8px}
+  .stype{display:grid;grid-template-columns:17px minmax(0,1fr);gap:8px 10px;padding:12px}
+  .stype-meta{grid-column:2;flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px}
+  .field input,.field select,.field textarea{font-size:16px;min-width:0}
+  .cookie-consent{padding:14px 16px;padding-bottom:max(14px,env(safe-area-inset-bottom))}
+  .cookie-content{gap:10px}
+  .cookie-icon{display:none}
+  .cookie-actions{flex-wrap:wrap;gap:10px}
+}
+@media (max-width:360px){
+  .wrap{padding-inline:14px}
+  .section{padding:48px 0}
+  .hero h1{font-size:28px}
+  .hero .lead{font-size:15px}
+  .nav-inner{height:52px}
+  .btn{padding:11px 18px;font-size:13px}
+  .book-panel,.form-card{padding:18px 14px}
+}
+
+/* ============================================================
+   PRIVACY POLICY HERO
+   ============================================================ */
+body#top .hero-inner{padding-bottom:24px!important}
+body#top .hero h1{margin-bottom:6px!important}
+body#top .hero .lead{max-width:100%!important;margin-bottom:16px!important;line-height:1.3!important;font-size:14px!important;white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis}
+body#top .hero{padding:60px 0 20px!important}
+
+/* ============================================================
+   PRIVACY POLICY SECTION
+   ============================================================ */
+body#top .section{padding-top:32px!important}
+body#top{overflow-x:hidden}
+
+/* ============================================================
+   COOKIE CONSENT
+   ============================================================ */
+.cookie-consent{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:var(--bg);
+  border-top:2px solid var(--amber);
+  padding:20px 30px;
+  z-index:1000;
+  box-shadow:0 -4px 20px rgba(0,0,0,0.5)
+}
+.cookie-content{
+  max-width:1200px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  gap:20px
+}
+.cookie-icon{
+  font-size:24px;
+  flex-shrink:0
+}
+.cookie-text{
+  flex:1;
+  color:var(--text-2);
+  font-size:14px;
+  line-height:1.5
+}
+.cookie-text p{
+  margin:0
+}
+.cookie-actions{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  flex-shrink:0
+}
+.cookie-learn-more{
+  color:var(--amber);
+  text-decoration:none;
+  font-size:14px;
+  transition:color .25s var(--ease)
+}
+.cookie-learn-more:hover{
+  color:var(--amber-2)
+}
+.cookie-close{
+  background:none;
+  border:none;
+  color:var(--text-2);
+  font-size:18px;
+  cursor:pointer;
+  padding:5px;
+  line-height:1;
+  transition:color .25s var(--ease)
+}
+.cookie-close:hover{
+  color:var(--text)
+}
+@media (max-width:640px){
+  .cookie-content{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:15px
+  }
+  .cookie-actions{
+    width:100%;
+    justify-content:space-between
+  }
+}
+
+/* ============================================================
+   PRIVACY POLICY
+   ============================================================ */
+.content-card{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:40px;
+  max-width:100%;
+  overflow-wrap:break-word;
+  word-wrap:break-word;
+  word-break:break-word
+}
+.content-card h2{
+  font-size:24px;
+  font-weight:650;
+  letter-spacing:-.02em;
+  margin:0 0 16px;
+  color:var(--text)
+}
+.content-card h2:first-child{
+  margin-top:0
+}
+.content-card p{
+  color:var(--text-2);
+  font-size:15px;
+  line-height:1.7;
+  margin:0 0 16px;
+  overflow-wrap:break-word;
+  word-wrap:break-word
+}
+.content-card ul{
+  margin:0 0 20px;
+  padding-left:20px
+}
+.content-card li{
+  color:var(--text-2);
+  font-size:15px;
+  line-height:1.7;
+  margin-bottom:8px;
+  overflow-wrap:break-word;
+  word-wrap:break-word
+}
+.content-card strong{
+  color:var(--text);
+  font-weight:600
+}
+.content-card a{
+  color:var(--amber);
+  text-decoration:none;
+  transition:color .25s var(--ease);
+  word-break:break-all
+}
+.content-card a:hover{
+  color:var(--amber-2)
+}
+.content-card .last-updated{
+  margin-top:30px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+  color:var(--text-2);
+  font-size:14px
+}
+@media (max-width:640px){
+  .content-card{
+    padding:24px 18px
+  }
+  .content-card h2{
+    font-size:20px
+  }
+  .content-card p,
+  .content-card li{
+    font-size:14px
+  }
 }
 
 /* ============================================================
@@ -742,7 +957,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 }
 
 /* options */
-.q-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(252px,1fr));gap:9px}
+.q-options{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,252px),1fr));gap:9px}
 .q-opt{
   position:relative;display:flex;align-items:flex-start;gap:11px;
   padding:13px 15px;
@@ -787,7 +1002,7 @@ ul,ol{margin:0;padding:0;list-style:none}
 }
 
 /* what happens next */
-.q-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(258px,1fr));gap:22px}
+.q-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,258px),1fr));gap:22px}
 .q-step{
   padding:26px;border:1px solid var(--line);border-radius:var(--radius);
   background:var(--panel);
@@ -859,10 +1074,13 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 .questionnaire-widget {
   position: fixed;
-  inset-block-end: 24px;
-  inset-inline-end: 24px;
+  --q-edge: 24px;
+  --q-bottom-gap: calc(var(--q-cookie-height, 0px) + var(--q-edge) + env(safe-area-inset-bottom, 0px));
+  --q-bottom: calc(var(--q-bottom-gap) + var(--q-viewport-inset, 0px));
+  inset-block-end: var(--q-bottom);
+  inset-inline-end: max(var(--q-edge), env(safe-area-inset-right, 0px));
   z-index: 90;                        /* sits below the sticky header (100) */
-  width: min(360px, calc(100vw - 32px));
+  width: min(360px, calc(100% - 2 * var(--q-edge) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
   color: var(--text);
   font-family: var(--sans);
   line-height: 1.45;
@@ -870,14 +1088,18 @@ ul,ol{margin:0;padding:0;list-style:none}
   visibility: hidden;
   transform: translateY(18px) scale(.98);
   transition: opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
-  touch-action: none;
+  overflow-wrap: anywhere;
 }
 .questionnaire-widget.q-is-visible { opacity: 1; visibility: visible; transform: none; }
 .questionnaire-widget.q-is-dragging { transition: none; cursor: grabbing; user-select: none; }
 
 .questionnaire-widget-card {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--q-bottom) - var(--q-header-height, 72px) - 12px);
+  max-height: calc(var(--q-viewport-height, 100dvh) - var(--q-bottom-gap) - var(--q-header-height, 72px) - 12px);
+  overscroll-behavior: contain;
   border: 1px solid var(--line-2);
   border-radius: var(--radius);
   background: linear-gradient(155deg, var(--panel-2), var(--panel));
@@ -907,6 +1129,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   align-items: center;
   gap: 10px;
   cursor: grab;
+  touch-action: none;
 }
 .questionnaire-widget-status {
   display: inline-flex;
@@ -931,6 +1154,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   place-items: center;
   width: 34px;
   height: 34px;
+  flex-shrink: 0;
   padding: 0;
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 9px;
@@ -1062,18 +1286,39 @@ ul,ol{margin:0;padding:0;list-style:none}
 
 @media (max-width: 700px) {
   .questionnaire-widget {
-    inset-block-end: 12px;
-    inset-inline-end: 12px;
-    width: calc(100vw - 24px);
+    --q-edge: 12px;
     touch-action: auto;
   }
   .questionnaire-widget-card { padding: 17px; }
-  .questionnaire-widget-head { cursor: default; }
+  .questionnaire-widget-head { cursor: default; touch-action: auto; }
   .questionnaire-widget-kicker { margin-top: 14px; }
-  .questionnaire-widget-title { font-size: 21px; padding-inline-end: 35px; }
+  .questionnaire-widget-title { font-size: 21px; }
   .questionnaire-widget-copy { margin: 8px 0 13px; font-size: 13px; }
-  .questionnaire-widget-points { display: none; }
-  .questionnaire-widget-foot { display: none; }
+  .questionnaire-widget-points { gap: 7px; margin-bottom: 14px; }
+  .questionnaire-widget-foot { font-size: 10px; }
+  .questionnaire-widget-cta { gap: 10px; line-height: 1.4; }
+}
+
+@media (max-width: 360px) {
+  .questionnaire-widget {
+    --q-edge: 8px;
+  }
+  .questionnaire-widget-card { padding: 14px; }
+  .questionnaire-widget-title { font-size: 20px; }
+  .questionnaire-widget-copy { font-size: 12px; margin: 6px 0 10px; }
+  .questionnaire-widget-cta { padding: 11px 14px; font-size: 13px; }
+  .questionnaire-widget-close { width: 30px; height: 30px; }
+}
+
+@media (max-width: 320px) {
+  .questionnaire-widget {
+    --q-edge: 6px;
+  }
+  .questionnaire-widget-card { padding: 12px; }
+  .questionnaire-widget-title { font-size: 20px; }
+  .questionnaire-widget-copy { font-size: 11px; margin: 5px 0 8px; }
+  .questionnaire-widget-cta { padding: 10px 12px; font-size: 12px; }
+  .questionnaire-widget-kicker { font-size: 10px; margin-top: 12px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1504,6 +1749,10 @@ ul,ol{margin:0;padding:0;list-style:none}
         <span data-i18n="foot.marketsList">Saudi Arabia · Sudan · GCC</span>
         <span data-i18n="foot.langs">Arabic · English</span>
       </div>
+      <div>
+        <h4 data-i18n="foot.legal">Legal</h4>
+        <p><a href="/privacy" data-i18n="foot.privacy">Privacy Policy</a></p>
+      </div>
     </div>
   </div>
   <div class="wrap footer-bottom">
@@ -1703,7 +1952,75 @@ const T = {
     'foot.contact': 'Contact', 'foot.social': 'Elsewhere',
     'foot.loc': 'Riyadh, Saudi Arabia', 'foot.markets': 'Markets',
     'foot.marketsList': 'Saudi Arabia · Sudan · GCC', 'foot.langs': 'Arabic · English',
+    'foot.legal': 'Legal', 'foot.privacy': 'Privacy Policy',
     'foot.rights': 'All Rights Reserved.', 'foot.built': 'Built Secure By Default',
+
+    /* Privacy Policy */
+    'priv.heroEyebrow': 'PRIVACY POLICY',
+    'priv.heroTitle': 'Your Privacy Matters',
+    'priv.heroLead': 'We are committed to protecting your personal information and being transparent about how we collect, use, and store your data.',
+    'priv.introTitle': 'Introduction',
+    'priv.intro': 'This Privacy Policy explains how Dr. Mohammed Al Amin ("we", "us", or "our") collects, uses, and protects your personal information when you use our personal brand website at malamin.cc. We are committed to safeguarding your privacy and ensuring that your personal data is handled securely and in accordance with applicable data protection laws.',
+    'priv.dataTitle': 'Data We Collect',
+    'priv.dataIntro': 'We collect the following types of personal information:',
+    'priv.data1': '<strong>Personal Information:</strong> Name, email address, phone number, company name, and job title when you submit booking requests, collaboration inquiries, or questionnaires.',
+    'priv.data2': '<strong>Booking Information:</strong> Session type, preferred date and time, and any notes or context you provide when booking a call.',
+    'priv.data3': '<strong>Collaboration Requests:</strong> Type of collaboration, organization details, relevant links, and your message when submitting collaboration inquiries.',
+    'priv.data4': '<strong>Questionnaire Responses:</strong> Your answers to the ten-question partner matching questionnaire.',
+    'priv.data5': '<strong>Technical Data:</strong> IP address, browser type, device information, and referral source for security and analytics purposes.',
+    'priv.useTitle': 'How We Use Your Data',
+    'priv.useIntro': 'We use your personal information for the following purposes:',
+    'priv.use1': '<strong>Processing Requests:</strong> To handle your booking requests, collaboration inquiries, and questionnaire submissions.',
+    'priv.use2': '<strong>Communication:</strong> To send you confirmation emails and respond to your inquiries.',
+    'priv.use3': '<strong>Service Improvement:</strong> To improve our services and website functionality based on usage patterns.',
+    'priv.use4': '<strong>Security:</strong> To protect against fraud, abuse, and unauthorized access to our systems.',
+    'priv.use5': '<strong>Legal Compliance:</strong> To comply with applicable laws and regulations.',
+    'priv.retentionTitle': 'Data Retention',
+    'priv.retentionIntro': 'We retain your personal information for the following periods:',
+    'priv.retention1': '<strong>Bookings:</strong> 12 months from the booking date, or as required for business purposes.',
+    'priv.retention2': '<strong>Collaboration Requests:</strong> 12 months from submission date.',
+    'priv.retention3': '<strong>Questionnaire Responses:</strong> 12 months from submission date.',
+    'priv.retention4': '<strong>Admin Sessions:</strong> Sessions automatically expire after inactivity.',
+    'priv.retention5': '<strong>Technical Logs:</strong> Limited period for security and troubleshooting purposes.',
+    'priv.retentionAfter': 'After the retention period, your data is securely deleted or anonymized.',
+    'priv.rightsTitle': 'Your Rights',
+    'priv.rightsIntro': 'You have the following rights regarding your personal data:',
+    'priv.rights1': '<strong>Access:</strong> Request a copy of the personal data we hold about you.',
+    'priv.rights2': '<strong>Correction:</strong> Request correction of inaccurate or incomplete data.',
+    'priv.rights3': '<strong>Deletion:</strong> Request deletion of your personal data, subject to legal or business requirements.',
+    'priv.rights4': '<strong>Portability:</strong> Request transfer of your data to another service provider.',
+    'priv.rights5': '<strong>Withdraw Consent:</strong> Withdraw your consent for data processing where applicable.',
+    'priv.rightsContact': 'To exercise these rights, please contact us at <a href="mailto:info@malamin.cc" style="color: var(--amber);">info@malamin.cc</a>.',
+    'priv.securityTitle': 'Security Measures',
+    'priv.securityIntro': 'We implement robust security measures to protect your personal information:',
+    'priv.security1': '<strong>Encryption:</strong> All data is transmitted using HTTPS encryption.',
+    'priv.security2': '<strong>Password Hashing:</strong> Admin passwords are hashed using scrypt for secure storage.',
+    'priv.security3': '<strong>Session Management:</strong> Secure session-based authentication with HTTP-only cookies.',
+    'priv.security4': '<strong>Database Security:</strong> Parameterized SQL queries to prevent injection attacks.',
+    'priv.security5': '<strong>Regular Audits:</strong> Periodic security reviews and vulnerability assessments.',
+    'priv.security6': '<strong>Cloudflare Protection:</strong> DDoS protection, WAF, and bot detection via Cloudflare.',
+    'priv.cookiesTitle': 'Cookies',
+    'priv.cookiesIntro': 'We use cookies to enhance your experience and for security purposes:',
+    'priv.cookies1': '<strong>Essential Cookies:</strong> Required for admin session management and website functionality.',
+    'priv.cookies2': '<strong>Cookie Consent:</strong> We request your consent before using non-essential cookies.',
+    'priv.cookies3': '<strong>Storage Duration:</strong> Cookie consent is stored for 1 year.',
+    'priv.cookiesManage': 'You can manage your cookie preferences through our cookie consent popup or by adjusting your browser settings.',
+    'priv.thirdTitle': 'Third-Party Services',
+    'priv.thirdIntro': 'We use the following third-party services:',
+    'priv.third1': '<strong>Cloudflare:</strong> Content delivery network (CDN), DDoS protection, and web application firewall (WAF). Cloudflare may process your IP address and basic request data for security purposes.',
+    'priv.third2': '<strong>Cloudflare Turnstile:</strong> Bot protection service that analyzes user behavior to prevent automated abuse. Turnstile may collect device fingerprinting data.',
+    'priv.thirdNoSell': 'We do not sell your personal data to third parties. Third-party services are used only for the purposes described above and are bound by their own privacy policies.',
+    'priv.transferTitle': 'Data Transfers',
+    'priv.transfer': 'Your data is stored on servers located within our hosting provider\'s infrastructure. We take appropriate measures to ensure your data remains secure during transfer and storage.',
+    'priv.childrenTitle': 'Children\'s Privacy',
+    'priv.children': 'Our services are not intended for individuals under the age of 18. We do not knowingly collect personal information from children. If we become aware that we have collected data from a minor, we will take steps to delete it.',
+    'priv.changesTitle': 'Changes to This Policy',
+    'priv.changes': 'We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new policy on our website and updating the "Last Updated" date.',
+    'priv.contactTitle': 'Contact Us',
+    'priv.contactIntro': 'If you have any questions about this Privacy Policy or our data practices, please contact us:',
+    'priv.contactEmail': '<strong>Email:</strong> <a href="mailto:info@malamin.cc" style="color: var(--amber);">info@malamin.cc</a>',
+    'priv.contactWeb': '<strong>Website:</strong> <a href="https://malamin.cc" style="color: var(--amber);">https://malamin.cc</a>',
+    'priv.lastUpdated': '<strong>Last Updated:</strong> October 2026',
 
     /* runtime */
     'rt.tz': 'Asia/Riyadh (GMT+3)',
@@ -1797,7 +2114,75 @@ const T = {
     'foot.contact': 'تواصل', 'foot.social': 'في مكان آخر',
     'foot.loc': 'الرياض، المملكة العربية السعودية', 'foot.markets': 'الأسواق',
     'foot.marketsList': 'السعودية · السودان · الخليج', 'foot.langs': 'العربية · الإنجليزية',
+    'foot.legal': 'قانوني', 'foot.privacy': 'سياسة الخصوصية',
     'foot.rights': 'جميع الحقوق محفوظة.', 'foot.built': 'مبني ليكون آمناً بصورة افتراضية',
+
+    /* Privacy Policy */
+    'priv.heroEyebrow': 'سياسة الخصوصية',
+    'priv.heroTitle': 'خصوصيتك مهمة',
+    'priv.heroLead': 'نحن ملتزمون بحماية معلوماتك الشخصية ونكون شفافين حول كيفية جمعنا واستخدامنا وتخزيننا لبياناتك.',
+    'priv.introTitle': 'مقدمة',
+    'priv.intro': 'توضح سياسة الخصوصية هذه كيف يقوم د. محمد الأمين ("نحن"، "لنا"، أو "أنت") بجمع واستخدام وحماية معلوماتك الشخصية عند استخدامك لموقعنا الشخصي في malamin.cc. نحن ملتزمون بحماية خصوصيتك وضمان التعامل مع بياناتك الشخصية بشكل آمن ووفقاً لقوانين حماية البيانات المعمول بها.',
+    'priv.dataTitle': 'البيانات التي نجمعها',
+    'priv.dataIntro': 'نجمع الأنواع التالية من المعلومات الشخصية:',
+    'priv.data1': '<strong>المعلومات الشخصية:</strong> الاسم، عنوان البريد الإلكتروني، رقم الهاتف، اسم الشركة، والمسمى الوظيفي عند تقديم طلبات الحجز أو استفسارات التعاون أو الاستبيانات.',
+    'priv.data2': '<strong>معلومات الحجز:</strong> نوع الجلسة، التاريخ والوقت المفضل، وأي ملاحظات أو سياق تقدمه عند حجز جلسة.',
+    'priv.data3': '<strong>طلبات التعاون:</strong> نوع التعاون، تفاصيل الجهة، الروابط ذات الصلة، ورسالتك عند تقديم استفسارات التعاون.',
+    'priv.data4': '<strong>إجابات الاستبيان:</strong> إجاباتك على استبيان مطابقة الشركاء المكون من عشرة أسئلة.',
+    'priv.data5': '<strong>البيانات التقنية:</strong> عنوان IP، نوع المتصفح، معلومات الجهاز، ومصدر الإحالة لأغراض الأمان والتحليلات.',
+    'priv.useTitle': 'كيف نستخدم بياناتك',
+    'priv.useIntro': 'نستخدم معلوماتك الشخصية للأغراض التالية:',
+    'priv.use1': '<strong>معالجة الطلبات:</strong> للتعامل مع طلبات الحجز واستفسارات التعاون وإرسال الاستبيانات.',
+    'priv.use2': '<strong>التواصل:</strong> لإرسال رسائل التأكيد والرد على استفساراتك.',
+    'priv.use3': '<strong>تحسين الخدمات:</strong> لتحسين خدماتنا ووظائف الموقع بناءً على أنماط الاستخدام.',
+    'priv.use4': '<strong>الأمان:</strong> للحماية من الاحتيال وسوء الاستخدام والوصول غير المصرح به إلى أنظمتنا.',
+    'priv.use5': '<strong>الامتثال القانوني:</strong> للامتثال للقوانين واللوائح المعمول بها.',
+    'priv.retentionTitle': 'احتفاظ البيانات',
+    'priv.retentionIntro': 'نحتفظ بمعلوماتك الشخصية للفترات التالية:',
+    'priv.retention1': '<strong>الحجوزات:</strong> 12 شهراً من تاريخ الحجز، أو حسبما تتطلب الأغراض التجارية.',
+    'priv.retention2': '<strong>طلبات التعاون:</strong> 12 شهراً من تاريخ التقديم.',
+    'priv.retention3': '<strong>إجابات الاستبيان:</strong> 12 شهراً من تاريخ التقديم.',
+    'priv.retention4': '<strong>جلسات الإدارة:</strong> تنتهي الجلسات تلقائياً بعد فترة من عدم النشاط.',
+    'priv.retention5': '<strong>السجلات التقنية:</strong> فترة محدودة لأغراض الأمان واستكشاف الأخطاء.',
+    'priv.retentionAfter': 'بعد فترة الاحتفاظ، يتم حذف بياناتك أو إخفاء هويتها بشكل آمن.',
+    'priv.rightsTitle': 'حقوقك',
+    'priv.rightsIntro': 'لديك الحقوق التالية فيما يتعلق ببياناتك الشخصية:',
+    'priv.rights1': '<strong>الوصول:</strong> طلب نسخة من البيانات الشخصية التي نحتفظ بها عنك.',
+    'priv.rights2': '<strong>التصحيح:</strong> طلب تصحيح البيانات غير الدقيقة أو غير المكتملة.',
+    'priv.rights3': '<strong>الحذف:</strong> طلب حذف بياناتك الشخصية، رهناً بالمتطلبات القانونية أو التجارية.',
+    'priv.rights4': '<strong>القابلية للنقل:</strong> طلب نقل بياناتك إلى مزود خدمة آخر.',
+    'priv.rights5': '<strong>سحب الموافقة:</strong> سحب موافقتك على معالجة البيانات حيثما ينطبق ذلك.',
+    'priv.rightsContact': 'لممارسة هذه الحقوق، يرجى الاتصال بنا على <a href="mailto:info@malamin.cc" style="color: var(--amber);">info@malamin.cc</a>.',
+    'priv.securityTitle': 'تدابير الأمان',
+    'priv.securityIntro': 'ننفذ تدابير أمان قوية لحماية معلوماتك الشخصية:',
+    'priv.security1': '<strong>التشفير:</strong> يتم نقل جميع البيانات باستخدام تشفير HTTPS.',
+    'priv.security2': '<strong>تجزئة كلمات المرور:</strong> يتم تجزئة كلمات مرور المسؤولين باستخدام scrypt للتخزين الآمن.',
+    'priv.security3': '<strong>إدارة الجلسات:</strong> مصادقة قائمة على الجلسات مع ملفات تعريف الارتباط HTTP-only.',
+    'priv.security4': '<strong>أمان قاعدة البيانات:</strong> استعلامات SQL ذات معلمات لمنع هجمات الحقن.',
+    'priv.security5': '<strong>عمليات التدقيق المنتظمة:</strong> مراجعات أمنية دورية وتقييمات الثغرات.',
+    'priv.security6': '<strong>حماية Cloudflare:</strong> حماية DDoS وWAF واكتشاف البوتات عبر Cloudflare.',
+    'priv.cookiesTitle': 'ملفات تعريف الارتباط',
+    'priv.cookiesIntro': 'نستخدم ملفات تعريف الارتباط لتعزيز تجربتك ولأغراض الأمان:',
+    'priv.cookies1': '<strong>ملفات تعريف الارتباط الأساسية:</strong> مطلوبة لإدارة جلسات المسؤول ووظائف الموقع.',
+    'priv.cookies2': '<strong>موافقة ملفات تعريف الارتباط:</strong> نطلب موافقتك قبل استخدام ملفات تعريف الارتباط غير الأساسية.',
+    'priv.cookies3': '<strong>مدة التخزين:</strong> يتم تخزين موافقة ملفات تعريف الارتباط لمدة عام واحد.',
+    'priv.cookiesManage': 'يمكنك إدارة تفضيلات ملفات تعريف الارتباط من خلال النافذة المنبثقة للموافقة أو عن طريق ضبط إعدادات المتصفح.',
+    'priv.thirdTitle': 'خدمات الطرف الثالث',
+    'priv.thirdIntro': 'نستخدم خدمات الطرف الثالث التالية:',
+    'priv.third1': '<strong>Cloudflare:</strong> شبكة توصيل المحتوى (CDN)، حماية DDoS، وجدار حماية تطبيقات الويب (WAF). قد تقوم Cloudflare بمعالجة عنوان IP والبيانات الأساسية للطلب لأغراض الأمان.',
+    'priv.third2': '<strong>Cloudflare Turnstile:</strong> خدمة حماية البوتات التي تحلل سلوك المستخدم لمنع الإساءة الآلية. قد تجمع Turnstile بيانات بصمات الجهاز.',
+    'priv.thirdNoSell': 'نحن لا نبيع بياناتك الشخصية لأطراف ثالثة. تُستخدم خدمات الطرف الثالث فقط للأغراض المذكورة أعلاه وهي ملزمة بسياسات الخصوصية الخاصة بها.',
+    'priv.transferTitle': 'نقل البيانات',
+    'priv.transfer': 'يتم تخزين بياناتك على خوادم تقع داخل بنية مزود الاستضافة الخاص بنا. نتخذ التدابير المناسبة لضمان بقاء بياناتك آمنة أثناء النقل والتخزين.',
+    'priv.childrenTitle': 'خصوصية الأطفال',
+    'priv.children': 'خدماتنا ليست مخصصة للأفراد الذين تقل أعمارهم عن 18 عاماً. لا نجمع عن قصد معلومات شخصية من الأطفال. إذا علمنا أننا جمعنا بيانات من قاصر، سنتخذ خطوات لحذفها.',
+    'priv.changesTitle': 'تغييرات على هذه السياسة',
+    'priv.changes': 'قد نقوم بتحديث سياسة الخصوصية هذه من وقت لآخر. سنخطرك بأي تغييرات جوهرية عن طريق نشر السياسة الجديدة على موقعنا وتحديث تاريخ "آخر تحديث".',
+    'priv.contactTitle': 'اتصل بنا',
+    'priv.contactIntro': 'إذا كان لديك أي أسئلة حول سياسة الخصوصية هذه أو ممارسات البيانات لدينا، يرجى الاتصال بنا:',
+    'priv.contactEmail': '<strong>البريد الإلكتروني:</strong> <a href="mailto:info@malamin.cc" style="color: var(--amber);">info@malamin.cc</a>',
+    'priv.contactWeb': '<strong>الموقع:</strong> <a href="https://malamin.cc" style="color: var(--amber);">https://malamin.cc</a>',
+    'priv.lastUpdated': '<strong>آخر تحديث:</strong> أكتوبر 2026',
 
     /* runtime */
     'rt.tz': 'الرياض (GMT+3)',
@@ -2104,6 +2489,13 @@ function applyI18n() {
   document.title = LANG === 'ar'
     ? 'د. محمد الأمين · قائد أمن سيبراني ومؤسس'
     : 'Dr. Mohammed Al Amin · Cybersecurity Leader & Founder';
+
+  // Privacy page title override
+  if (window.location.pathname === '/privacy' || window.location.pathname === '/privacy.html') {
+    document.title = LANG === 'ar'
+      ? 'سياسة الخصوصية · د. محمد الأمين'
+      : 'Privacy Policy · Dr. Mohammed Al Amin';
+  }
 
   renderSkills(); renderFocus(); renderServices(); renderInitiatives();
   renderTimeline(); renderCreds(); renderInterests(); renderKinds();
@@ -2553,13 +2945,48 @@ function initChrome() {
     counters.forEach(runCounter);
   }
 
+  // cookie consent
+  initCookieConsent();
+
   const y = $('#year'); if (y) y.textContent = String(riyadhNow().getUTCFullYear());
+}
+
+/* ------------------------------------------------------------------ *
+ * Cookie Consent
+ * ------------------------------------------------------------------ */
+function initCookieConsent() {
+  const consent = localStorage.getItem('cookie_consent');
+  const popup = $('#cookieConsent');
+
+  if (!consent && popup) {
+    setTimeout(() => {
+      popup.hidden = false;
+    }, 2000);
+  }
+
+  const acceptBtn = $('#cookieAccept');
+  const closeBtn = $('#cookieClose');
+
+  if (acceptBtn) {
+    acceptBtn.addEventListener('click', () => {
+      localStorage.setItem('cookie_consent', 'accepted');
+      document.cookie = 'cookie_consent=accepted; path=/; max-age=31536000; secure; samesite=strict';
+      if (popup) popup.hidden = true;
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+      if (popup) popup.hidden = true;
+    });
+  }
 }
 
 /* ------------------------------------------------------------------ *
  * Boot
  * ------------------------------------------------------------------ */
 function initBooking() {
+  if (!$('#bookingForm')) return;
   const base = riyadhYMD();
   curYear = base.y; curMonth = base.m;
 
@@ -2666,11 +3093,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 </script>
 
+<!-- Cookie Consent Popup -->
+<div id="cookieConsent" class="cookie-consent" hidden>
+  <div class="cookie-content">
+    <div class="cookie-icon" aria-hidden="true">🍪</div>
+    <div class="cookie-text">
+      <p>We use cookies to enhance your experience and for security purposes. By continuing to use this site, you agree to our use of cookies.</p>
+    </div>
+    <div class="cookie-actions">
+      <button class="btn btn-primary btn-sm" id="cookieAccept">Accept</button>
+      <a href="/privacy" class="cookie-learn-more">Learn More</a>
+      <button class="cookie-close" id="cookieClose" aria-label="Close">✕</button>
+    </div>
+  </div>
+</div>
+
 <!-- Questionnaire prompt. Appears once per visitor, dismissible for 14 days. -->
 <script>
 window.QUESTIONNAIRE_CONFIG = {
   delay: 3500,
-  dismissDays: 3,
+  dismissDays: 14,
+  autoDismissAfter: 20000,
   analytics: true
 };
 </script>
@@ -2717,6 +3160,7 @@ window.QUESTIONNAIRE_CONFIG = {
   var DEFAULTS = {
     delay: 3500,
     dismissDays: 3,
+    autoDismissAfter: 20000,
     storageKey: "questionnaireWidgetDismissedAt",
     ctaUrl: "/questionnaire",
     draggable: true,
@@ -2918,6 +3362,13 @@ window.QUESTIONNAIRE_CONFIG = {
      * up outside the viewport.
      */
     window.addEventListener("resize", function () {
+      if (isMobile()) {
+        stop();
+        ["left", "top", "inset-inline-end", "inset-block-end"].forEach(function (property) {
+          element.style.removeProperty(property);
+        });
+        return;
+      }
       if (!element.style.left) return;
       var next = clamp(parseFloat(element.style.left) || 0, parseFloat(element.style.top) || 0);
       element.style.left = next.left + "px";
@@ -2930,11 +3381,49 @@ window.QUESTIONNAIRE_CONFIG = {
   function init(userConfig) {
     var config = merge(DEFAULTS, userConfig || window.QUESTIONNAIRE_CONFIG || {});
     if (document.querySelector(".questionnaire-widget") || isDismissed(config)) return null;
-    if (!config.showOnMobile && window.matchMedia("(max-width: " + MOBILE_MAX + "px)").matches) return null;
+    // Always show on mobile (showOnMobile check removed)
+    // if (!config.showOnMobile && window.matchMedia("(max-width: " + MOBILE_MAX + "px)").matches) return null;
 
     var lang = currentLang();
     var element = createMarkup(config, lang);
     document.body.appendChild(element);
+
+    /* Reserve the space occupied by consent and browser UI, including
+       after rotation, language changes, and opening the mobile keyboard. */
+    var cookie = document.getElementById("cookieConsent");
+    var header = document.getElementById("nav");
+    function fitViewport() {
+      var viewport = window.visualViewport;
+      var height = viewport ? viewport.height : window.innerHeight;
+      var cookieHeight = cookie && !cookie.hidden ? cookie.getBoundingClientRect().height : 0;
+      element.style.setProperty("--q-viewport-height", height + "px");
+      element.style.setProperty("--q-viewport-inset", Math.max(0, window.innerHeight - height - (viewport ? viewport.offsetTop : 0)) + "px");
+      element.style.setProperty("--q-cookie-height", cookieHeight + "px");
+      element.style.setProperty("--q-header-height", (header ? header.getBoundingClientRect().height : 0) + "px");
+    }
+    fitViewport();
+    window.addEventListener("resize", fitViewport);
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener("resize", fitViewport);
+      window.visualViewport.addEventListener("scroll", fitViewport);
+    }
+    var sizeObserver = window.ResizeObserver ? new ResizeObserver(fitViewport) : null;
+    if (sizeObserver) {
+      if (cookie) sizeObserver.observe(cookie);
+      if (header) sizeObserver.observe(header);
+    }
+    var cookieObserver = cookie ? new MutationObserver(fitViewport) : null;
+    if (cookieObserver) cookieObserver.observe(cookie, { attributes: true, attributeFilter: ["hidden"] });
+    function removeWidget() {
+      window.removeEventListener("resize", fitViewport);
+      if (window.visualViewport) {
+        window.visualViewport.removeEventListener("resize", fitViewport);
+        window.visualViewport.removeEventListener("scroll", fitViewport);
+      }
+      if (sizeObserver) sizeObserver.disconnect();
+      if (cookieObserver) cookieObserver.disconnect();
+      element.remove();
+    }
 
     var closeButton = element.querySelector(".questionnaire-widget-close");
     var cta = element.querySelector(".questionnaire-widget-cta");
@@ -2943,7 +3432,7 @@ window.QUESTIONNAIRE_CONFIG = {
       saveDismissal(config);
       element.classList.remove("q-is-visible");
       track(config, "dismiss");
-      window.setTimeout(function () { element.remove(); }, 300);
+      window.setTimeout(removeWidget, 300);
     });
 
     cta.addEventListener("click", function () {
@@ -2960,6 +3449,17 @@ window.QUESTIONNAIRE_CONFIG = {
     window.setTimeout(function () {
       element.classList.add("q-is-visible");
       track(config, "impression");
+
+      // Auto-dismiss after configured time
+      if (config.autoDismissAfter) {
+        window.setTimeout(function () {
+          if (element.classList.contains("q-is-visible")) {
+            element.classList.remove("q-is-visible");
+            track(config, "auto_dismiss");
+            window.setTimeout(removeWidget, 300);
+          }
+        }, config.autoDismissAfter);
+      }
     }, Math.max(0, Number(config.delay) || 0));
 
     return {

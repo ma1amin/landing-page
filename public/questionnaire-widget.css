@@ -13,10 +13,13 @@
 
 .questionnaire-widget {
   position: fixed;
-  inset-block-end: 24px;
-  inset-inline-end: 24px;
+  --q-edge: 24px;
+  --q-bottom-gap: calc(var(--q-cookie-height, 0px) + var(--q-edge) + env(safe-area-inset-bottom, 0px));
+  --q-bottom: calc(var(--q-bottom-gap) + var(--q-viewport-inset, 0px));
+  inset-block-end: var(--q-bottom);
+  inset-inline-end: max(var(--q-edge), env(safe-area-inset-right, 0px));
   z-index: 90;                        /* sits below the sticky header (100) */
-  width: min(360px, calc(100vw - 32px));
+  width: min(360px, calc(100% - 2 * var(--q-edge) - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)));
   color: var(--text);
   font-family: var(--sans);
   line-height: 1.45;
@@ -24,14 +27,18 @@
   visibility: hidden;
   transform: translateY(18px) scale(.98);
   transition: opacity .28s var(--ease), transform .28s var(--ease), visibility .28s;
-  touch-action: none;
+  overflow-wrap: anywhere;
 }
 .questionnaire-widget.q-is-visible { opacity: 1; visibility: visible; transform: none; }
 .questionnaire-widget.q-is-dragging { transition: none; cursor: grabbing; user-select: none; }
 
 .questionnaire-widget-card {
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - var(--q-bottom) - var(--q-header-height, 72px) - 12px);
+  max-height: calc(var(--q-viewport-height, 100dvh) - var(--q-bottom-gap) - var(--q-header-height, 72px) - 12px);
+  overscroll-behavior: contain;
   border: 1px solid var(--line-2);
   border-radius: var(--radius);
   background: linear-gradient(155deg, var(--panel-2), var(--panel));
@@ -61,6 +68,7 @@
   align-items: center;
   gap: 10px;
   cursor: grab;
+  touch-action: none;
 }
 .questionnaire-widget-status {
   display: inline-flex;
@@ -85,6 +93,7 @@
   place-items: center;
   width: 34px;
   height: 34px;
+  flex-shrink: 0;
   padding: 0;
   border: 1px solid rgba(255,255,255,.1);
   border-radius: 9px;
@@ -216,30 +225,25 @@
 
 @media (max-width: 700px) {
   .questionnaire-widget {
-    inset-block-end: 12px;
-    inset-inline-end: 12px;
-    width: calc(100vw - 24px);
-    max-width: 340px;
+    --q-edge: 12px;
     touch-action: auto;
   }
   .questionnaire-widget-card { padding: 17px; }
-  .questionnaire-widget-head { cursor: default; }
+  .questionnaire-widget-head { cursor: default; touch-action: auto; }
   .questionnaire-widget-kicker { margin-top: 14px; }
-  .questionnaire-widget-title { font-size: 21px; padding-inline-end: 35px; }
+  .questionnaire-widget-title { font-size: 21px; }
   .questionnaire-widget-copy { margin: 8px 0 13px; font-size: 13px; }
-  .questionnaire-widget-points { display: none; }
-  .questionnaire-widget-foot { display: none; }
+  .questionnaire-widget-points { gap: 7px; margin-bottom: 14px; }
+  .questionnaire-widget-foot { font-size: 10px; }
+  .questionnaire-widget-cta { gap: 10px; line-height: 1.4; }
 }
 
 @media (max-width: 360px) {
   .questionnaire-widget {
-    inset-block-end: 8px;
-    inset-inline-end: 8px;
-    width: calc(100vw - 16px);
-    max-width: 320px;
+    --q-edge: 8px;
   }
   .questionnaire-widget-card { padding: 14px; }
-  .questionnaire-widget-title { font-size: 18px; padding-inline-end: 30px; }
+  .questionnaire-widget-title { font-size: 20px; }
   .questionnaire-widget-copy { font-size: 12px; margin: 6px 0 10px; }
   .questionnaire-widget-cta { padding: 11px 14px; font-size: 13px; }
   .questionnaire-widget-close { width: 30px; height: 30px; }
@@ -247,13 +251,10 @@
 
 @media (max-width: 320px) {
   .questionnaire-widget {
-    inset-block-end: 6px;
-    inset-inline-end: 6px;
-    width: calc(100vw - 12px);
-    max-width: 280px;
+    --q-edge: 6px;
   }
   .questionnaire-widget-card { padding: 12px; }
-  .questionnaire-widget-title { font-size: 16px; padding-inline-end: 28px; }
+  .questionnaire-widget-title { font-size: 20px; }
   .questionnaire-widget-copy { font-size: 11px; margin: 5px 0 8px; }
   .questionnaire-widget-cta { padding: 10px 12px; font-size: 12px; }
   .questionnaire-widget-kicker { font-size: 10px; margin-top: 12px; }

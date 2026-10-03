@@ -96,6 +96,23 @@ This will create an admin user with username `admin` and a randomly generated pa
 
 ---
 
+## Deploying the mobile layout update
+
+The mobile responsiveness and questionnaire invitation fixes from 3 October 2026 require no `.env` edits, schema changes, or new packages on an existing deployment.
+
+1. Deploy the updated `public/styles.css`, `public/app.js`, `public/questionnaire-widget.css`, and `public/questionnaire-widget.js` to the same paths on your hosting. Keep the existing server configuration.
+2. The regenerated `preview.html` is an offline preview artifact. It does not replace the public files served by `server.js`.
+3. Purge Cloudflare's cached copies of the changed public assets, then reload the site on a mobile browser.
+4. Check the home, questionnaire, and privacy pages in English and Arabic at 320, 390, and 768 pixels, plus a landscape phone viewport. Confirm the header, hero, cards, booking controls, and footer fit without clipping or sideways page scrolling.
+5. Open the mobile menu and confirm its links are reachable. On short screens, the menu can scroll.
+6. On a fresh visit, wait approximately 3.5 seconds for the questionnaire invitation. Confirm it sits above the cookie banner and shows its checklist and footer. On short screens, scroll within the card to reach its questionnaire link.
+7. Accept or close the cookie banner and confirm the card moves down into the space released by the banner. Rotate the device and confirm the card remains on screen.
+8. Tap the invitation's call to action and confirm `/questionnaire` opens.
+
+The invitation retains its existing automatic dismissal after 20 seconds and manual dismissal for 14 days. If it was manually dismissed, test in a fresh browser profile or clear the `questionnaireWidgetDismissedAt` local storage entry. Widget settings are client-side configuration in `public/index.html`, not environment variables.
+
+Local browser checks validated layout and navigation using mocked API responses. After deployment, verify the real booking and questionnaire submission flows separately.
+
 ## Configuration
 
 All settings are environment variables, read from the process environment or from `.env`.

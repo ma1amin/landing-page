@@ -67,6 +67,18 @@ A bilingual (English/Arabic) personal brand website featuring:
 
 ---
 
+## Mobile layout and questionnaire widget
+
+Updated on 3 October 2026. Public pages adapt to narrow phones, tablets, and desktop screens in English and Arabic. Grid cards and hero content shrink to the available width, the header switches to a scrollable menu, and booking controls and footer columns reflow on small screens.
+
+The questionnaire invitation keeps its checklist, footer, and call to action visible. It stays above the cookie consent banner, accounts for the available viewport height, and scrolls internally on short screens. Resizing from a dragged desktop card to mobile resets its position so it stays on screen.
+
+These changes require **no new environment variables, database migration, or dependency installation**. The widget's existing delay and dismissal settings remain in `window.QUESTIONNAIRE_CONFIG` in `public/index.html`.
+
+Browser layout checks covered the home, questionnaire, and privacy pages in both languages at widths from 280 to 1,440 pixels, including portrait and landscape screens. Checks also covered mobile menu opening, cookie dismissal, desktop dragging followed by mobile resizing, and navigation through the widget's questionnaire link. Tests used local static pages with mocked configuration and availability responses; they do not verify production database, email delivery, or submissions.
+
+After changing the public assets, regenerate the portable preview with `node build-preview.js`. See [README-DEPLOYMENT.md](README-DEPLOYMENT.md#deploying-the-mobile-layout-update) for the update checklist.
+
 ## <img src="https://animated-fluent-emoji.vercel.app/image/1f3a0?size=32&color=3ddc97" width="28" /> Architecture
 
 <p align="center">
