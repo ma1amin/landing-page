@@ -729,14 +729,15 @@ ul,ol{margin:0;padding:0;list-style:none}
 /* ============================================================
    PRIVACY POLICY HERO
    ============================================================ */
-.hero h1{margin-bottom:8px!important}
-.hero .lead{max-width:70ch!important;margin-bottom:24px!important;line-height:1.4!important;font-size:15px!important}
-.hero{padding-bottom:32px!important}
+body#top .hero-inner{padding-bottom:24px!important}
+body#top .hero h1{margin-bottom:6px!important}
+body#top .hero .lead{max-width:100%!important;margin-bottom:16px!important;line-height:1.3!important;font-size:14px!important;white-space:nowrap!important}
+body#top .hero{padding:60px 0 20px!important}
 
 /* ============================================================
    PRIVACY POLICY SECTION
    ============================================================ */
-body#top .section{padding-top:40px!important}
+body#top .section{padding-top:32px!important}
 
 /* ============================================================
    COOKIE CONSENT
