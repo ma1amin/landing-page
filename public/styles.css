@@ -672,11 +672,12 @@ ul,ol{margin:0;padding:0;list-style:none}
     background:rgba(7,8,11,.97);backdrop-filter:blur(14px);
     border-bottom:1px solid var(--line);
     transform:translateY(-130%);transition:transform .34s var(--ease);
+    z-index:999
   }
   .nav-links.is-open{transform:translateY(0)}
   .nav-links a{padding:13px 0;border-bottom:1px solid var(--line);font-size:15px}
-  .nav-actions{margin-inline-start:auto}
-  .burger{display:flex}
+  .nav-actions{margin-inline-start:auto;flex-shrink:0;gap:8px}
+  .burger{display:flex!important;z-index:1000}
 }
 @media (max-width:640px){
   .wrap{padding-inline:18px}
@@ -684,6 +685,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   .hero{padding-top:48px}
   .nav-inner{height:64px}
   .brand-text em{display:none}
+  .nav-actions .btn{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
   .stat{border-inline-end:1px solid var(--line)}
   .stat:nth-child(2n){border-inline-end:none}
@@ -695,6 +697,7 @@ ul,ol{margin:0;padding:0;list-style:none}
   .cal-dow span{font-size:9px}
   .cal-grid,.cal-dow{gap:4px}
   .hero-cta .btn{flex:1;min-width:160px}
+  .burger{display:flex!important}
 }
 @media (max-width:480px){
   .wrap{padding-inline:16px}

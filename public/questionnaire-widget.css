@@ -219,6 +219,7 @@
     inset-block-end: 12px;
     inset-inline-end: 12px;
     width: calc(100vw - 24px);
+    max-width: 340px;
     touch-action: auto;
   }
   .questionnaire-widget-card { padding: 17px; }
@@ -235,6 +236,7 @@
     inset-block-end: 8px;
     inset-inline-end: 8px;
     width: calc(100vw - 16px);
+    max-width: 320px;
   }
   .questionnaire-widget-card { padding: 14px; }
   .questionnaire-widget-title { font-size: 18px; padding-inline-end: 30px; }
@@ -248,6 +250,7 @@
     inset-block-end: 6px;
     inset-inline-end: 6px;
     width: calc(100vw - 12px);
+    max-width: 280px;
   }
   .questionnaire-widget-card { padding: 12px; }
   .questionnaire-widget-title { font-size: 16px; padding-inline-end: 28px; }
