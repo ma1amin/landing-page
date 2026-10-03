@@ -6,19 +6,11 @@
 
 ## 🤖 Vision
 
-<p align="center">
-  🌌
-</p>
-
 To be the leading cybersecurity voice in the Arab world, empowering organizations with robust security strategies, AI-native platforms, and digital transformation solutions that protect and advance regional business interests.
 
 ---
 
 ## 🎯 Mission
-
-<p align="center">
-  📡
-</p>
 
 - ✅ Deliver cutting-edge red teaming and security architecture services
 - ✅ Build AI-native platforms that transform logistics and operations
@@ -28,10 +20,6 @@ To be the leading cybersecurity voice in the Arab world, empowering organization
 ---
 
 ## 🏃 Strategy
-
-<p align="center">
-  📈
-</p>
 
 ### 🔥 Core Pillars
 
@@ -52,10 +40,6 @@ To be the leading cybersecurity voice in the Arab world, empowering organization
 ---
 
 ## 🚀 About This Site
-
-<p align="center">
-  💻
-</p>
 
 A bilingual (English/Arabic) personal brand website featuring:
 
@@ -80,10 +64,6 @@ Browser layout checks covered the home, questionnaire, and privacy pages in both
 After changing the public assets, regenerate the portable preview with `node build-preview.js`. See [README-DEPLOYMENT.md](README-DEPLOYMENT.md#deploying-the-mobile-layout-update) for the update checklist.
 
 ## 🎠 Architecture
-
-<p align="center">
-  📰
-</p>
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -140,10 +120,6 @@ After changing the public assets, regenerate the portable preview with `node bui
 
 ## 💻 Technology Stack
 
-<p align="center">
-  🧰
-</p>
-
 ### 🔧 Backend
 
 | Technology | Purpose |
@@ -174,10 +150,6 @@ After changing the public assets, regenerate the portable preview with `node bui
 ---
 
 ## 🔐 Security & Privacy
-
-<p align="center">
-  🛡️
-</p>
 
 ### 🛡️ Security Features
 
@@ -322,10 +294,6 @@ For production deployment on cPanel, see [README-DEPLOYMENT.md](README-DEPLOYMEN
 
 ## 📞 Contact
 
-<p align="center">
-  📩
-</p>
-
 - ✉️ **Email:** [info@malamin.cc](mailto:info@malamin.cc)
 - 🌐 **Website:** [malamin.cc](https://malamin.cc)
 - 🐦 **Location:** Riyadh, Saudi Arabia
@@ -334,20 +302,10 @@ For production deployment on cPanel, see [README-DEPLOYMENT.md](README-DEPLOYMEN
 
 ## 👔 License
 
-<p align="center">
-  🔒
-</p>
-
 This project is **PRIVATE**. All Rights Reserved.
 
 © 2026 Dr. Mohammed Al Amin
 
 ---
 
-<p align="center">
-  🚀
-  <br>
-  🌌
-  <em>Built with passion for cybersecurity excellence</em>
-  🌌
-</p>
+*Built with passion for cybersecurity excellence*
